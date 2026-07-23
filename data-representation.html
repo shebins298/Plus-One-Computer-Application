@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Data Representation — Interactive Chapter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF;
+  --paper-tint:#F8F7FC;
+  --ink:#1B1A2E;
+  --body:#3B3A52;
+  --dim:#6E6D85;
+  --indigo:#4432C4;
+  --indigo-deep:#332494;
+  --indigo-bright:#5B47E0;
+  --indigo-tint:#EDEAFA;
+  --teal:#0A9E92;
+  --teal-tint:#E4F7F5;
+  --teal-line:#BEE9E4;
+  --ok:#1F7A46;
+  --ok-tint:#E7F6ED;
+  --bad:#B23B22;
+  --bad-tint:#FCEEEA;
+  --line:#E6E3F0;
+  --radius:10px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--body);font-family:'Space Grotesk',sans-serif;line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;}
+::selection{background:var(--indigo-tint);color:var(--indigo-deep);}
+img,svg{max-width:100%;display:block;}
+a{color:var(--indigo-deep);}
+button{font-family:inherit;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px;}
+@media(min-width:900px){.wrap{padding:0 32px;}}
+
+/* ---------- top nav ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.topbar-inner{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px;}
+@media(min-width:900px){.topbar-inner{padding:12px 32px;}}
+.brand{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--indigo-deep);white-space:nowrap;letter-spacing:0.4px;display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.brand .chip-dot{width:8px;height:8px;background:var(--teal);border-radius:50%;animation:pulse 2.6s infinite ease-in-out;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.navlinks{display:flex;gap:2px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.navlinks::-webkit-scrollbar{display:none;}
+.navlinks a{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim);text-decoration:none;padding:8px 12px;border:1px solid transparent;border-radius:20px;transition:all .15s;flex-shrink:0;}
+.navlinks a:hover,.navlinks a:focus-visible{color:var(--indigo-deep);border-color:var(--indigo-tint);background:var(--indigo-tint);}
+
+/* ---------- hero ---------- */
+.hero{padding:56px 0 44px;position:relative;overflow:hidden;border-bottom:1px solid var(--line);}
+@media(min-width:900px){.hero{padding:88px 0 60px;}}
+.hero-bits{position:absolute;inset:0;pointer-events:none;opacity:0.85;}
+.hero .wrap{position:relative;z-index:2;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--teal);}
+h1.title{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(34px,8vw,64px);line-height:1.0;margin:0 0 18px;color:var(--ink);letter-spacing:-0.01em;}
+h1.title em{font-style:italic;color:var(--indigo);font-weight:500;}
+.hero-sub{font-size:clamp(15px,2vw,17px);color:var(--dim);max-width:560px;margin:0 0 28px;}
+.quote-box{border-left:3px solid var(--indigo);padding:14px 18px;background:var(--indigo-tint);max-width:560px;border-radius:0 8px 8px 0;font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--ink);}
+.quote-box cite{display:block;margin-top:8px;font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--indigo-deep);letter-spacing:0.5px;}
+.hero-chip-wrap{display:none;}
+@media(min-width:760px){.hero-flex{display:flex;align-items:center;gap:40px;}.hero-flex .hero-text{flex:1;}.hero-chip-wrap{display:block;flex-shrink:0;width:220px;}}
+.odometer{background:var(--ink);border-radius:14px;padding:18px 16px;text-align:center;}
+.odo-bits{display:flex;justify-content:center;gap:5px;margin-bottom:12px;}
+.odo-bit{width:22px;height:32px;border-radius:4px;background:#2A2947;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#4A4870;transition:all .25s;}
+.odo-bit.on{background:var(--teal);color:#052824;box-shadow:0 0 10px rgba(10,158,146,0.6);}
+.odo-readout{font-family:'IBM Plex Mono',monospace;color:#fff;font-size:11px;letter-spacing:0.5px;}
+.odo-readout b{color:var(--indigo-bright);font-size:20px;display:block;font-family:'Fraunces',serif;font-weight:600;margin-bottom:2px;}
+
+/* ---------- section shell ---------- */
+section.block{padding:44px 0;border-bottom:1px solid var(--line);}
+@media(min-width:900px){section.block{padding:64px 0;}}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--indigo);border:1px solid var(--indigo);padding:3px 9px;border-radius:20px;flex-shrink:0;}
+h2.sec-title{font-family:'Fraunces',serif;font-size:clamp(22px,4.5vw,32px);font-weight:600;margin:0;color:var(--ink);}
+h3.sub-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(16px,3vw,18.5px);color:var(--indigo-deep);margin:30px 0 12px;display:flex;align-items:center;gap:8px;}
+h3.sub-title::before{content:'§';color:var(--teal);font-family:'IBM Plex Mono',monospace;}
+p{color:var(--body);font-size:15px;}
+@media(min-width:900px){p{font-size:15.5px;}}
+.lede{font-size:clamp(15px,2.2vw,17px);color:var(--ink);max-width:720px;}
+.hl{background:var(--teal-tint);color:var(--indigo-deep);padding:1px 5px;border-radius:4px;font-weight:600;}
+
+/* ---------- note tags ---------- */
+.note-legend{display:flex;align-items:center;gap:10px;background:var(--indigo-tint);border:1px solid var(--indigo);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--indigo-deep);margin-bottom:10px;}
+.legend-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--indigo);color:#fff;padding:3px 8px;border-radius:5px;letter-spacing:0.5px;flex-shrink:0;}
+.note-hint{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--teal);letter-spacing:0.4px;margin:6px 0 12px;}
+.note-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--indigo);color:#fff;padding:2px 7px;border-radius:5px;letter-spacing:0.5px;}
+
+/* ---------- generic card / table ---------- */
+.card{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
+table.dtable{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+table.dtable th,table.dtable td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);}
+table.dtable th{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--teal);text-transform:uppercase;letter-spacing:0.7px;background:var(--paper-tint);}
+table.dtable tr:hover td{background:var(--indigo-tint);}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+/* ---------- positional value explorer ---------- */
+.base-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.base-tab{font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--paper);border:1px solid var(--line);color:var(--dim);padding:9px 15px;border-radius:20px;cursor:pointer;transition:.15s;min-height:38px;}
+.base-tab:hover{border-color:var(--indigo);color:var(--indigo-deep);}
+.base-tab.active{background:var(--indigo);border-color:var(--indigo);color:#fff;font-weight:600;}
+.digit-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0 14px;}
+.digit-box{width:52px;height:58px;border:2px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;color:var(--ink);background:var(--paper);cursor:pointer;transition:.15s;}
+.digit-box:hover,.digit-box.active{border-color:var(--indigo);background:var(--indigo-tint);color:var(--indigo-deep);transform:translateY(-2px);}
+.digit-power{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim);margin-top:-6px;}
+.pv-detail{margin-top:14px;background:var(--paper-tint);border:1px solid var(--line);border-left:4px solid var(--indigo);border-radius:var(--radius);padding:18px 20px;min-height:70px;text-align:center;}
+.pv-detail .pv-sum{font-family:'IBM Plex Mono',monospace;font-size:19px;color:var(--indigo-deep);font-weight:600;}
+
+/* ---------- conversion lab tabs ---------- */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.tab-btn{font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--paper);border:1px solid var(--line);color:var(--dim);padding:9px 15px;border-radius:20px;cursor:pointer;transition:.15s;min-height:38px;}
+.tab-btn:hover{border-color:var(--indigo);color:var(--indigo-deep);}
+.tab-btn.active{background:var(--indigo);border-color:var(--indigo);color:#fff;font-weight:600;}
+.tab-panel{display:none;background:var(--paper-tint);border:1px solid var(--line);padding:20px 22px;border-radius:var(--radius);}
+.tab-panel.active{display:block;}
+.tab-panel h4{margin-top:0;font-family:'Fraunces',serif;color:var(--indigo-deep);}
+.step-box{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:10px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);display:none;}
+.step-box.show{display:block;}
+.step-btn{font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--indigo);color:#fff;border:none;padding:9px 16px;border-radius:20px;cursor:pointer;margin-top:8px;transition:.15s;}
+.step-btn:hover{background:var(--indigo-deep);}
+.step-btn:disabled{background:var(--line);color:var(--dim);cursor:default;}
+.answer-chip{display:inline-block;margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:13px;background:var(--teal-tint);color:var(--indigo-deep);border:1px solid var(--teal-line);padding:6px 12px;border-radius:20px;font-weight:600;}
+
+/* ---------- live converter tool ---------- */
+.tool-card{background:var(--ink);border-radius:var(--radius);padding:24px;color:#fff;margin:20px 0;}
+.tool-card label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--teal);letter-spacing:0.6px;text-transform:uppercase;}
+.tool-card input[type=number],.tool-card input[type=text]{width:100%;max-width:220px;background:#2A2947;border:1px solid #4A4870;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:18px;padding:9px 12px;border-radius:8px;margin-top:6px;}
+.tool-card input:focus{outline:2px solid var(--teal);}
+.conv-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px;}
+@media(min-width:640px){.conv-grid{grid-template-columns:repeat(3,1fr);}}
+.conv-out{background:#221F3D;border-radius:8px;padding:12px 14px;}
+.conv-out .co-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim);}
+.conv-out .co-val{font-family:'IBM Plex Mono',monospace;font-size:19px;color:var(--indigo-bright);font-weight:600;word-break:break-all;}
+
+/* ---------- binary addition ---------- */
+.add-grid{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;margin:18px 0;}
+.add-cols{font-family:'IBM Plex Mono',monospace;font-size:22px;letter-spacing:6px;color:var(--ink);}
+.add-cols .carry-row{font-size:13px;color:var(--indigo-bright);letter-spacing:6px;min-height:18px;}
+.add-cols .op-row{color:var(--dim);}
+.add-cols .rule-row{border-top:2px solid var(--ink);margin-top:2px;padding-top:4px;}
+.rule-table{width:100%;border-collapse:collapse;margin:14px 0;font-family:'IBM Plex Mono',monospace;font-size:13.5px;max-width:340px;}
+.rule-table th,.rule-table td{border:1px solid var(--line);padding:8px 12px;text-align:center;}
+.rule-table th{background:var(--indigo-tint);color:var(--indigo-deep);}
+
+/* ---------- complement comparison / builder ---------- */
+.comp-compare{display:grid;grid-template-columns:1fr;gap:14px;margin:20px 0;}
+@media(min-width:760px){.comp-compare{grid-template-columns:repeat(3,1fr);}}
+.comp-col{border-radius:var(--radius);padding:18px;background:var(--paper-tint);border:1px solid var(--line);}
+.comp-col h4{margin:0 0 6px;font-family:'Fraunces',serif;font-size:17px;color:var(--indigo-deep);}
+.comp-col .cc-eg{font-family:'IBM Plex Mono',monospace;font-size:13px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin-top:8px;}
+.exam-line{margin-top:14px;background:var(--indigo-tint);border:1px solid var(--indigo);border-radius:var(--radius);padding:16px 20px;font-size:13.5px;}
+.exam-line b{color:var(--indigo-deep);}
+
+.builder{margin-top:22px;}
+.builder-out{margin-top:16px;display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:640px){.builder-out{grid-template-columns:repeat(3,1fr);}}
+.bld-card{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;}
+.bld-card h5{margin:0 0 6px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--teal);text-transform:uppercase;letter-spacing:0.6px;}
+.bld-card .bld-val{font-family:'IBM Plex Mono',monospace;font-size:21px;font-weight:600;color:var(--indigo-deep);letter-spacing:2px;}
+.bld-card .bld-steps{font-size:12px;color:var(--dim);margin-top:6px;}
+.bld-warn{margin-top:12px;background:var(--bad-tint);border:1px solid var(--bad);color:var(--bad);border-radius:var(--radius);padding:12px 16px;font-size:13px;display:none;}
+.bld-warn.show{display:block;}
+
+/* ---------- ascii lookup ---------- */
+.ascii-tool{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-top:16px;}
+.ascii-out{display:flex;gap:14px;flex-wrap:wrap;}
+.ascii-out .ao{background:var(--indigo-tint);border-radius:8px;padding:10px 16px;text-align:center;}
+.ascii-out .ao .ao-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--indigo-deep);text-transform:uppercase;}
+.ascii-out .ao .ao-val{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600;color:var(--ink);}
+.ascii-range-note{margin-top:10px;font-size:12.5px;color:var(--dim);}
+
+/* ---------- lossy/lossless toggle ---------- */
+.method-toggle{display:flex;gap:8px;margin-bottom:14px;}
+.method-toggle button{font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--paper);border:1px solid var(--line);color:var(--dim);padding:9px 15px;border-radius:20px;cursor:pointer;transition:.15s;}
+.method-toggle button.active{background:var(--teal);border-color:var(--teal);color:#052824;font-weight:600;}
+.methods-panel{display:none;background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;}
+.methods-panel.active{display:block;}
+
+/* ---------- format cards ---------- */
+.fmt-grid{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0;}
+@media(min-width:640px){.fmt-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:900px){.fmt-grid{grid-template-columns:repeat(3,1fr);}}
+.fmt-card{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;}
+.fmt-card .fmt-name{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--indigo-deep);font-size:14px;}
+.fmt-card p{font-size:12.5px;margin:6px 0 0;color:var(--dim);}
+
+/* ---------- practice: quiz / blanks / match ---------- */
+.quiz-box{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;}
+.quiz-q{font-weight:600;color:var(--ink);margin-bottom:10px;font-size:14.5px;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{text-align:left;font-family:'Space Grotesk',sans-serif;font-size:13.5px;background:var(--paper);border:1px solid var(--line);color:var(--body);padding:10px 14px;border-radius:8px;cursor:pointer;transition:.15s;}
+.quiz-opt:hover{border-color:var(--indigo);}
+.quiz-opt.correct{background:var(--ok-tint);border-color:var(--ok);color:var(--ok);font-weight:600;}
+.quiz-opt.wrong{background:var(--bad-tint);border-color:var(--bad);color:var(--bad);}
+.quiz-fb{font-family:'IBM Plex Mono',monospace;font-size:12px;margin-top:8px;display:none;color:var(--dim);}
+.quiz-fb.show{display:block;}
+.score-pill{position:sticky;top:56px;z-index:20;display:inline-flex;gap:8px;align-items:center;background:var(--indigo);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:8px 16px;border-radius:20px;margin-bottom:16px;}
+
+.blank-item{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--paper-tint);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:8px;font-size:14px;}
+.blank-item input{font-family:'IBM Plex Mono',monospace;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:13.5px;min-width:110px;background:var(--paper);}
+.blank-item input.correct{border-color:var(--ok);background:var(--ok-tint);}
+.blank-item input.wrong{border-color:var(--bad);background:var(--bad-tint);}
+.check-btn{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--indigo);color:#fff;border:none;padding:10px 20px;border-radius:20px;cursor:pointer;margin-top:6px;}
+.check-btn:hover{background:var(--indigo-deep);}
+
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px;}
+.match-col{display:flex;flex-direction:column;gap:8px;}
+.match-item{background:var(--paper-tint);border:1px solid var(--line);border-radius:8px;padding:11px 14px;font-size:13.5px;cursor:pointer;transition:.15s;}
+.match-item.selected{border-color:var(--indigo);background:var(--indigo-tint);}
+.match-item.matched{border-color:var(--ok);background:var(--ok-tint);color:var(--ok);cursor:default;}
+.match-item.wrong-flash{border-color:var(--bad);background:var(--bad-tint);}
+
+.glossary-toggle{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--indigo);color:#fff;border:none;padding:10px 20px;border-radius:20px;cursor:pointer;}
+.glossary-body{display:none;margin-top:16px;}
+.glossary-body.show{display:block;}
+
+footer{padding:36px 0 56px;text-align:center;border-top:1px solid var(--line);margin-top:0;}
+footer p{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim);}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="chip-dot"></span>CH.2 · DATA REPRESENTATION</div>
+    <div class="navlinks">
+      <a href="#intro">Intro</a>
+      <a href="#number-systems">Number Systems</a>
+      <a href="#conversions">Conversions</a>
+      <a href="#arithmetic">Arithmetic</a>
+      <a href="#numeric-rep">Integer &amp; Float</a>
+      <a href="#character-rep">Characters</a>
+      <a href="#multimedia">Multimedia</a>
+      <a href="#practice">Practice</a>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <canvas class="hero-bits" id="bitsCanvas"></canvas>
+  <div class="wrap">
+    <div class="hero-flex">
+      <div class="hero-text">
+        <div class="eyebrow">Chapter 2 · Interactive Walkthrough</div>
+        <h1 class="title">Data <em>Representation</em></h1>
+        <p class="hero-sub">Every number, letter, photo and song your computer touches is secretly a string of 0s and 1s. This chapter shows you how — number systems, conversions, integer &amp; character encoding, and multimedia formats.</p>
+        <div class="quote-box">
+          "There are only 10 kinds of people in the world — those who understand binary, and those who don't."
+          <cite>— an old programmer's joke</cite>
+        </div>
+      </div>
+      <div class="hero-chip-wrap">
+        <div class="odometer">
+          <div class="odo-bits" id="odoBits"></div>
+          <div class="odo-readout"><b id="odoDec">75</b>binary · octal · hex, all at once</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap" style="padding-top:22px;">
+  <div class="note-legend">
+    <span class="legend-badge">NOTE</span>
+    <span>Whenever you see this tag, <b>copy that box into your notebook</b> — it's the exact fact or definition to remember.</span>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- ===================== INTRO ===================== -->
+  <section class="block" id="intro">
+    <div class="sec-head"><span class="sec-num">2.1</span><h2 class="sec-title">Introduction</h2></div>
+    <p class="lede">Computers only understand <span class="hl">binary digits (0s and 1s)</span>. Every type of data — numbers, characters, images, audio, video — must be converted into binary form before a computer can store or process it. This chapter covers number systems and conversions between them, how integers and fractional numbers are represented in binary, how characters are encoded, and how multimedia files are stored.</p>
+  </section>
+
+  <!-- ===================== NUMBER SYSTEMS ===================== -->
+  <section class="block" id="number-systems">
+    <div class="sec-head"><span class="sec-num">2.2</span><h2 class="sec-title">Number Systems</h2></div>
+    <p class="lede">A <span class="hl">number system</span> is a systematic way of writing and representing numbers using a set of symbols or digits. The number of symbols used is called the <span class="hl">base</span> or <span class="hl">radix</span> of the number system.</p>
+
+    <div class="table-scroll">
+      <table class="dtable">
+        <tr><th>Number system</th><th>Base (radix)</th><th>Digits / symbols used</th></tr>
+        <tr><td>Decimal</td><td>10</td><td>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</td></tr>
+        <tr><td>Binary</td><td>2</td><td>0, 1</td></tr>
+        <tr><td>Octal</td><td>8</td><td>0, 1, 2, 3, 4, 5, 6, 7</td></tr>
+        <tr><td>Hexadecimal</td><td>16</td><td>0–9 and A–F (A=10 … F=15)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <span class="note-tag">NOTE</span>
+      In a <b>positional number system</b>, the value of a digit depends on its position, with each position representing a power of the base. The rightmost digit/bit has the smallest place value and is called the <b>Least Significant Digit/Bit (LSD/LSB)</b>; the leftmost digit/bit has the largest place value and is called the <b>Most Significant Digit/Bit (MSD/MSB)</b>.
+    </div>
+
+    <h3 class="sub-title">Positional value explorer — tap a digit</h3>
+    <p class="note-hint">Switch base, then click each digit to see its place value and how the digits sum to the final value.</p>
+    <div class="base-tabs" id="pvTabs">
+      <button class="base-tab active" data-base="10">Decimal — 534</button>
+      <button class="base-tab" data-base="2">Binary — 1001011</button>
+      <button class="base-tab" data-base="8">Octal — 123</button>
+      <button class="base-tab" data-base="16">Hex — 258</button>
+    </div>
+    <div class="digit-row" id="pvDigits"></div>
+    <div class="pv-detail" id="pvDetail">Tap a digit above to see its contribution.</div>
+
+    <h3 class="sub-title">Why binary?</h3>
+    <p>Computers are built from <b>transistors</b> — tiny switches with only two states: ON (1) and OFF (0). This two-state nature is simple, reliable, and resistant to electrical noise, unlike decimal which would need 10 precise voltage levels to distinguish. Binary is used for the computer's own language (all instructions are 0s and 1s), digital electronics, efficient data storage, and encryption.</p>
+
+    <h3 class="sub-title">Octal &amp; hexadecimal — where you'll meet them</h3>
+    <div class="fmt-grid">
+      <div class="fmt-card"><span class="fmt-name">Octal (base 8)</span><p>Unix file permissions, memory addresses, embedded systems &amp; microcontrollers.</p></div>
+      <div class="fmt-card"><span class="fmt-name">Hexadecimal (base 16)</span><p>Colour codes, memory addresses, compactly representing long binary strings.</p></div>
+    </div>
+    <div class="table-scroll">
+      <table class="dtable">
+        <tr><th>Dec</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr>
+        <tr><th>Hex</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== CONVERSIONS ===================== -->
+  <section class="block" id="conversions">
+    <div class="sec-head"><span class="sec-num">2.3</span><h2 class="sec-title">Number System Conversions</h2></div>
+    <p class="lede">Conversion is the bridge between human understanding (decimal) and computer processing (binary) — and between binary's compact cousins, octal and hexadecimal.</p>
+
+    <div class="tabs" id="convTabs">
+      <button class="tab-btn active" data-panel="d2b">Decimal → Binary</button>
+      <button class="tab-btn" data-panel="b2d">Binary → Decimal</button>
+      <button class="tab-btn" data-panel="o2b">Octal ↔ Binary</button>
+      <button class="tab-btn" data-panel="h2b">Hex ↔ Binary</button>
+    </div>
+
+    <div class="tab-panel active" id="panel-d2b">
+      <h4>Repeated division by 2</h4>
+      <p>Divide the decimal number repeatedly by 2, noting the remainder each time. Read the remainders <b>bottom-to-top</b> to get the binary number.</p>
+      <div class="table-scroll">
+        <table class="dtable">
+          <tr><th>Step</th><th>35 ÷ 2</th><th>Remainder</th></tr>
+          <tr><td>1</td><td>17</td><td>1 (LSB)</td></tr>
+          <tr><td>2</td><td>8</td><td>1</td></tr>
+          <tr><td>3</td><td>4</td><td>0</td></tr>
+          <tr><td>4</td><td>2</td><td>0</td></tr>
+          <tr><td>5</td><td>1</td><td>0</td></tr>
+          <tr><td>6</td><td>0</td><td>1 (MSB)</td></tr>
+        </table>
+      </div>
+      <span class="answer-chip">(35)₁₀ = (100011)₂</span>
+      <p style="margin-top:14px;"><b>Practice:</b> (59)₁₀ → divide repeatedly: 59, 29, 14, 7, 3, 1, 0 with remainders 1,1,0,1,1,1 (bottom-to-top).</p>
+      <span class="answer-chip">(59)₁₀ = (111011)₂</span>
+    </div>
+
+    <div class="tab-panel" id="panel-b2d">
+      <h4>Multiply each bit by its weighted power of 2</h4>
+      <p><b>(101101)₂</b> = 1×2⁵+0×2⁴+1×2³+1×2²+0×2¹+1×2⁰ = 32+0+8+4+0+1 = <b>(45)₁₀</b></p>
+      <p><b>(110101)₂</b> = 1×2⁵+1×2⁴+0×2³+1×2²+0×2¹+1×2⁰ = 32+16+0+4+0+1 = <b>(53)₁₀</b></p>
+    </div>
+
+    <div class="tab-panel" id="panel-o2b">
+      <h4>1 octal digit = 3 binary bits</h4>
+      <p><b>Octal → Binary:</b> (523)₈ → 5=101, 2=010, 3=011 → <b>(101010011)₂</b></p>
+      <p><b>Practice:</b> (7046)₈ → 7=111, 0=000, 4=100, 6=110 → <b>(111000100110)₂</b></p>
+      <p style="margin-top:14px;"><b>Binary → Octal:</b> group bits in 3s from the right. (101101010)₂ → 101,101,010 → <b>(552)₈</b></p>
+      <p><b>Practice:</b> (1110010101)₂ → pad &amp; group in 3s: 001,110,010,101 → <b>(1625)₈</b></p>
+    </div>
+
+    <div class="tab-panel" id="panel-h2b">
+      <h4>1 hex digit = 4 binary bits</h4>
+      <p><b>Hex → Binary:</b> (9AF)₁₆ → 9=1001, A=1010, F=1111 → <b>(100110101111)₂</b></p>
+      <p><b>Practice:</b> (12D)₁₆ → 1=0001, 2=0010, D=1101 → <b>(100101101)₂</b> (leading zeros trimmed)</p>
+      <p style="margin-top:14px;"><b>Binary → Hex:</b> group bits in 4s from the right. (100101111011)₂ → 1001,0111,1011 → <b>(97B)₁₆</b></p>
+      <p><b>Practice:</b> (1101011001)₂ → pad &amp; group in 4s: 0011,0101,1001 → <b>(359)₁₆</b></p>
+    </div>
+
+    <h3 class="sub-title">Try it yourself — live converter</h3>
+    <div class="tool-card">
+      <label for="liveDecInput">Type any whole decimal number</label><br>
+      <input type="number" id="liveDecInput" value="75" min="0" max="1048575">
+      <div class="conv-grid">
+        <div class="conv-out"><div class="co-label">BINARY</div><div class="co-val" id="outBin">1001011</div></div>
+        <div class="conv-out"><div class="co-label">OCTAL</div><div class="co-val" id="outOct">113</div></div>
+        <div class="conv-out"><div class="co-label">HEXADECIMAL</div><div class="co-val" id="outHex">4B</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ARITHMETIC ===================== -->
+  <section class="block" id="arithmetic">
+    <div class="sec-head"><span class="sec-num">2.4</span><h2 class="sec-title">Binary Addition</h2></div>
+    <p class="lede">Computers add binary numbers exactly the way we add decimal numbers — just in base 2 instead of base 10.</p>
+
+    <table class="rule-table">
+      <tr><th>A</th><th>B</th><th>Sum</th><th>Carry</th></tr>
+      <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+      <tr><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+    </table>
+
+    <h3 class="sub-title">Step through a worked example</h3>
+    <div class="tabs" id="addTabs">
+      <button class="tab-btn active" data-panel="add1">1101 + 0011</button>
+      <button class="tab-btn" data-panel="add2">1111 + 1101</button>
+    </div>
+    <div class="tab-panel active" id="panel-add1">
+      <div class="add-grid">
+        <div class="add-cols">
+          <div class="carry-row" id="add1-carry">&nbsp;</div>
+          <div class="op-row">&nbsp;1101</div>
+          <div>+0011</div>
+          <div class="rule-row" id="add1-result">?????</div>
+        </div>
+      </div>
+      <button class="step-btn" id="add1-step">Show next step</button>
+      <div class="step-box" id="add1-explain"></div>
+    </div>
+    <div class="tab-panel" id="panel-add2">
+      <div class="add-grid">
+        <div class="add-cols">
+          <div class="carry-row" id="add2-carry">&nbsp;</div>
+          <div class="op-row">&nbsp;1111</div>
+          <div>+1101</div>
+          <div class="rule-row" id="add2-result">?????</div>
+        </div>
+      </div>
+      <button class="step-btn" id="add2-step">Show next step</button>
+      <div class="step-box" id="add2-explain"></div>
+    </div>
+  </section>
+
+  <!-- ===================== NUMERIC REPRESENTATION ===================== -->
+  <section class="block" id="numeric-rep">
+    <div class="sec-head"><span class="sec-num">2.5</span><h2 class="sec-title">Numeric Representation</h2></div>
+    <p class="lede">Numbers without a fractional part are <b>integers</b>; numbers with a fractional part are <b>floating point numbers</b>. Computers represent each differently.</p>
+    <div class="card">
+      <span class="note-tag">NOTE</span>
+      A <b>word</b> is a fixed-size group of bits handled as a unit by a processor. <b>Word length</b> is the number of bits in a word — common word lengths are 8, 16, 32, and 64 bits.
+    </div>
+
+    <h3 class="sub-title">Three schemes for representing integers (8-bit examples)</h3>
+    <div class="comp-compare">
+      <div class="comp-col">
+        <h4>Sign &amp; Magnitude</h4>
+        <p>MSB (leftmost bit) = sign → 0 = positive, 1 = negative. Remaining 7 bits = magnitude (absolute value).</p>
+        <div class="cc-eg">−25 → magnitude 25 = 0011001, sign bit 1 → <b>10011001</b></div>
+      </div>
+      <div class="comp-col">
+        <h4>1's Complement</h4>
+        <p>Flip every bit of the true binary form (0→1 and 1→0). Used only to represent negative integers.</p>
+        <div class="cc-eg">87 = 01010111 → 1's complement of −87 → <b>10101000</b></div>
+      </div>
+      <div class="comp-col">
+        <h4>2's Complement</h4>
+        <p>Most commonly used by computers. Steps: 8-bit binary → 1's complement → add 1.</p>
+        <div class="cc-eg">−25 → 00011001 → 11100110 → +1 → <b>11100111</b></div>
+      </div>
+    </div>
+
+    <div class="exam-line">
+      <b>Exam tip — range &amp; the "two zeros" problem:</b> With 8 bits, Sign-Magnitude and 1's Complement can represent −127 to +127, but each has <b>two representations of zero</b> (00000000 and 10000000 / 11111111), which wastes a code and complicates circuit design. 2's Complement represents <b>−128 to +127</b> with only <b>one unique zero</b> (00000000) — this is the main reason it is the standard used by computers.
+    </div>
+
+    <h3 class="sub-title">Try it yourself — integer encoding builder</h3>
+    <p class="note-hint">Enter a decimal integer from −128 to 127 and see how it looks in all three schemes.</p>
+    <div class="tool-card">
+      <label for="compInput">Decimal integer (−128 to 127)</label><br>
+      <input type="number" id="compInput" value="-25" min="-128" max="127">
+      <div class="builder-out">
+        <div class="bld-card"><h5>Sign &amp; Magnitude</h5><div class="bld-val" id="bldSM">—</div><div class="bld-steps" id="bldSMsteps"></div></div>
+        <div class="bld-card"><h5>1's Complement</h5><div class="bld-val" id="bldOC">—</div><div class="bld-steps" id="bldOCsteps"></div></div>
+        <div class="bld-card"><h5>2's Complement</h5><div class="bld-val" id="bldTC">—</div><div class="bld-steps" id="bldTCsteps"></div></div>
+      </div>
+      <div class="bld-warn" id="bldWarn">Note: −128 cannot be represented in Sign-Magnitude or 1's Complement (their range is only −127 to +127) — but it <b>is</b> representable in 2's Complement (−128 to +127). This is exactly why 2's complement is preferred!</div>
+    </div>
+
+    <h3 class="sub-title">Floating point representation</h3>
+    <p>A floating-point number has two parts: the <b>mantissa</b> (the actual number, normalized) and the <b>exponent</b> (how many places the decimal point should move) — working like scientific notation.</p>
+    <div class="card">
+      <span class="note-tag">NOTE</span>
+      13.4 = 0.134 × 10² → <b>mantissa = 134, exponent = 2</b>
+    </div>
+  </section>
+
+  <!-- ===================== CHARACTER REPRESENTATION ===================== -->
+  <section class="block" id="character-rep">
+    <div class="sec-head"><span class="sec-num">2.6</span><h2 class="sec-title">Character Representation</h2></div>
+    <p class="lede">Letters, numbers and symbols also need a binary code so computers can store and display text.</p>
+
+    <div class="table-scroll">
+      <table class="dtable">
+        <tr><th>Encoding</th><th>Bits</th><th>Character range</th><th>Used for</th><th>Limitation</th></tr>
+        <tr><td>ASCII</td><td>7 bits</td><td>2⁷ = 128</td><td>English text, control codes</td><td>Limited characters</td></tr>
+        <tr><td>Extended ASCII</td><td>8 bits</td><td>2⁸ = 256</td><td>European characters</td><td>Not global</td></tr>
+        <tr><td>Unicode</td><td>16–32 bits</td><td>2⁸ to 2³²</td><td>Global language support</td><td>Requires more storage</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub-title">ASCII</h3>
+    <p>American Standard Code for Information Interchange — represents letters, numbers and symbols using 7-bit binary codes (128 characters). Published in 1963 by ASA (later ANSI). IBM's <b>Extended ASCII</b> uses 8 bits (256 characters).</p>
+    <p><b>Merits:</b> simple and efficient; widely supported and compatible. &nbsp; <b>Demerits:</b> limited character set; doesn't support multiple languages or special symbols well.</p>
+
+    <h3 class="sub-title">Unicode</h3>
+    <p>Introduced because ASCII/Extended ASCII can't represent all world scripts. Maintained by the Unicode Consortium. Originally 16-bit (UCS-2, 65,536 characters); now supports up to 1,114,112 code points via <b>UTF-8, UTF-16 or UTF-32</b>. Benefits: universal language support, platform independence, simplified application development, efficient data sharing.</p>
+
+    <h3 class="sub-title">Try it yourself — ASCII lookup</h3>
+    <div class="ascii-tool">
+      <div>
+        <label style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--teal);text-transform:uppercase;letter-spacing:0.6px;">Type one character</label><br>
+        <input type="text" id="asciiInput" maxlength="1" value="K" style="font-family:'IBM Plex Mono',monospace;font-size:20px;width:60px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px;">
+      </div>
+      <div class="ascii-out">
+        <div class="ao"><div class="ao-label">Decimal</div><div class="ao-val" id="asciiDec">75</div></div>
+        <div class="ao"><div class="ao-label">8-bit binary</div><div class="ao-val" id="asciiBin">01001011</div></div>
+      </div>
+    </div>
+    <div class="ascii-range-note" id="asciiRangeNote"></div>
+  </section>
+
+  <!-- ===================== MULTIMEDIA ===================== -->
+  <section class="block" id="multimedia">
+    <div class="sec-head"><span class="sec-num">2.7</span><h2 class="sec-title">Multimedia File Formats</h2></div>
+    <p class="lede">Images are stored as a grid of pixels, using the <b>RGB model</b> (Red, Green, Blue — each 0–255), typically at 24 bits per pixel. A digital image file has a <b>Header</b> (format, width, height, colour depth, compression), <b>Pixel Data</b> (actual colour values), and <b>Metadata</b> (date, camera settings, author, GPS, etc.).</p>
+
+    <h3 class="sub-title">Lossy vs. Lossless compression</h3>
+    <div class="method-toggle">
+      <button class="active" data-panel="lossy">Lossy</button>
+      <button data-panel="lossless">Lossless</button>
+    </div>
+    <div class="methods-panel active" id="panel-lossy"><p style="margin:0;">Removes some data permanently to achieve a significant size reduction. The file is smaller but quality is reduced and cannot be fully restored. Used by JPEG, MP3, MP4.</p></div>
+    <div class="methods-panel" id="panel-lossless"><p style="margin:0;">Reduces file size while preserving all original data — the file can be fully reconstructed exactly as it was. Used by PNG, FLAC, BMP.</p></div>
+
+    <h3 class="sub-title">Image file formats</h3>
+    <div class="table-scroll">
+      <table class="dtable">
+        <tr><th>Format</th><th>Compression</th><th>Transparency</th><th>Animation</th><th>Quality</th><th>Common use</th></tr>
+        <tr><td>BMP</td><td>Uncompressed</td><td>No</td><td>No</td><td>Excellent</td><td>Windows apps, raw storage</td></tr>
+        <tr><td>JPEG</td><td>Lossy</td><td>No</td><td>No</td><td>Good</td><td>Photos, web images</td></tr>
+        <tr><td>PNG</td><td>Lossless</td><td>Yes</td><td>No</td><td>Excellent</td><td>Logos, transparent images</td></tr>
+        <tr><td>GIF</td><td>Lossless (256 colours)</td><td>Yes</td><td>Yes</td><td>Low</td><td>Web animations, memes</td></tr>
+        <tr><td>TIFF</td><td>Lossy / Lossless</td><td>Yes</td><td>Yes</td><td>Excellent</td><td>Professional design</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub-title">Audio file formats</h3>
+    <p>Analog sound waves are converted to digital signals — a process called <b>digitization</b>.</p>
+    <div class="table-scroll">
+      <table class="dtable">
+        <tr><th>Format</th><th>Compression</th><th>Quality</th><th>Common uses</th></tr>
+        <tr><td>WAV</td><td>Uncompressed</td><td>Excellent</td><td>Studio recording, editing</td></tr>
+        <tr><td>MP3</td><td>Lossy</td><td>Good</td><td>Music, streaming</td></tr>
+        <tr><td>AAC</td><td>Lossy</td><td>Better than MP3</td><td>Streaming, Apple devices</td></tr>
+        <tr><td>FLAC</td><td>Lossless</td><td>Excellent</td><td>Archiving, audio editing</td></tr>
+        <tr><td>OGG</td><td>Lossy</td><td>Good</td><td>Gaming, streaming</td></tr>
+        <tr><td>WMA</td><td>Lossy / Lossless</td><td>Good–Excellent</td><td>Windows apps</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub-title">Video file formats</h3>
+    <p>A video is a fast sequence of still images (frames), usually 24–60 fps, synced with audio.</p>
+    <div class="table-scroll">
+      <table class="dtable">
+        <tr><th>Format</th><th>Developer</th><th>Quality</th><th>Compatibility</th><th>Common uses</th></tr>
+        <tr><td>AVI</td><td>Microsoft</td><td>Excellent</td><td>Windows</td><td>Editing, archiving</td></tr>
+        <tr><td>MP4</td><td>MPEG</td><td>High</td><td>Universal</td><td>Web, mobile, streaming</td></tr>
+        <tr><td>MKV</td><td>Open Source</td><td>Very High</td><td>Wide software support</td><td>Movies, HD videos</td></tr>
+        <tr><td>MOV</td><td>Apple</td><td>Excellent</td><td>macOS</td><td>Professional editing</td></tr>
+        <tr><td>FLV</td><td>Adobe</td><td>Good</td><td>Declining support</td><td>Old online streaming</td></tr>
+        <tr><td>WMV</td><td>Microsoft</td><td>Good</td><td>Windows</td><td>Media playback</td></tr>
+        <tr><td>WebM</td><td>Google</td><td>High</td><td>Browsers</td><td>HTML5 streaming</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== PRACTICE ===================== -->
+  <section class="block" id="practice" style="border-bottom:none;">
+    <div class="sec-head"><span class="sec-num">✓</span><h2 class="sec-title">Practice &amp; Self-Check</h2></div>
+
+    <h3 class="sub-title">Quick quiz</h3>
+    <div class="score-pill">Score: <span id="scoreVal">0</span> / <span id="scoreTotal">0</span></div>
+    <div id="quizArea"></div>
+
+    <h3 class="sub-title">Fill in the blanks</h3>
+    <div id="blanksArea"></div>
+    <button class="check-btn" id="checkBlanks">Check answers</button>
+
+    <h3 class="sub-title">Match the following — file format → property</h3>
+    <div class="match-wrap">
+      <div class="match-col" id="matchLeft"></div>
+      <div class="match-col" id="matchRight"></div>
+    </div>
+
+    <h3 class="sub-title">Glossary — expand the abbreviation</h3>
+    <button class="glossary-toggle" id="glossaryToggle">Show / hide glossary</button>
+    <div class="glossary-body" id="glossaryBody">
+      <div class="table-scroll">
+        <table class="dtable">
+          <tr><th>Term</th><th>Expansion</th></tr>
+          <tr><td>LSD / MSD</td><td>Least / Most Significant Digit</td></tr>
+          <tr><td>LSB / MSB</td><td>Least / Most Significant Bit</td></tr>
+          <tr><td>ASCII</td><td>American Standard Code for Information Interchange</td></tr>
+          <tr><td>ASA / ANSI</td><td>American Standards Association / American National Standards Institute</td></tr>
+          <tr><td>UTF</td><td>Unicode Transformation Format</td></tr>
+          <tr><td>UCS</td><td>Unicode Character Set</td></tr>
+          <tr><td>BMP</td><td>Bitmap Image File</td></tr>
+          <tr><td>JPEG / JPG</td><td>Joint Photographic Experts Group</td></tr>
+          <tr><td>PNG</td><td>Portable Network Graphics</td></tr>
+          <tr><td>GIF</td><td>Graphics Interchange Format</td></tr>
+          <tr><td>TIFF</td><td>Tagged Image File Format</td></tr>
+          <tr><td>RGB</td><td>Red, Green, Blue (colour model)</td></tr>
+          <tr><td>WAV</td><td>Waveform Audio File Format</td></tr>
+          <tr><td>MP3</td><td>MPEG-1 Audio Layer 3</td></tr>
+          <tr><td>AAC</td><td>Advanced Audio Coding</td></tr>
+          <tr><td>FLAC</td><td>Free Lossless Audio Codec</td></tr>
+          <tr><td>OGG</td><td>Ogg Vorbis (container format)</td></tr>
+          <tr><td>WMA</td><td>Windows Media Audio</td></tr>
+          <tr><td>AVI</td><td>Audio Video Interleave</td></tr>
+          <tr><td>MP4</td><td>MPEG-4 Part 14</td></tr>
+          <tr><td>MPEG</td><td>Moving Picture Experts Group</td></tr>
+          <tr><td>MKV</td><td>Matroska Video</td></tr>
+          <tr><td>MOV</td><td>QuickTime Movie (Apple)</td></tr>
+          <tr><td>FLV</td><td>Flash Video</td></tr>
+          <tr><td>WMV</td><td>Windows Media Video</td></tr>
+          <tr><td>WebM</td><td>Web Media (Google)</td></tr>
+          <tr><td>HD</td><td>High Definition</td></tr>
+          <tr><td>fps</td><td>Frames Per Second</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>COMPUTER APPLICATIONS COMMERCE · PLUS ONE · CHAPTER 2 — DATA REPRESENTATION</p>
+</footer>
+
+<script>
+/* ================= hero bit-stream canvas ================= */
+(function(){
+  const canvas = document.getElementById('bitsCanvas');
+  const ctx = canvas.getContext('2d');
+  let w,h;
+  function resize(){ w = canvas.width = canvas.offsetWidth; h = canvas.height = canvas.offsetHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+  const cols = 14;
+  const streams = [];
+  for(let i=0;i<cols;i++){
+    streams.push({x: (w/cols)*i + 20, y: -Math.random()*400, speed: 0.4+Math.random()*0.6, bits: Array.from({length:26},()=>Math.random()>0.5?'1':'0')});
+  }
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function frame(){
+    ctx.clearRect(0,0,w,h);
+    ctx.font = '11px IBM Plex Mono, monospace';
+    streams.forEach(s=>{
+      s.bits.forEach((b,i)=>{
+        const y = s.y + i*20;
+        if(y > -20 && y < h+20){
+          ctx.fillStyle = i===0 ? 'rgba(10,158,146,0.55)' : 'rgba(68,50,196,0.14)';
+          ctx.fillText(b, s.x, y);
+        }
+      });
+      if(!reduceMotion){ s.y += s.speed; if(s.y > 30) s.y = -500; }
+    });
+    if(!reduceMotion) requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ================= hero odometer ================= */
+(function(){
+  const bitsWrap = document.getElementById('odoBits');
+  const decLabel = document.getElementById('odoDec');
+  const bits = [];
+  for(let i=0;i<8;i++){
+    const d = document.createElement('div');
+    d.className = 'odo-bit';
+    bitsWrap.appendChild(d);
+    bits.push(d);
+  }
+  function render(n){
+    const bin = n.toString(2).padStart(8,'0');
+    bits.forEach((el,i)=>{
+      el.textContent = bin[i];
+      el.classList.toggle('on', bin[i]==='1');
+    });
+    decLabel.textContent = n;
+  }
+  let val = 75;
+  render(val);
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduceMotion){
+    setInterval(()=>{ val = (val+1) % 256; render(val); }, 900);
+  }
+})();
+
+/* ================= positional value explorer ================= */
+const pvData = {
+  10: {digits:['5','3','4'], base:10},
+  2:  {digits:['1','0','0','1','0','1','1'], base:2},
+  8:  {digits:['1','2','3'], base:8},
+  16: {digits:['2','5','8'], base:16}
+};
+const pvDigitsEl = document.getElementById('pvDigits');
+const pvDetailEl = document.getElementById('pvDetail');
+function renderPV(baseKey){
+  const d = pvData[baseKey];
+  pvDigitsEl.innerHTML = '';
+  const n = d.digits.length;
+  d.digits.forEach((digit, idx)=>{
+    const power = n - 1 - idx;
+    const box = document.createElement('div');
+    box.style.textAlign = 'center';
+    box.innerHTML = `<div class="digit-box" data-idx="${idx}">${digit}</div><div class="digit-power">${d.base}^${power}</div>`;
+    pvDigitsEl.appendChild(box);
+  });
+  pvDetailEl.innerHTML = 'Tap a digit above to see its contribution.';
+  pvDigitsEl.querySelectorAll('.digit-box').forEach(box=>{
+    box.addEventListener('click', ()=>{
+      pvDigitsEl.querySelectorAll('.digit-box').forEach(b=>b.classList.remove('active'));
+      box.classList.add('active');
+      const idx = parseInt(box.dataset.idx);
+      const digit = d.digits[idx];
+      const power = n - 1 - idx;
+      const contribution = parseInt(digit, d.base>16?16:d.base) * Math.pow(d.base, power);
+      let total = 0;
+      d.digits.forEach((dig,i)=>{ total += parseInt(dig, d.base) * Math.pow(d.base, n-1-i); });
+      pvDetailEl.innerHTML = `Digit <b>${digit}</b> is at position ${power} → ${digit} × ${d.base}<sup>${power}</sup> = <span class="pv-sum">${contribution}</span><br><span style="font-size:12px;color:var(--dim);">Full number sums to ${total} in decimal.</span>`;
+    });
+  });
+}
+renderPV(10);
+document.querySelectorAll('#pvTabs .base-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('#pvTabs .base-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    renderPV(tab.dataset.base);
+  });
+});
+
+/* ================= conversion lab tabs ================= */
+document.querySelectorAll('#convTabs .tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#convTabs .tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#panel-d2b,#panel-b2d,#panel-o2b,#panel-h2b').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ================= live converter ================= */
+const liveInput = document.getElementById('liveDecInput');
+function updateLiveConv(){
+  let n = parseInt(liveInput.value);
+  if(isNaN(n) || n < 0) n = 0;
+  document.getElementById('outBin').textContent = n.toString(2);
+  document.getElementById('outOct').textContent = n.toString(8);
+  document.getElementById('outHex').textContent = n.toString(16).toUpperCase();
+}
+liveInput.addEventListener('input', updateLiveConv);
+updateLiveConv();
+
+/* ================= binary addition step-through ================= */
+function setupAddStep(prefix, aStr, bStr){
+  const bitsA = aStr.split('').map(Number);
+  const bitsB = bStr.split('').map(Number);
+  const n = bitsA.length;
+  let carry = 0;
+  const resultBits = new Array(n).fill('?');
+  let carries = new Array(n).fill('');
+  let step = 0;
+  const btn = document.getElementById(prefix+'-step');
+  const resultEl = document.getElementById(prefix+'-result');
+  const carryEl = document.getElementById(prefix+'-carry');
+  const explainEl = document.getElementById(prefix+'-explain');
+  explainEl.classList.add('show');
+  function render(){
+    resultEl.textContent = ' ' + resultBits.join('');
+    carryEl.textContent = ' ' + carries.join('');
+  }
+  render();
+  btn.addEventListener('click', ()=>{
+    if(step >= n){
+      resultEl.textContent = (carry ? carry : '') + resultBits.join('');
+      explainEl.innerHTML = `<b>Done.</b> Final carry-out: ${carry}. Result = ${(carry?carry:'')+resultBits.join('')}`;
+      btn.disabled = true;
+      return;
+    }
+    const i = n-1-step;
+    const a = bitsA[i], b = bitsB[i];
+    const sum = a + b + carry;
+    const bit = sum % 2;
+    const newCarry = sum >= 2 ? 1 : 0;
+    resultBits[i] = bit;
+    if(newCarry && i>0) carries[i-1] = '1';
+    explainEl.innerHTML = `Column ${n-i}: ${a} + ${b} + carry(${carry}) = ${sum} → write <b>${bit}</b>, carry <b>${newCarry}</b>`;
+    carry = newCarry;
+    render();
+    step++;
+  });
+}
+setupAddStep('add1','1101','0011');
+setupAddStep('add2','1111','1101');
+document.querySelectorAll('#addTabs .tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#addTabs .tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#panel-add1,#panel-add2').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ================= complement builder ================= */
+const compInput = document.getElementById('compInput');
+function toBits(n, len){ return n.toString(2).padStart(len,'0'); }
+function invert(bitStr){ return bitStr.split('').map(b=>b==='1'?'0':'1').join(''); }
+function updateBuilder(){
+  let n = parseInt(compInput.value);
+  const warn = document.getElementById('bldWarn');
+  if(isNaN(n)) n = 0;
+  if(n > 127) n = 127;
+  if(n < -128) n = -128;
+  compInput.value = n;
+  warn.classList.remove('show');
+
+  // Sign & Magnitude / 1's complement only meaningfully defined for -127..127
+  const smOcOutOfRange = (n === -128);
+  const abs = Math.abs(n);
+  const magnitude7 = toBits(abs, 7);
+
+  // Sign & Magnitude
+  let smVal, smSteps;
+  if(smOcOutOfRange){
+    smVal = '— out of range —';
+    smSteps = '−128 needs 8 magnitude bits; only 7 are available in this scheme.';
+  } else {
+    smVal = (n<0?'1':'0') + magnitude7;
+    smSteps = n<0 ? `|${n}| = ${abs} → 7-bit magnitude ${magnitude7}, sign bit 1` : `${n} → 7-bit magnitude ${magnitude7}, sign bit 0`;
+  }
+
+  // 1's complement
+  let ocVal, ocSteps;
+  if(smOcOutOfRange){
+    ocVal = '— out of range —';
+    ocSteps = '−128 cannot be formed by inverting a positive 8-bit binary.';
+  } else if(n < 0){
+    const plain8 = toBits(abs, 8);
+    ocVal = invert(plain8);
+    ocSteps = `${abs} = ${plain8} → invert every bit → ${ocVal}`;
+  } else {
+    ocVal = toBits(n, 8);
+    ocSteps = `Positive numbers are written the same in all three schemes: ${ocVal}`;
+  }
+
+  // 2's complement (always representable -128..127)
+  let tcVal, tcSteps;
+  if(n < 0){
+    const mod = 256 + n;
+    tcVal = toBits(mod, 8);
+    const plain8 = toBits(abs,8);
+    const ones = invert(plain8);
+    tcSteps = `${abs} = ${plain8} → 1's complement ${ones} → +1 → ${tcVal}`;
+  } else {
+    tcVal = toBits(n, 8);
+    tcSteps = `Positive numbers are written the same in all three schemes: ${tcVal}`;
+  }
+
+  document.getElementById('bldSM').textContent = smVal;
+  document.getElementById('bldSMsteps').textContent = smSteps;
+  document.getElementById('bldOC').textContent = ocVal;
+  document.getElementById('bldOCsteps').textContent = ocSteps;
+  document.getElementById('bldTC').textContent = tcVal;
+  document.getElementById('bldTCsteps').textContent = tcSteps;
+
+  if(n === -128 || n === 0){
+    warn.classList.add('show');
+    if(n === 0){
+      warn.innerHTML = 'Note the "two zeros problem": in Sign-Magnitude, 0 can be written as <b>00000000</b> or <b>10000000</b> — two codes for the same value. 2\'s Complement has only <b>one</b> zero: 00000000.';
+    } else {
+      warn.innerHTML = 'Note: −128 cannot be represented in Sign-Magnitude or 1\'s Complement (their range is only −127 to +127) — but it <b>is</b> representable in 2\'s Complement (−128 to +127). This is exactly why 2\'s complement is preferred!';
+    }
+  }
+}
+compInput.addEventListener('input', updateBuilder);
+updateBuilder();
+
+/* ================= ASCII lookup ================= */
+const asciiInput = document.getElementById('asciiInput');
+function updateAscii(){
+  const ch = asciiInput.value || 'K';
+  const code = ch.charCodeAt(0);
+  document.getElementById('asciiDec').textContent = code;
+  document.getElementById('asciiBin').textContent = code.toString(2).padStart(8,'0');
+  const note = document.getElementById('asciiRangeNote');
+  if(code <= 127){
+    note.textContent = `'${ch}' (${code}) is within standard 7-bit ASCII (0–127).`;
+  } else if(code <= 255){
+    note.textContent = `'${ch}' (${code}) falls in the Extended ASCII range (128–255) — not standard 7-bit ASCII.`;
+  } else {
+    note.textContent = `'${ch}' (${code}) is beyond 8-bit Extended ASCII — it needs Unicode to represent it.`;
+  }
+}
+asciiInput.addEventListener('input', updateAscii);
+updateAscii();
+
+/* ================= lossy/lossless toggle ================= */
+document.querySelectorAll('.method-toggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.method-toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.methods-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+  });
+});
+
+/* ================= QUIZ ================= */
+const quizData = [
+  {q:"Data representation in computers primarily uses:", opts:["Decimal","Octal","Binary","Hexadecimal"], a:2},
+  {q:"The base of a number system is also known as:", opts:["Digit","Place value","Radix","Weight"], a:2},
+  {q:"The base of the hexadecimal number system is:", opts:["2","8","10","16"], a:3},
+  {q:"Which number system uses digits 0–7?", opts:["Binary","Decimal","Octal","Hexadecimal"], a:2},
+  {q:"Which number system uses letters A–F?", opts:["Binary","Decimal","Octal","Hexadecimal"], a:3},
+  {q:"Each octal digit corresponds to how many binary bits?", opts:["2","3","4","8"], a:1},
+  {q:"Decimal to binary conversion uses repeated division by:", opts:["10","8","2","16"], a:2},
+  {q:"Binary to hexadecimal conversion groups bits in sets of:", opts:["2","3","4","8"], a:2},
+  {q:"In binary addition, 1 + 1 results in:", opts:["1","10","11","0"], a:1},
+  {q:"Which integer representation is most widely used by computers?", opts:["Sign and magnitude","1's complement","2's complement","None of these"], a:2},
+  {q:"ASCII uses how many bits?", opts:["5","7","8","16"], a:1},
+  {q:"Which image format supports transparency AND animation?", opts:["BMP","JPEG","PNG","GIF"], a:3},
+  {q:"Which audio format is uncompressed?", opts:["MP3","AAC","WAV","OGG"], a:2},
+  {q:"Which video format is described as universally compatible?", opts:["AVI","MOV","MP4","FLV"], a:2},
+  {q:"Which bit represents the sign in sign-magnitude form?", opts:["LSB (rightmost)","MSB (leftmost)","The middle bit","There is no sign bit"], a:1},
+  {q:"With 8-bit 2's complement, the representable range is:", opts:["−127 to +127","−128 to +127","−128 to +128","0 to 255"], a:1},
+  {q:"The two main parts of a floating-point number are:", opts:["Base and radix","Mantissa and exponent","Sign and carry","LSB and MSB"], a:1},
+  {q:"Which compression type preserves all original data and can be fully reconstructed?", opts:["Lossy","Lossless","Both equally","Neither"], a:1}
+];
+let score = 0;
+const quizArea = document.getElementById('quizArea');
+document.getElementById('scoreTotal').textContent = quizData.length;
+quizData.forEach((item, qi)=>{
+  const box = document.createElement('div');
+  box.className = 'quiz-box';
+  box.innerHTML = `<div class="quiz-q">${qi+1}. ${item.q}</div>
+    <div class="quiz-opts">
+      ${item.opts.map((o,oi)=>`<button class="quiz-opt" data-oi="${oi}">${String.fromCharCode(97+oi)}) ${o}</button>`).join('')}
+    </div>
+    <div class="quiz-fb"></div>`;
+  quizArea.appendChild(box);
+  const btns = box.querySelectorAll('.quiz-opt');
+  const fb = box.querySelector('.quiz-fb');
+  let answered = false;
+  btns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(answered) return;
+      answered = true;
+      const oi = parseInt(btn.dataset.oi);
+      if(oi === item.a){
+        btn.classList.add('correct');
+        score++;
+        fb.textContent = "✓ Correct.";
+      } else {
+        btn.classList.add('wrong');
+        btns[item.a].classList.add('correct');
+        fb.textContent = "✕ Not quite — correct answer highlighted.";
+      }
+      fb.classList.add('show');
+      document.getElementById('scoreVal').textContent = score;
+    });
+  });
+});
+
+/* ================= FILL IN THE BLANKS ================= */
+const blanks = [
+  {text:"The rightmost bit of a binary number is called the ______.", a:"lsb"},
+  {text:"The base of a number system is also called the ______.", a:"radix"},
+  {text:"A ______ is a fixed-size group of bits handled as a unit by a processor.", a:"word"},
+  {text:"In sign-and-magnitude form, the MSB represents the ______.", a:"sign"},
+  {text:"The two parts of a floating-point number are mantissa and ______.", a:"exponent"},
+  {text:"ASCII uses ______ bits to represent 128 characters.", a:"7"},
+  {text:"______ complement is the integer representation most commonly used by computers.", a:"2's"},
+  {text:"______ compression preserves all original data and can be fully reconstructed.", a:"lossless"}
+];
+const blanksArea = document.getElementById('blanksArea');
+blanks.forEach((b,i)=>{
+  const parts = b.text.split('______');
+  const row = document.createElement('div');
+  row.className = 'blank-item';
+  row.innerHTML = `<span>${parts[0]}</span><input type="text" data-idx="${i}" autocomplete="off"><span>${parts[1]}</span>`;
+  blanksArea.appendChild(row);
+});
+document.getElementById('checkBlanks').addEventListener('click', ()=>{
+  document.querySelectorAll('#blanksArea input').forEach(inp=>{
+    const idx = parseInt(inp.dataset.idx);
+    const val = inp.value.trim().toLowerCase();
+    inp.classList.remove('correct','wrong');
+    if(val === blanks[idx].a){
+      inp.classList.add('correct');
+    } else if(val.length){
+      inp.classList.add('wrong');
+    }
+  });
+});
+
+/* ================= MATCH THE FOLLOWING ================= */
+const matchPairs = [
+  {left:"PNG", right:"Lossless, supports transparency"},
+  {left:"MP3", right:"Lossy, popular for music streaming"},
+  {left:"WAV", right:"Uncompressed studio-quality audio"},
+  {left:"GIF", right:"Supports simple animation, 256 colours"},
+  {left:"MP4", right:"Universally compatible video format"}
+];
+const leftCol = document.getElementById('matchLeft');
+const rightCol = document.getElementById('matchRight');
+const rightShuffled = [...matchPairs].sort(()=>Math.random()-0.5);
+matchPairs.forEach((p)=>{
+  const el = document.createElement('div');
+  el.className='match-item';
+  el.textContent = p.left;
+  el.dataset.left = p.left;
+  leftCol.appendChild(el);
+});
+rightShuffled.forEach(p=>{
+  const el = document.createElement('div');
+  el.className='match-item';
+  el.textContent = p.right;
+  el.dataset.right = p.right;
+  rightCol.appendChild(el);
+});
+let selLeft = null, selRight = null;
+function tryMatch(){
+  if(selLeft && selRight){
+    const correctPair = matchPairs.find(p=>p.left===selLeft.dataset.left);
+    if(correctPair.right === selRight.dataset.right){
+      selLeft.classList.add('matched');
+      selRight.classList.add('matched');
+      selLeft.classList.remove('selected');
+      selRight.classList.remove('selected');
+    } else {
+      [selLeft, selRight].forEach(el=>{
+        el.classList.add('wrong-flash');
+        setTimeout(()=>{el.classList.remove('wrong-flash','selected');},500);
+      });
+    }
+    selLeft = null; selRight = null;
+  }
+}
+leftCol.addEventListener('click', e=>{
+  const item = e.target.closest('.match-item');
+  if(!item || item.classList.contains('matched')) return;
+  leftCol.querySelectorAll('.match-item').forEach(i=>i.classList.remove('selected'));
+  item.classList.add('selected');
+  selLeft = item;
+  tryMatch();
+});
+rightCol.addEventListener('click', e=>{
+  const item = e.target.closest('.match-item');
+  if(!item || item.classList.contains('matched')) return;
+  rightCol.querySelectorAll('.match-item').forEach(i=>i.classList.remove('selected'));
+  item.classList.add('selected');
+  selRight = item;
+  tryMatch();
+});
+
+/* ================= glossary toggle ================= */
+document.getElementById('glossaryToggle').addEventListener('click', ()=>{
+  document.getElementById('glossaryBody').classList.toggle('show');
+});
+</script>
+</body>
+</html>
