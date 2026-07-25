@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Elements of Python — Interactive Chapter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF;
+  --paper-tint:#F5F8FC;
+  --ink:#141B24;
+  --body:#33404D;
+  --dim:#69758A;
+  --blue:#2B6CA3;
+  --blue-deep:#1B4E79;
+  --blue-bright:#3E85C4;
+  --blue-tint:#EAF2F9;
+  --gold:#C99400;
+  --gold-deep:#8A6600;
+  --gold-tint:#FFF6DC;
+  --gold-line:#F0DFA0;
+  --ok:#1F7A46;
+  --ok-tint:#E7F6ED;
+  --bad:#B23B22;
+  --bad-tint:#FCEEEA;
+  --line:#E1E6ED;
+  --radius:10px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--body);font-family:'Space Grotesk',sans-serif;line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;}
+::selection{background:var(--blue-tint);color:var(--blue-deep);}
+img,svg{max-width:100%;display:block;}
+a{color:var(--blue-deep);}
+button{font-family:inherit;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);margin:0;}
+p{margin:0 0 12px;}
+code,.mono{font-family:'IBM Plex Mono',monospace;}
+
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px;}
+@media(min-width:900px){.wrap{padding:0 32px;}}
+
+/* ---------- top nav ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.topbar-inner{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px;}
+@media(min-width:900px){.topbar-inner{padding:12px 32px;}}
+.brand{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--blue-deep);white-space:nowrap;letter-spacing:0.4px;display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.brand .chip-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 2.6s infinite ease-in-out;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.navlinks{display:flex;gap:2px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;}
+.navlinks::-webkit-scrollbar{display:none;}
+.navlinks a{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim);text-decoration:none;padding:8px 10px;border-radius:6px;flex-shrink:0;}
+.navlinks a:hover{background:var(--blue-tint);color:var(--blue-deep);}
+
+/* ---------- hero ---------- */
+.hero{padding:38px 0 30px;background:linear-gradient(180deg,var(--blue-tint) 0%, var(--paper) 100%);}
+.hero-flex{display:flex;flex-direction:column;gap:26px;}
+@media(min-width:900px){.hero-flex{flex-direction:row;align-items:center;gap:36px;}}
+.hero-text{flex:1.1;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1.2px;color:var(--blue-deep);text-transform:uppercase;margin-bottom:10px;}
+.title{font-size:38px;line-height:1.08;font-weight:600;}
+@media(min-width:640px){.title{font-size:48px;}}
+.title em{font-style:italic;color:var(--blue);}
+.hero-sub{margin-top:14px;font-size:16px;color:var(--body);max-width:52ch;}
+.quote-box{margin-top:18px;background:var(--paper);border:1px solid var(--gold-line);border-left:4px solid var(--gold);border-radius:var(--radius);padding:14px 18px;font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--ink);}
+.quote-box span{display:block;margin-top:6px;font-family:'IBM Plex Mono',monospace;font-style:normal;font-size:11.5px;color:var(--dim);}
+
+/* ---------- terminal (signature element) ---------- */
+.term-wrap{flex:1;min-width:0;}
+.terminal{background:#16202B;border-radius:12px;overflow:hidden;box-shadow:0 18px 40px -14px rgba(20,32,45,0.45);}
+.term-bar{display:flex;align-items:center;gap:6px;padding:9px 12px;background:#0F1822;}
+.term-dot{width:10px;height:10px;border-radius:50%;}
+.term-dot.r{background:#FF5F57;}.term-dot.y{background:#FEBC2E;}.term-dot.g{background:#28C840;}
+.term-title{margin-left:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#7C8CA0;}
+.term-body{padding:16px 18px 20px;font-family:'IBM Plex Mono',monospace;font-size:13.5px;line-height:1.75;min-height:190px;color:#DCE8F2;white-space:pre-wrap;word-break:break-word;}
+.term-body .out{color:#8FD19E;}
+.term-body .prompt{color:#6FB4E8;}
+.term-cursor{display:inline-block;width:7px;height:15px;background:#DCE8F2;vertical-align:middle;animation:blink 1s steps(1) infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+/* ---------- section shell ---------- */
+.section{padding:52px 0;border-top:1px solid var(--line);}
+.sec-head{margin-bottom:22px;}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gold-deep);letter-spacing:1px;margin-bottom:6px;}
+.sec-title{font-size:26px;}
+@media(min-width:640px){.sec-title{font-size:30px;}}
+.sec-intro{margin-top:10px;max-width:68ch;color:var(--body);}
+
+/* ---------- def / note cards ---------- */
+.card{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;}
+.card.blue{border-color:var(--blue);background:var(--blue-tint);}
+.card.gold{border-color:var(--gold-line);background:var(--gold-tint);}
+.card.ok{border-color:var(--ok);background:var(--ok-tint);}
+.card.bad{border-color:var(--bad);background:var(--bad-tint);}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.6px;color:var(--blue-deep);text-transform:uppercase;margin-bottom:6px;}
+.card p:last-child{margin-bottom:0;}
+
+/* ---------- chips / grids ---------- */
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--blue-tint);color:var(--blue-deep);border:1px solid var(--line);border-radius:20px;padding:6px 13px;}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+@media(min-width:640px){.use-grid{grid-template-columns:1fr 1fr 1fr 1fr;}}
+.use-item{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;font-size:13.5px;display:flex;align-items:center;gap:9px;}
+.use-item .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.tab-btn{font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--paper);border:1px solid var(--line);color:var(--dim);padding:9px 15px;border-radius:20px;cursor:pointer;transition:.15s;min-height:38px;}
+.tab-btn:hover{border-color:var(--blue);color:var(--blue-deep);}
+.tab-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* ---------- code / output boxes ---------- */
+.code-grid{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0;}
+@media(min-width:720px){.code-grid.two{grid-template-columns:1.3fr 1fr;}}
+.code-box{background:#F3F6FA;border:1px solid #C9D6E3;border-radius:var(--radius);padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--ink);overflow-x:auto;white-space:pre;}
+.output-box{background:var(--ok-tint);border:1px solid var(--ok);border-radius:var(--radius);padding:14px 16px;}
+.output-box .cap{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1px;color:var(--ok);margin-bottom:6px;}
+.output-box pre{margin:0;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);white-space:pre-wrap;}
+.caption{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim);margin-top:8px;}
+
+/* ---------- diagram (data types) ---------- */
+.dtype-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0;}
+@media(min-width:640px){.dtype-grid{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:900px){.dtype-grid{grid-template-columns:repeat(6,1fr);}}
+.dtype-box{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:14px 10px;text-align:center;cursor:pointer;transition:.18s;}
+.dtype-box:hover,.dtype-box:focus-visible{border-color:var(--blue);background:var(--blue-tint);}
+.dtype-box.active{background:var(--blue);border-color:var(--blue);}
+.dtype-box.active .dtype-name{color:#fff;}
+.dtype-box.active .dtype-label{color:#DCEBF9;}
+.dtype-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold-deep);letter-spacing:0.6px;}
+.dtype-name{font-family:'Fraunces',serif;font-size:15.5px;margin-top:3px;color:var(--ink);}
+.dtype-detail{margin-top:6px;background:var(--paper-tint);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:var(--radius);padding:18px 20px;min-height:70px;}
+.dtype-detail h4{font-size:18px;color:var(--blue-deep);margin-bottom:6px;}
+.subchip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.subchip{font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--paper);border:1px solid var(--gold-line);color:var(--gold-deep);padding:6px 12px;border-radius:16px;cursor:pointer;}
+.subchip:hover,.subchip.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+
+/* ---------- identifier classifier ---------- */
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;}
+@media(min-width:640px){.id-grid{grid-template-columns:1fr 1fr 1fr 1fr;}}
+.id-card{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:14px;cursor:pointer;text-align:center;min-height:78px;display:flex;flex-direction:column;justify-content:center;transition:.15s;}
+.id-card .id-code{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--ink);}
+.id-card .id-reveal{display:none;font-size:11.5px;margin-top:6px;font-family:'Space Grotesk',sans-serif;}
+.id-card.shown.valid{background:var(--ok-tint);border-color:var(--ok);}
+.id-card.shown.invalid{background:var(--bad-tint);border-color:var(--bad);}
+.id-card.shown .id-reveal{display:block;}
+.id-card.shown.valid .id-reveal{color:var(--ok);}
+.id-card.shown.invalid .id-reveal{color:var(--bad);}
+.id-hint{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);margin-top:2px;}
+
+/* ---------- dynamic typing stepper ---------- */
+.stepper{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-top:16px;}
+.stepper-code{font-family:'IBM Plex Mono',monospace;font-size:14.5px;color:var(--ink);min-height:26px;}
+.stepper-type{margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--blue-deep);}
+.stepper-btns{margin-top:14px;display:flex;gap:8px;align-items:center;}
+.step-btn{font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--blue);color:#fff;border:none;padding:9px 18px;border-radius:20px;cursor:pointer;}
+.step-btn:hover{background:var(--blue-deep);}
+.step-dots{display:flex;gap:6px;margin-left:6px;}
+.step-dots span{width:7px;height:7px;border-radius:50%;background:var(--line);}
+.step-dots span.on{background:var(--gold);}
+
+/* ---------- tables ---------- */
+.tbl-wrap{overflow-x:auto;margin:14px 0;}
+table.op-tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:480px;}
+table.op-tbl th{background:var(--blue);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:left;padding:9px 12px;}
+table.op-tbl td{padding:9px 12px;border-bottom:1px solid var(--line);}
+table.op-tbl td:first-child,table.op-tbl th:first-child{font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+table.op-tbl tr:nth-child(even) td{background:var(--paper-tint);}
+
+/* ---------- precedence examples ---------- */
+.prec-card{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;}
+.prec-expr{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--ink);}
+.prec-btn{font-family:'IBM Plex Mono',monospace;font-size:11.5px;background:var(--gold);color:#fff;border:none;padding:7px 14px;border-radius:16px;cursor:pointer;margin-top:10px;}
+.prec-btn:hover{background:var(--gold-deep);}
+.prec-steps{margin-top:10px;display:none;font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:var(--blue-deep);line-height:2;}
+.prec-steps.show{display:block;animation:fadein .25s ease;}
+.prec-steps .rule{display:block;color:var(--dim);font-style:italic;font-family:'Space Grotesk',sans-serif;font-size:12.5px;}
+
+/* ---------- notes / info box ---------- */
+.info-box{display:flex;gap:12px;background:var(--gold-tint);border:1px solid var(--gold-line);border-radius:var(--radius);padding:14px 16px;margin:16px 0;}
+.info-box .ic{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--gold-deep);flex-shrink:0;}
+
+/* ---------- practice: score bar ---------- */
+.score-bar{display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:#fff;border-radius:var(--radius);padding:12px 18px;margin-bottom:22px;font-family:'IBM Plex Mono',monospace;font-size:13px;}
+.score-bar b{color:var(--gold);font-size:16px;}
+
+/* ---------- quiz ---------- */
+.quiz-box{background:var(--paper-tint);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px;}
+.quiz-q{font-size:15px;color:var(--ink);margin-bottom:12px;font-weight:600;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13.5px;cursor:pointer;transition:.15s;font-family:'Space Grotesk',sans-serif;color:var(--body);}
+.quiz-opt:hover{border-color:var(--blue);}
+.quiz-opt.correct{background:var(--ok-tint);border-color:var(--ok);color:var(--ok);}
+.quiz-opt.wrong{background:var(--bad-tint);border-color:var(--bad);color:var(--bad);}
+.quiz-fb{margin-top:10px;font-size:13px;font-family:'IBM Plex Mono',monospace;min-height:18px;}
+.quiz-fb.show{}
+
+/* ---------- fill in the blanks ---------- */
+.blank-item{margin-bottom:12px;font-size:14.5px;line-height:2.1;background:var(--paper-tint);border:1px solid var(--line);border-radius:8px;padding:11px 14px;}
+.blank-item input{font-family:'IBM Plex Mono',monospace;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:13.5px;min-width:130px;background:var(--paper);}
+.blank-item input.correct{border-color:var(--ok);background:var(--ok-tint);}
+.blank-item input.wrong{border-color:var(--bad);background:var(--bad-tint);}
+.check-btn{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--blue);color:#fff;border:none;padding:10px 20px;border-radius:20px;cursor:pointer;margin-top:6px;}
+.check-btn:hover{background:var(--blue-deep);}
+
+/* ---------- match the following ---------- */
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px;}
+@media(max-width:560px){.match-wrap{gap:12px;}}
+.match-col{display:flex;flex-direction:column;gap:8px;}
+.match-item{background:var(--paper-tint);border:1px solid var(--line);border-radius:8px;padding:11px 14px;font-size:13.5px;cursor:pointer;transition:.15s;font-family:'IBM Plex Mono',monospace;}
+.match-item.selected{border-color:var(--blue);background:var(--blue-tint);}
+.match-item.matched{border-color:var(--ok);background:var(--ok-tint);color:var(--ok);cursor:default;}
+.match-item.wrong-flash{border-color:var(--bad);background:var(--bad-tint);}
+
+footer{padding:36px 0 56px;text-align:center;border-top:1px solid var(--line);margin-top:0;}
+footer p{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim);}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="chip-dot"></span>CH.4 · ELEMENTS OF PYTHON</div>
+    <div class="navlinks">
+      <a href="#intro">Intro</a>
+      <a href="#run-modes">Run Modes</a>
+      <a href="#comments">Comments</a>
+      <a href="#keywords">Keywords</a>
+      <a href="#identifiers">Identifiers</a>
+      <a href="#variables">Variables</a>
+      <a href="#data-types">Data Types</a>
+      <a href="#operators">Operators</a>
+      <a href="#precedence">Precedence</a>
+      <a href="#io">I/O</a>
+      <a href="#practice">Practice</a>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-flex">
+      <div class="hero-text">
+        <div class="eyebrow">Chapter 4 · Interactive Walkthrough</div>
+        <h1 class="title">Elements of <em>Python</em></h1>
+        <p class="hero-sub">Python is an interpreted, dynamically-typed language that runs your instructions one line at a time. This chapter builds it up piece by piece — from your first <code>print()</code> to the precedence rules that decide how an expression gets evaluated.</p>
+        <div class="quote-box">
+          "Programming isn't about what you know; it's about what you can figure out."
+          <span>— Chris Pine</span>
+        </div>
+      </div>
+      <div class="term-wrap">
+        <div class="terminal">
+          <div class="term-bar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title">Python Shell — IDLE</span>
+          </div>
+          <div class="term-body" id="termBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= 4.1 INTRODUCTION ================= -->
+<section class="section" id="intro">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.1</div>
+      <h2 class="sec-title">Introduction to Python</h2>
+    </div>
+    <div class="card blue">
+      <div class="card-label">What is Python?</div>
+      <p>Python is an <b>interpreted</b>, <b>dynamically-typed</b>, and easy-to-learn programming language used worldwide by beginners and experts. It was created by <b>Guido van Rossum in 1991</b>. Python supports multiple programming paradigms, including procedural, object-oriented, and functional programming. Python code is executed line by line, and it can run on various operating systems — making it portable and platform-independent.</p>
+    </div>
+    <div class="chip-row">
+      <span class="chip">Interpreted</span>
+      <span class="chip">Dynamically-typed</span>
+      <span class="chip">Multi-paradigm</span>
+      <span class="chip">Portable</span>
+      <span class="chip">Free &amp; open-source</span>
+    </div>
+    <h3 style="font-size:16px;margin-top:22px;">Python is used for:</h3>
+    <div class="use-grid" id="usesGrid"></div>
+  </div>
+</section>
+
+<!-- ================= 4.1.1 / 4.1.2 RUN MODES ================= -->
+<section class="section" id="run-modes">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.1.1 &nbsp;/&nbsp; 4.1.2</div>
+      <h2 class="sec-title">Installing &amp; Running Python</h2>
+      <p class="sec-intro">Python is free and open-source — download it from <code>python.org</code> for Windows, macOS or Linux. The package bundles the interpreter and a basic editor. The interpreter is also called the <b>Python Shell</b>; its <code>&gt;&gt;&gt;</code> prompt means Python is ready for a command.</p>
+    </div>
+    <div class="tabs" data-group="run">
+      <button class="tab-btn active" data-tab="interactive">(i) Interactive Mode</button>
+      <button class="tab-btn" data-tab="scripting">(ii) Scripting Mode</button>
+      <button class="tab-btn" data-tab="online">(iii) Online Platform</button>
+    </div>
+    <div class="tab-panel active" data-panel="interactive">
+      <p>REPL stands for <b>R</b>ead-<b>E</b>val-<b>P</b>rint-<b>L</b>oop — Python's interactive shell where you write, execute, and test code line-by-line with immediate feedback. You can't save the statements for later use; it's built for testing single-line statements.</p>
+      <div class="code-grid two">
+        <div class="code-box">&gt;&gt;&gt; 5+3
+8
+&gt;&gt;&gt; 8-2
+6
+&gt;&gt;&gt;</div>
+        <div class="output-box"><div class="cap">FIGURE 4.2</div><pre>Python interpreter running
+in interactive mode</pre></div>
+      </div>
+    </div>
+    <div class="tab-panel" data-panel="scripting">
+      <p>Write a program with multiple statements and save it as a <code>.py</code> file. <b>IDLE</b> (Integrated Development and Learning Environment) bundles an editor, debugger, interpreter and executor: <code>File → New File</code>, write your code, save as <code>sample.py</code>, then run with <code>Run → Run Module (F5)</code>. Other popular editors: Geany, PyCharm, Jupyter Notebook, Thonny, VS Code, Spyder.</p>
+      <div class="code-grid two">
+        <div class="code-box">print("Python")
+print("Programming")</div>
+        <div class="output-box"><div class="cap">OUTPUT (on the shell)</div><pre>Python
+Programming</pre></div>
+      </div>
+    </div>
+    <div class="tab-panel" data-panel="online">
+      <p>Python code is written and executed in a web-based interface — no local installation needed. Popular platforms: <b>Google Colab</b>, <b>Replit</b>, <b>Kaggle Notebooks</b>, <b>Deepnote</b>, <b>Binder</b>.</p>
+      <div class="code-grid two">
+        <div class="card ok">
+          <div class="card-label" style="color:var(--ok);">Advantages</div>
+          <p>No installation required · Program is written in browser · Output is displayed instantly · Works on any operating system</p>
+        </div>
+        <div class="card bad">
+          <div class="card-label" style="color:var(--bad);">Limitations</div>
+          <p>Internet connection required · Limited file handling · Not suitable for large projects</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4.2 COMMENTS ================= -->
+<section class="section" id="comments">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.2</div>
+      <h2 class="sec-title">Python Comments</h2>
+      <p class="sec-intro">Comments explain the code to the reader — the interpreter completely ignores them while running the program. Python has two kinds.</p>
+    </div>
+    <div class="tabs" data-group="comments">
+      <button class="tab-btn active" data-tab="single">Single-line</button>
+      <button class="tab-btn" data-tab="multi">Multi-line</button>
+    </div>
+    <div class="tab-panel active" data-panel="single">
+      <p>A single-line comment begins with the <code>#</code> (hash) character. Anything after <code>#</code> on that line is a comment.</p>
+      <div class="code-grid two">
+        <div class="code-box"># Simple program
+print("Welcome to Python")</div>
+        <div class="output-box"><div class="cap">OUTPUT</div><pre>Welcome to Python</pre></div>
+      </div>
+      <p class="caption">Program 4.1 — the first line is ignored by the interpreter; only the print() line runs.</p>
+    </div>
+    <div class="tab-panel" data-panel="multi">
+      <p>Python has no dedicated multi-line comment symbol. A string in triple single quotes <code>'''</code> or triple double quotes <code>"""</code> acts as a comment if it's not assigned to a variable or used in code.</p>
+      <div class="code-grid two">
+        <div class="code-box">'''Program 4.2
+Multi-line Comment'''
+print("Welcome to Python")</div>
+        <div class="output-box"><div class="cap">OUTPUT</div><pre>Welcome to Python</pre></div>
+      </div>
+      <p class="caption">Program 4.2 — the two lines inside the triple quotes are treated as one comment block.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4.3 KEYWORDS ================= -->
+<section class="section" id="keywords">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.3</div>
+      <h2 class="sec-title">Python Keywords</h2>
+      <p class="sec-intro">A keyword is a reserved word with a special meaning that defines the syntax and structure of a program. All keywords except <code>None</code>, <code>True</code> and <code>False</code> are lowercase — spot the three gold chips below.</p>
+    </div>
+    <div class="chip-row" id="kwGrid"></div>
+  </div>
+</section>
+
+<!-- ================= 4.4 IDENTIFIERS ================= -->
+<section class="section" id="identifiers">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.4</div>
+      <h2 class="sec-title">Identifiers</h2>
+      <p class="sec-intro">An identifier names a variable, function, class or module. Rules: only letters, digits or underscore · can't start with a digit · no keywords · no whitespace or special characters · case-sensitive.</p>
+    </div>
+    <p class="caption" style="margin-bottom:4px;">Tap each card to check whether it's a valid identifier:</p>
+    <div class="id-grid" id="idGrid"></div>
+  </div>
+</section>
+
+<!-- ================= 4.5 VARIABLES ================= -->
+<section class="section" id="variables">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.5</div>
+      <h2 class="sec-title">Variables</h2>
+      <p class="sec-intro">A variable is a symbolic name that stores data which may change during execution. It's created with the assignment operator <code>=</code>.</p>
+    </div>
+    <div class="code-box">rollno = 12        # rollno is an integer
+name = "Arun"      # name is a string
+price = 85.5       # price is floating point</div>
+    <h3 style="font-size:16px;margin-top:24px;">Dynamic typing, live</h3>
+    <p class="sec-intro">Python variables don't need a declared type — the type is decided automatically, and can change every time you reassign the variable. Press <b>Next</b> to reassign <code>n</code> and watch its type change.</p>
+    <div class="stepper">
+      <div class="stepper-code" id="stepCode">n = 10</div>
+      <div class="stepper-type" id="stepType">type(n) → &lt;class 'int'&gt;</div>
+      <div class="stepper-btns">
+        <button class="step-btn" id="stepBtn">Next →</button>
+        <div class="step-dots" id="stepDots"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4.6 DATA TYPES ================= -->
+<section class="section" id="data-types">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.6</div>
+      <h2 class="sec-title">Data Types</h2>
+      <p class="sec-intro">A data type specifies what kind of value a variable can hold and which operations apply to it. Tap a category to see its definition and a live example.</p>
+    </div>
+    <div class="dtype-grid" id="dtypeGrid"></div>
+    <div class="dtype-detail" id="dtypeDetail"></div>
+    <div class="info-box" style="margin-top:18px;">
+      <span class="ic">MUTABLE</span>
+      <p style="margin:0;">List, Set, Dictionary can change after creation. <b style="margin-left:10px;">IMMUTABLE</b> Numeric, String, Boolean, Tuple cannot.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4.7 OPERATORS ================= -->
+<section class="section" id="operators">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.7</div>
+      <h2 class="sec-title">Operators</h2>
+      <p class="sec-intro">Operators are symbols that act on values or variables. Python groups them into six categories — tap through them below.</p>
+    </div>
+    <div class="tabs" data-group="ops">
+      <button class="tab-btn active" data-tab="arith">Arithmetic</button>
+      <button class="tab-btn" data-tab="assign">Assignment</button>
+      <button class="tab-btn" data-tab="rel">Relational</button>
+      <button class="tab-btn" data-tab="log">Logical</button>
+      <button class="tab-btn" data-tab="id">Identity</button>
+      <button class="tab-btn" data-tab="mem">Membership</button>
+    </div>
+
+    <div class="tab-panel active" data-panel="arith">
+      <div class="tbl-wrap"><table class="op-tbl">
+        <tr><th>Op</th><th>Name</th><th>Example</th></tr>
+        <tr><td>+</td><td>Addition / Concatenation</td><td>5+2=7 &nbsp;|&nbsp; 'New'+'Delhi'='NewDelhi'</td></tr>
+        <tr><td>-</td><td>Subtraction</td><td>5 - 2 = 3</td></tr>
+        <tr><td>*</td><td>Multiplication / String repeat</td><td>5*2=10 &nbsp;|&nbsp; 'Hi'*3='HiHiHi'</td></tr>
+        <tr><td>/</td><td>Division</td><td>5 / 2 = 2.5</td></tr>
+        <tr><td>//</td><td>Floor Division</td><td>5//2=2 &nbsp;|&nbsp; -5//2=-3 (negative flooring)</td></tr>
+        <tr><td>%</td><td>Modulus</td><td>5 % 2 = 1</td></tr>
+        <tr><td>**</td><td>Exponentiation</td><td>5**2 = 25</td></tr>
+      </table></div>
+    </div>
+    <div class="tab-panel" data-panel="assign">
+      <div class="tbl-wrap"><table class="op-tbl">
+        <tr><th>Op</th><th>Same as</th><th>Example (a=10)</th></tr>
+        <tr><td>=</td><td>assignment</td><td>a = 10 → 10</td></tr>
+        <tr><td>+=</td><td>a=a+5</td><td>a+=5 → 15</td></tr>
+        <tr><td>-=</td><td>a=a-5</td><td>a-=5 → 5</td></tr>
+        <tr><td>*=</td><td>a=a*5</td><td>a*=5 → 50</td></tr>
+        <tr><td>/=</td><td>a=a/5</td><td>a/=5 → 2.0</td></tr>
+        <tr><td>//=</td><td>a=a//5</td><td>a//=5 → 2</td></tr>
+        <tr><td>%=</td><td>a=a%5</td><td>a%=5 → 0</td></tr>
+        <tr><td>**=</td><td>a=a**5</td><td>a**=5 → 100000</td></tr>
+      </table></div>
+    </div>
+    <div class="tab-panel" data-panel="rel">
+      <div class="tbl-wrap"><table class="op-tbl">
+        <tr><th>Op</th><th>Name</th><th>a=8, b=5</th></tr>
+        <tr><td>==</td><td>Equal</td><td>a==b → False</td></tr>
+        <tr><td>!=</td><td>Not equal</td><td>a!=b → True</td></tr>
+        <tr><td>&lt;</td><td>Less than</td><td>a&lt;b → False</td></tr>
+        <tr><td>&gt;</td><td>Greater than</td><td>a&gt;b → True</td></tr>
+        <tr><td>&lt;=</td><td>Less than or equal</td><td>a&lt;=b → False</td></tr>
+        <tr><td>&gt;=</td><td>Greater than or equal</td><td>a&gt;=b → True</td></tr>
+      </table></div>
+    </div>
+    <div class="tab-panel" data-panel="log">
+      <div class="tbl-wrap"><table class="op-tbl">
+        <tr><th>Op</th><th>Meaning</th><th>a=20, b=10</th></tr>
+        <tr><td>and</td><td>True only if both are True</td><td>a&gt;b and b&lt;a → True</td></tr>
+        <tr><td>or</td><td>True if at least one is True</td><td>a&lt;b or b&gt;a → False</td></tr>
+        <tr><td>not</td><td>Flips True/False</td><td>not (a&lt;b) → True</td></tr>
+      </table></div>
+    </div>
+    <div class="tab-panel" data-panel="id">
+      <p>Identity operators check whether two variables refer to the <b>same object in memory</b>.</p>
+      <div class="code-box">x = [1, 2, 3]
+y = [1, 2, 3]
+print(x is y)      # False — different objects
+z = x
+print(x is z)      # True — same object in memory</div>
+    </div>
+    <div class="tab-panel" data-panel="mem">
+      <p>Membership operators check whether a value exists <b>inside a sequence</b>.</p>
+      <div class="code-box">a = [10, 20, 30]
+print(10 in a)          # True
+text = 'Python'
+print('k' not in text)  # True</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4.8 PRECEDENCE ================= -->
+<section class="section" id="precedence">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.8</div>
+      <h2 class="sec-title">Precedence of Operators</h2>
+      <p class="sec-intro">When an expression has more than one operator, precedence decides which runs first. <b>Level 1 is the highest priority.</b></p>
+    </div>
+    <div class="tbl-wrap"><table class="op-tbl">
+      <tr><th>Level</th><th>Operator(s)</th><th>Description</th></tr>
+      <tr><td>1</td><td>( )</td><td>Parentheses — group expressions, override normal precedence</td></tr>
+      <tr><td>2</td><td>**</td><td>Exponentiation</td></tr>
+      <tr><td>3</td><td>+, -</td><td>Unary plus, unary minus</td></tr>
+      <tr><td>4</td><td>*, /, //, %</td><td>Multiplication, division, floor division, modulus</td></tr>
+      <tr><td>5</td><td>+, -</td><td>Addition, Subtraction</td></tr>
+      <tr><td>6</td><td>==, !=, &gt;, &lt;, &gt;=, &lt;=, is, is not, in, not in</td><td>Relational, identity, membership</td></tr>
+      <tr><td>7</td><td>not</td><td>Logical NOT</td></tr>
+      <tr><td>8</td><td>and</td><td>Logical AND</td></tr>
+      <tr><td>9</td><td>or</td><td>Logical OR</td></tr>
+    </table></div>
+    <p class="caption">Table 4.8 — Precedence of Operators (Level 1 is the highest priority)</p>
+    <h3 style="font-size:16px;margin-top:26px;">Worked examples — tap Evaluate to reveal the steps</h3>
+    <div id="precList"></div>
+  </div>
+</section>
+
+<!-- ================= 4.9 INPUT / OUTPUT ================= -->
+<section class="section" id="io">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">4.9</div>
+      <h2 class="sec-title">Input &amp; Output Statements</h2>
+      <p class="sec-intro"><code>input()</code> reads keyboard input and <b>always returns a string</b>. <code>print()</code> displays text, numbers or variable values.</p>
+    </div>
+    <h3 style="font-size:16px;">4.9.1 Input Statement</h3>
+    <div class="code-grid two">
+      <div class="code-box">name = input("Enter your name : ")
+print("Entered Name : " + name)</div>
+      <div class="output-box"><div class="cap">OUTPUT</div><pre>Enter your name : Akhil
+Entered Name : Akhil</pre></div>
+    </div>
+    <h3 style="font-size:16px;margin-top:26px;">4.9.2 Output Statement — adding two integers</h3>
+    <div class="code-grid two">
+      <div class="code-box">num1 = int(input("Enter first number : "))
+num2 = int(input("Enter second number : "))
+total = num1 + num2
+print("Total :", total)</div>
+      <div class="output-box"><div class="cap">OUTPUT</div><pre>Enter first number : 10
+Enter second number : 20
+Total : 30</pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRACTICE ================= -->
+<section class="section" id="practice">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">SELF-CHECK</div>
+      <h2 class="sec-title">Practice</h2>
+      <p class="sec-intro">Quiz, fill-in-the-blanks and a match-up — all drawn straight from this chapter.</p>
+    </div>
+
+    <div class="score-bar"><span>Quiz score</span><span><b id="scoreVal">0</b> / <span id="scoreMax">0</span></span></div>
+    <div id="quizArea"></div>
+
+    <h3 style="font-size:18px;margin-top:34px;">Fill in the blanks</h3>
+    <div id="blanksArea"></div>
+    <button class="check-btn" id="checkBlanks">Check answers</button>
+
+    <h3 style="font-size:18px;margin-top:34px;">Match the following</h3>
+    <div class="match-wrap">
+      <div class="match-col" id="matchLeft"></div>
+      <div class="match-col" id="matchRight"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p># elements-of-python.py — Plus One Computer Applications (Commerce)</p>
+</footer>
+
+<script>
+/* ================= HERO TERMINAL TYPEWRITER ================= */
+const termSequences = [
+  [
+    {t:'prompt', s:'>>> 5+3'}, {t:'out', s:'8'},
+    {t:'prompt', s:'>>> mark = 60'}, {t:'prompt', s:'>>> type(mark)'}, {t:'out', s:"<class 'int'>"}
+  ],
+  [
+    {t:'prompt', s:'>>> name = input("Enter your name : ")'},
+    {t:'out', s:'Enter your name : Akhil'},
+    {t:'prompt', s:'>>> print("Entered Name : " + name)'},
+    {t:'out', s:'Entered Name : Akhil'}
+  ],
+  [
+    {t:'prompt', s:'>>> x = {10, 20, 30, 20}'},
+    {t:'prompt', s:'>>> print(x)'},
+    {t:'out', s:'{10, 20, 30}'}
+  ]
+];
+const termBody = document.getElementById('termBody');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function renderStatic(){
+  const seq = termSequences[0];
+  termBody.innerHTML = seq.map(l=>`<span class="${l.t==='out'?'out':'prompt'}">${l.s}</span>`).join('\n');
+}
+
+async function typeLine(el, text, cls, speed){
+  const span = document.createElement('span');
+  span.className = cls;
+  el.appendChild(span);
+  for(let i=0;i<text.length;i++){
+    span.textContent += text[i];
+    await new Promise(r=>setTimeout(r, speed));
+  }
+  el.appendChild(document.createTextNode('\n'));
+}
+
+async function runTerminal(){
+  if(reduceMotion){ renderStatic(); return; }
+  let seqIdx = 0;
+  while(true){
+    termBody.innerHTML = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'term-cursor';
+    for(const line of termSequences[seqIdx]){
+      await typeLine(termBody, line.s, line.t==='out'?'out':'prompt', line.t==='out'?12:26);
+      await new Promise(r=>setTimeout(r, 220));
+    }
+    termBody.appendChild(cursor);
+    await new Promise(r=>setTimeout(r, 2200));
+    seqIdx = (seqIdx+1) % termSequences.length;
+  }
+}
+runTerminal();
+
+/* ================= USES GRID (4.1) ================= */
+const uses = ["Web Development","Game Development","Data Science &amp; Analysis","Artificial Intelligence","Internet of Things (IoT)","Cybersecurity","Machine Learning","Scientific Computing"];
+document.getElementById('usesGrid').innerHTML = uses.map(u=>`<div class="use-item"><span class="dot"></span>${u}</div>`).join('');
+
+/* ================= TAB WIDGETS (scoped by data-group) ================= */
+document.querySelectorAll('.tabs').forEach(group=>{
+  const gname = group.dataset.group;
+  const btns = group.querySelectorAll('.tab-btn');
+  const panels = group.parentElement.querySelectorAll(`.tab-panel`);
+  btns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      btns.forEach(b=>b.classList.remove('active'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      const target = group.parentElement.querySelector(`.tab-panel[data-panel="${btn.dataset.tab}"]`);
+      if(target) target.classList.add('active');
+    });
+  });
+});
+
+/* ================= KEYWORDS GRID (4.3) ================= */
+const keywords = ["False","await","else","import","pass","None","break","elif","in","raise","True","class","except","is","return","and","continue","finally","lambda","try","as","def","for","nonlocal","while","assert","del","from","not","with","async","if","global","or","yield"];
+const goldWords = ["False","None","True"];
+document.getElementById('kwGrid').innerHTML = keywords.map(k=>{
+  const gold = goldWords.includes(k);
+  return `<span class="chip" style="${gold?'background:var(--gold-tint);color:var(--gold-deep);border-color:var(--gold-line);':''}">${k}</span>`;
+}).join('');
+
+/* ================= IDENTIFIER CLASSIFIER (4.4) ================= */
+const idCards = [
+  {code:'totalamount', valid:true, why:'letters only'},
+  {code:'score1', valid:true, why:'letter + digit, ok'},
+  {code:'value', valid:true, why:'simple word'},
+  {code:'basic_pay', valid:true, why:'underscore allowed'},
+  {code:'user@name', valid:false, why:'@ is a special character'},
+  {code:'return', valid:false, why:'return is a keyword'},
+  {code:'total value', valid:false, why:'contains whitespace'},
+  {code:'2A', valid:false, why:'starts with a digit'}
+];
+document.getElementById('idGrid').innerHTML = idCards.map((c,i)=>`
+  <div class="id-card" data-i="${i}">
+    <div class="id-code">${c.code}</div>
+    <div class="id-hint">tap to check</div>
+    <div class="id-reveal">${c.valid?'✓ Valid':'✗ Invalid'} — ${c.why}</div>
+  </div>`).join('');
+document.querySelectorAll('.id-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    const c = idCards[parseInt(card.dataset.i)];
+    card.classList.add('shown', c.valid?'valid':'invalid');
+    card.querySelector('.id-hint').style.display='none';
+  });
+});
+
+/* ================= DYNAMIC TYPING STEPPER (4.5) ================= */
+const steps = [
+  {code:'n = 10', type:"type(n) → <class 'int'>"},
+  {code:'n = "Hello"', type:"type(n) → <class 'str'>"},
+  {code:'n = True', type:"type(n) → <class 'bool'>"}
+];
+let stepIdx = 0;
+const stepCode = document.getElementById('stepCode');
+const stepType = document.getElementById('stepType');
+const stepDots = document.getElementById('stepDots');
+stepDots.innerHTML = steps.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join('');
+document.getElementById('stepBtn').addEventListener('click', ()=>{
+  stepIdx = (stepIdx+1) % steps.length;
+  stepCode.textContent = steps[stepIdx].code;
+  stepType.textContent = steps[stepIdx].type;
+  stepDots.querySelectorAll('span').forEach((d,i)=>d.classList.toggle('on', i===stepIdx));
+});
+
+/* ================= DATA TYPES DIAGRAM (4.6) ================= */
+const dtypes = {
+  numeric:{label:'NUMERIC', name:'Numeric', def:"Integer, Float or Complex Number. Integer: whole numbers, class int (27, -36, 0). Float: has a fractional part, class float (3.5, -12.75). Complex: a+bj form, class complex — created with complex(x, y).",
+    subs:{Integer:">>> mark = 60\n>>> type(mark)\n<class 'int'>", Float:">>> price = 35.5\n>>> type(price)\n<class 'float'>", Complex:">>> x = complex(2, 5)\n>>> print(x)\n(2+5j)"}},
+  boolean:{label:'BOOLEAN', name:'Boolean', def:"One of two logical values, True or False. Belongs to class bool.", code:">>> a = True\n>>> type(a)\n<class 'bool'>"},
+  mapping:{label:'MAPPING', name:'Mapping', def:"Python's mapping type is the Dictionary — stores key–value pairs in { }, accessed by key. Belongs to class dict, and is mutable.", code:"mark = {'Diya': 70, 'Biju': 65}\n>>> print(mark['Biju'])\n65"},
+  set:{label:'SET', name:'Set', def:"An unordered collection of unique elements in { }. Mutable, but not indexable. Belongs to class set — set() creates an empty set.", code:">>> x = {10,20,30,20}\n>>> print(x)\n{10, 20, 30}   # duplicates gone"},
+  none:{label:'NONE', name:'None', def:"Represents the absence of a value — nothing, null, or an empty result. Belongs to class NoneType.", code:">>> x = None\n>>> type(x)\n<class 'NoneType'>"},
+  sequence:{label:'SEQUENCE', name:'Sequence', def:"An ordered group of values, each with a fixed index (starting at 0). Python has three: String (immutable), List (mutable), Tuple (immutable).",
+    subs:{String:'s1 = "Programming"\n>>> print(s1[0])\nP', List:'x = [10, "Delhi", 65.5]\n>>> print(x[-1])\n65.5', Tuple:"t1 = (40, 'Computer')\n>>> print(t1[0])\n40"}}
+};
+const dtypeGrid = document.getElementById('dtypeGrid');
+dtypeGrid.innerHTML = Object.keys(dtypes).map(k=>`<div class="dtype-box" data-k="${k}"><div class="dtype-label">${dtypes[k].label}</div><div class="dtype-name">${dtypes[k].name}</div></div>`).join('');
+const dtypeDetail = document.getElementById('dtypeDetail');
+
+function showDtype(key, subKey){
+  const d = dtypes[key];
+  let html = `<h4>${d.name}</h4><p>${d.def}</p>`;
+  if(d.subs){
+    const subKeys = Object.keys(d.subs);
+    const active = subKey || subKeys[0];
+    html += `<div class="subchip-row">${subKeys.map(sk=>`<span class="subchip ${sk===active?'active':''}" data-sub="${sk}">${sk}</span>`).join('')}</div>`;
+    html += `<div class="code-box" style="margin-top:10px;">${d.subs[active]}</div>`;
+  } else {
+    html += `<div class="code-box" style="margin-top:6px;">${d.code}</div>`;
+  }
+  dtypeDetail.innerHTML = html;
+  if(d.subs){
+    dtypeDetail.querySelectorAll('.subchip').forEach(chip=>{
+      chip.addEventListener('click', ()=> showDtype(key, chip.dataset.sub));
+    });
+  }
+}
+dtypeGrid.querySelectorAll('.dtype-box').forEach(box=>{
+  box.addEventListener('click', ()=>{
+    dtypeGrid.querySelectorAll('.dtype-box').forEach(b=>b.classList.remove('active'));
+    box.classList.add('active');
+    showDtype(box.dataset.k);
+  });
+});
+dtypeGrid.querySelector('.dtype-box').classList.add('active');
+showDtype(Object.keys(dtypes)[0]);
+
+/* ================= PRECEDENCE WORKED EXAMPLES (4.8) ================= */
+const precExamples = [
+  {expr:'40 + 50 * 3', steps:['40 + 150','= 190'], rule:'* has higher precedence than +'},
+  {expr:'(30 - 20) * 5', steps:['10 * 5','= 50'], rule:'Parentheses are evaluated before multiplication'},
+  {expr:'60 / 5 - (6 + 2)', steps:['60 / 5 - 8','12.0 - 8','= 4.0'], rule:'Parentheses first, then / before -'}
+];
+document.getElementById('precList').innerHTML = precExamples.map((e,i)=>`
+  <div class="prec-card">
+    <div class="prec-expr">${e.expr}</div>
+    <button class="prec-btn" data-i="${i}">Evaluate →</button>
+    <div class="prec-steps" id="precSteps${i}">${e.steps.map(s=>`<span>→ ${s}</span>`).join('')}<span class="rule">${e.rule}</span></div>
+  </div>`).join('');
+document.querySelectorAll('.prec-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.getElementById('precSteps'+btn.dataset.i).classList.toggle('show');
+  });
+});
+
+/* ================= QUIZ ================= */
+const quiz = [
+  {q:"The symbol >>> in the Python shell is called:", opts:["The output symbol","The Python prompt","A comment symbol","An error indicator"], a:1},
+  {q:"Which mode is used for testing single-line statements immediately?", opts:["Scripting mode","Online platform mode","Interactive mode","Debug mode"], a:2},
+  {q:"The // operator performs:", opts:["Division","Modulus","Floor division","Exponentiation"], a:2},
+  {q:"Which of these is immutable?", opts:["List","Dictionary","Tuple","Set"], a:2},
+  {q:"input() always returns a value of type:", opts:["int","float","str","bool"], a:2},
+  {q:"Which operator checks if two variables refer to the same object in memory?", opts:["==","is","in","="], a:1},
+  {q:"Which collection type is unordered and cannot be indexed?", opts:["List","Tuple","String","Set"], a:3},
+  {q:"All Python keywords are lowercase except:", opts:["and, or, not","None, True, False","if, elif, else","for, while, break"], a:1},
+  {q:"What does 'Hi' * 3 evaluate to?", opts:["Error","HiHiHi","Hi3","'Hi Hi Hi'"], a:1},
+  {q:"Which function displays output on the screen?", opts:["input()", "type()", "print()", "return()"], a:2}
+];
+const quizArea = document.getElementById('quizArea');
+document.getElementById('scoreMax').textContent = quiz.length;
+let score = 0;
+quiz.forEach((item,qi)=>{
+  const box = document.createElement('div');
+  box.className = 'quiz-box';
+  box.innerHTML = `<div class="quiz-q">${qi+1}. ${item.q}</div>
+    <div class="quiz-opts">${item.opts.map((o,oi)=>`<button class="quiz-opt" data-oi="${oi}">${String.fromCharCode(97+oi)}) ${o}</button>`).join('')}</div>
+    <div class="quiz-fb"></div>`;
+  quizArea.appendChild(box);
+  const btns = box.querySelectorAll('.quiz-opt');
+  const fb = box.querySelector('.quiz-fb');
+  let answered = false;
+  btns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(answered) return;
+      answered = true;
+      const oi = parseInt(btn.dataset.oi);
+      if(oi === item.a){
+        btn.classList.add('correct');
+        score++;
+        fb.textContent = "✓ Correct.";
+      } else {
+        btn.classList.add('wrong');
+        btns[item.a].classList.add('correct');
+        fb.textContent = "✕ Not quite — correct answer highlighted.";
+      }
+      fb.classList.add('show');
+      document.getElementById('scoreVal').textContent = score;
+    });
+  });
+});
+
+/* ================= FILL IN THE BLANKS ================= */
+const blanks = [
+  {text:"The Python programming language was created by ______.", a:"guido van rossum"},
+  {text:"Single-line comments in Python begin with the ______ symbol.", a:"#"},
+  {text:"Python programs are saved with the ______ extension.", a:".py"},
+  {text:"Which data type stores key–value pairs? ______", a:"dictionary"},
+  {text:"The function used to display output is ______.", a:"print()"},
+  {text:"An identifier must not start with a ______.", a:"digit"},
+  {text:"The ______ operator raises a number to a power.", a:"**"},
+  {text:"______ operators (in, not in) check whether a value exists in a sequence.", a:"membership"}
+];
+const blanksArea = document.getElementById('blanksArea');
+blanks.forEach((b,i)=>{
+  const parts = b.text.split('______');
+  const row = document.createElement('div');
+  row.className = 'blank-item';
+  row.innerHTML = `<span>${parts[0]}</span><input type="text" data-idx="${i}" autocomplete="off"><span>${parts[1]}</span>`;
+  blanksArea.appendChild(row);
+});
+document.getElementById('checkBlanks').addEventListener('click', ()=>{
+  document.querySelectorAll('#blanksArea input').forEach(inp=>{
+    const idx = parseInt(inp.dataset.idx);
+    const val = inp.value.trim().toLowerCase();
+    inp.classList.remove('correct','wrong');
+    if(val === blanks[idx].a){
+      inp.classList.add('correct');
+    } else if(val.length){
+      inp.classList.add('wrong');
+    }
+  });
+});
+
+/* ================= MATCH THE FOLLOWING ================= */
+const matchPairs = [
+  {left:"is", right:"Checks same object identity"},
+  {left:"in", right:"Checks membership in a sequence"},
+  {left:"//", right:"Floor division"},
+  {left:"**", right:"Exponentiation"},
+  {left:"list", right:"Ordered, mutable collection"},
+  {left:"tuple", right:"Ordered, immutable collection"},
+  {left:"dict", right:"Key–value pairs"},
+  {left:"None", right:"Absence of a value"}
+];
+function shuffle(arr){ return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]); }
+const leftCol = document.getElementById('matchLeft');
+const rightCol = document.getElementById('matchRight');
+const shuffledRight = shuffle(matchPairs.map(p=>p.right));
+matchPairs.forEach((p,i)=>{
+  const li = document.createElement('div');
+  li.className = 'match-item'; li.textContent = p.left; li.dataset.left = p.left;
+  leftCol.appendChild(li);
+});
+shuffledRight.forEach(r=>{
+  const ri = document.createElement('div');
+  ri.className = 'match-item'; ri.textContent = r; ri.dataset.right = r;
+  rightCol.appendChild(ri);
+});
+let selectedLeft = null;
+leftCol.querySelectorAll('.match-item').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    if(item.classList.contains('matched')) return;
+    leftCol.querySelectorAll('.match-item').forEach(l=>l.classList.remove('selected'));
+    item.classList.add('selected');
+    selectedLeft = item;
+  });
+});
+rightCol.querySelectorAll('.match-item').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    if(item.classList.contains('matched') || !selectedLeft) return;
+    const pair = matchPairs.find(p=>p.left === selectedLeft.dataset.left);
+    if(pair.right === item.dataset.right){
+      selectedLeft.classList.add('matched'); selectedLeft.classList.remove('selected');
+      item.classList.add('matched');
+      selectedLeft = null;
+    } else {
+      item.classList.add('wrong-flash');
+      setTimeout(()=>item.classList.remove('wrong-flash'), 500);
+    }
+  });
+});
+</script>
+</body>
+</html>
