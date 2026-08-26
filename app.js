@@ -77,6 +77,25 @@ function renderAll() {
   const counter = { n: 1 };
   const main = document.getElementById("main-content");
   main.innerHTML = CH5_DATA.sections.map(s => renderSection(s, counter)).join("\n");
+  autoSizeAllCodeEditors();
+}
+
+function autoSizeCodeEditor(el) {
+  el.style.height = "auto";
+  el.style.height = (el.scrollHeight + 2) + "px";
+}
+
+function autoSizeAllCodeEditors() {
+  document.querySelectorAll("textarea.code-editor").forEach(autoSizeCodeEditor);
+}
+
+// Grow as the student types/edits, and re-check once web fonts finish loading
+// (font metrics can change scrollHeight after the initial render).
+document.addEventListener("input", (e) => {
+  if (e.target.matches("textarea.code-editor")) autoSizeCodeEditor(e.target);
+});
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(autoSizeAllCodeEditors);
 }
 
 // ---------- Pyodide runner ----------
@@ -99,7 +118,7 @@ async function getPyodideInstance() {
 function resetExample(id) {
   const codeEl = document.getElementById(`${id}-code`);
   const outEl = document.getElementById(`${id}-output`);
-  if (codeEl) codeEl.value = ORIGINAL_CODE[id];
+  if (codeEl) { codeEl.value = ORIGINAL_CODE[id]; autoSizeCodeEditor(codeEl); }
   if (outEl) {
     const staticOut = outEl.dataset.static;
     outEl.classList.remove("err");
