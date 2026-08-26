@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 5 — Python Control Structures and Data Handling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#2E3192; --indigo-d:#1F2266; --amber:#C77F00; --amber-l:#F0A840; --teal:#0B6E6C; --teal-l:#0E8E8B;
+  --ink:#1E2030; --sub:#5B5F6B; --bg:#FBFBFD; --card:#FFFFFF;
+  --code-bg:#F4F5FA; --code-border:#D9DCEA; --out-bg:#EAF6F5; --out-border:#BFE3E1;
+  --rule:#E4E5EC; --danger:#C0392B;
+  --display:'Fraunces',serif; --body:'Space Grotesk',sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.55;}
+h1,h2,h3{font-family:var(--display);margin:0 0 .4em;}
+a{color:inherit;}
+img,svg{display:block;max-width:100%;}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px;}
+@media (max-width:480px){.wrap{padding:0 14px;}}
+
+/* ---------- NAV ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(251,251,253,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);}
+.nav-inner{max-width:920px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:10px;overflow-x:auto;scrollbar-width:none;}
+.nav-inner::-webkit-scrollbar{display:none;}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;white-space:nowrap;color:var(--indigo);flex-shrink:0;}
+.brand-dot{width:9px;height:9px;border-radius:50%;background:var(--amber);animation:pulse 2.2s ease-in-out infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.6);opacity:.55;}}
+.nav-links{display:flex;gap:4px;}
+.nav-link{font-size:12.5px;font-weight:500;padding:6px 10px;border-radius:20px;white-space:nowrap;color:var(--sub);text-decoration:none;transition:background .15s,color .15s;}
+.nav-link:hover,.nav-link:focus-visible{background:var(--indigo);color:#fff;outline:none;}
+
+/* ---------- HERO ---------- */
+.hero{background:linear-gradient(135deg,var(--indigo) 0%,var(--indigo-d) 100%);color:#fff;padding:52px 0 44px;}
+.hero .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:2px;color:var(--amber-l);text-transform:uppercase;margin-bottom:10px;}
+.hero h1{font-size:clamp(28px,6vw,44px);font-weight:700;line-height:1.12;}
+.hero p{font-size:15.5px;color:#D8D9F0;max-width:60ch;margin:14px 0 0;}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
+.pill{font-size:12.5px;font-weight:600;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;padding:6px 13px;border-radius:20px;text-decoration:none;transition:background .15s;}
+.pill:hover{background:rgba(255,255,255,.22);}
+
+/* ---------- SECTIONS ---------- */
+section{padding:40px 0;border-bottom:1px solid var(--rule);}
+section:last-of-type{border-bottom:none;}
+.section-kicker{font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--amber);font-weight:600;text-transform:uppercase;margin-bottom:6px;}
+.section-title{font-size:clamp(22px,4vw,30px);color:var(--indigo-d);}
+.lede{color:var(--sub);font-size:15.5px;max-width:70ch;margin-bottom:20px;}
+h3.sub{font-size:18px;color:var(--indigo-d);margin-top:28px;}
+p.body-text{font-size:15px;color:var(--ink);max-width:72ch;}
+ul.plain{padding-left:20px;font-size:14.5px;color:var(--ink);max-width:72ch;}
+ul.plain li{margin-bottom:6px;}
+.callout{background:var(--out-bg);border:1px solid var(--out-border);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--teal);font-style:italic;margin:16px 0;}
+
+/* ---------- EXAMPLE CARD ---------- */
+.example{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:18px 18px 16px;margin:18px 0;box-shadow:0 1px 3px rgba(30,32,48,.04);}
+.example-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.example-title{font-family:var(--display);font-weight:600;font-size:17px;color:var(--ink);}
+.example-badge{font-family:var(--mono);font-size:11px;font-weight:600;background:var(--indigo);color:#fff;padding:4px 10px;border-radius:20px;letter-spacing:.5px;}
+.code-editor{width:100%;min-height:60px;font-family:var(--mono);font-size:13px;line-height:1.55;background:var(--code-bg);border:1px solid var(--code-border);border-radius:8px;padding:12px 14px;color:var(--ink);resize:vertical;white-space:pre;overflow-x:auto;tab-size:4;}
+.code-editor:focus{outline:2px solid var(--indigo);outline-offset:1px;}
+.run-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.btn-run{font-family:var(--body);font-weight:600;font-size:13px;background:var(--indigo);color:#fff;border:none;border-radius:20px;padding:8px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s;}
+.btn-run:hover{background:var(--indigo-d);}
+.btn-run:disabled{opacity:.6;cursor:wait;}
+.btn-reset{font-family:var(--body);font-weight:600;font-size:12.5px;background:none;color:var(--sub);border:1px solid var(--rule);border-radius:20px;padding:7px 14px;cursor:pointer;}
+.btn-reset:hover{background:var(--code-bg);}
+.spinner{width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.output-panel{margin-top:10px;background:var(--out-bg);border:1px solid var(--out-border);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:13px;color:var(--teal);white-space:pre-wrap;word-break:break-word;min-height:20px;display:none;}
+.output-panel.show{display:block;}
+.output-panel.static{border-style:dashed;}
+.output-label{font-family:var(--body);font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--sub);margin-bottom:4px;}
+.output-panel.err{background:#FDEEEC;border-color:#F3C6C0;color:var(--danger);}
+.explain-text{font-size:13.5px;font-style:italic;color:var(--sub);margin-top:10px;}
+
+/* ---------- TABLES ---------- */
+table.methods{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+table.methods th{background:var(--indigo);color:#fff;text-align:left;padding:9px 12px;font-weight:600;}
+table.methods td{padding:8px 12px;border-bottom:1px solid var(--rule);}
+table.methods tr:nth-child(even) td{background:var(--code-bg);}
+table.methods td:first-child{font-family:var(--mono);color:var(--indigo-d);}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table.compare{width:100%;border-collapse:collapse;font-size:13px;min-width:560px;}
+table.compare th{background:var(--indigo);color:#fff;padding:9px 10px;text-align:center;font-weight:600;}
+table.compare th:first-child{text-align:left;}
+table.compare td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:center;}
+table.compare td:first-child{text-align:left;font-weight:600;color:var(--indigo-d);}
+table.compare tr:nth-child(even) td{background:var(--code-bg);}
+
+/* ---------- NOTES CHECK ---------- */
+.quiz{border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin:18px 0;}
+.quiz-row{display:flex;align-items:stretch;border-bottom:1px solid var(--rule);}
+.quiz-row:last-child{border-bottom:none;}
+.quiz-q{flex:1 1 60%;padding:12px 14px;font-size:14px;display:flex;align-items:center;}
+.quiz-a-wrap{flex:1 1 40%;position:relative;background:var(--code-bg);}
+.quiz-reveal-btn{width:100%;height:100%;border:none;background:none;cursor:pointer;font-family:var(--body);font-weight:600;font-size:12.5px;color:var(--sub);padding:12px 14px;text-align:left;transition:background .15s;}
+.quiz-reveal-btn:hover{background:var(--rule);}
+.quiz-answer{display:none;padding:12px 14px;font-weight:600;font-size:14px;color:var(--teal);background:var(--out-bg);height:100%;align-items:center;}
+.quiz-row.revealed .quiz-answer{display:flex;}
+.quiz-row.revealed .quiz-reveal-btn{display:none;}
+
+/* ---------- TEST YOURSELF ---------- */
+.ty-list{padding-left:0;list-style:none;counter-reset:ty;}
+.ty-list li{counter-increment:ty;font-size:14px;padding:9px 0 9px 34px;position:relative;border-bottom:1px solid var(--rule);}
+.ty-list li::before{content:counter(ty)".";position:absolute;left:0;font-weight:700;color:var(--indigo);font-family:var(--mono);}
+
+/* ---------- FOOTER ---------- */
+footer{padding:30px 0 50px;text-align:center;color:var(--sub);font-size:12.5px;}
+
+/* ---------- ACCESSIBILITY ---------- */
+:focus-visible{outline:2px solid var(--indigo);outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="brand-dot"></span>Ch. 5</div>
+    <div class="nav-links">
+      <a class="nav-link" href="#conditionals">Conditionals</a>
+      <a class="nav-link" href="#loops">Loops</a>
+      <a class="nav-link" href="#lists">Lists</a>
+      <a class="nav-link" href="#tuples">Tuples</a>
+      <a class="nav-link" href="#sets">Sets</a>
+      <a class="nav-link" href="#dicts">Dictionaries</a>
+      <a class="nav-link" href="#compare">Compare</a>
+      <a class="nav-link" href="#practice">Practice</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">Chapter 5 · Computer Applications (Commerce)</div>
+    <h1>Python Control Structures<br>and Data Handling</h1>
+    <p>Decision-making, loops, and Python's four core data structures — with every example runnable right here in your browser.</p>
+    <div class="pill-row">
+      <a class="pill" href="#conditionals">if-elif-else · match-case</a>
+      <a class="pill" href="#loops">for · while</a>
+      <a class="pill" href="#lists">Lists</a>
+      <a class="pill" href="#tuples">Tuples</a>
+      <a class="pill" href="#sets">Sets</a>
+      <a class="pill" href="#dicts">Dictionaries</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="main-content"></main>
+
+<footer>
+  Chapter 5 Study Portal · Plus One Computer Applications (Commerce) · 2026 SCERT Syllabus<br>
+  Code runs live via <a href="https://pyodide.org" target="_blank" rel="noopener">Pyodide</a> (CPython in your browser) — nothing is sent to a server.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
