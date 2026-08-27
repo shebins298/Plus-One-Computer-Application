@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6 — Computer Networks | Plus One Computer Applications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --plum:#4A2545;
+  --plum-dark:#2E1730;
+  --plum-tint:#F3EDF2;
+  --plum-tint2:#E9DFE8;
+  --cyan:#00A6A6;
+  --cyan-dark:#00767A;
+  --cyan-tint:#DCF3F3;
+  --ink:#1E1420;
+  --grey:#6B5F69;
+  --line:#DBD0D9;
+  --white:#FFFFFF;
+  --watch-bg:#FFF3E0;
+  --watch-border:#E0A030;
+  --watch-ink:#5A3D00;
+  --radius:14px;
+  --maxw:920px;
+  --shadow: 0 4px 18px rgba(74,37,69,0.10);
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth; scroll-padding-top:76px;}
+body{
+  margin:0; background:var(--white); color:var(--ink);
+  font-family:'Space Grotesk',system-ui,sans-serif;
+  font-size:17px; line-height:1.6;
+}
+h1,h2,h3,.display{font-family:'Fraunces',serif;}
+code, .mono, .step-tag, .fact-label, .badge, .qnum{font-family:'IBM Plex Mono',monospace;}
+
+a{color:var(--cyan-dark);}
+::selection{background:var(--cyan-tint); color:var(--plum-dark);}
+
+/* ---------- NAV ---------- */
+.nav{
+  position:sticky; top:0; z-index:100;
+  background:rgba(74,37,69,0.96); backdrop-filter:blur(6px);
+  color:var(--white); padding:0 20px;
+}
+.nav-inner{
+  max-width:1100px; margin:0 auto; display:flex; align-items:center;
+  gap:22px; height:58px; overflow-x:auto; scrollbar-width:none;
+}
+.nav-inner::-webkit-scrollbar{display:none;}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; white-space:nowrap; flex-shrink:0;}
+.dot{width:9px; height:9px; border-radius:50%; background:var(--cyan);
+  box-shadow:0 0 0 0 rgba(0,166,166,0.6); animation:pulse 2.2s infinite;}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(0,166,166,0.55);}
+  70%{box-shadow:0 0 0 8px rgba(0,166,166,0);}
+  100%{box-shadow:0 0 0 0 rgba(0,166,166,0);}
+}
+.nav-links{display:flex; gap:18px; white-space:nowrap;}
+.nav-links a{
+  color:#D8C6D6; text-decoration:none; font-size:13.5px; font-weight:500;
+  padding:4px 2px; border-bottom:2px solid transparent; transition:color .15s, border-color .15s;
+}
+.nav-links a:hover, .nav-links a.active{color:var(--white); border-color:var(--cyan);}
+
+/* ---------- HERO ---------- */
+.hero{
+  background:linear-gradient(160deg, var(--plum) 0%, var(--plum-dark) 100%);
+  color:var(--white); padding:64px 20px 56px; position:relative; overflow:hidden;
+}
+.hero::before{
+  content:""; position:absolute; inset:0;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(0,166,166,0.18) 0, transparent 40%),
+    radial-gradient(circle at 85% 75%, rgba(0,166,166,0.12) 0, transparent 45%);
+  pointer-events:none;
+}
+.hero-inner{max-width:var(--maxw); margin:0 auto; position:relative;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:0.14em;
+  color:var(--cyan); text-transform:uppercase; margin-bottom:14px; display:block;
+}
+.hero h1{font-size:clamp(2.1rem,5vw,3.2rem); font-weight:700; margin:0 0 14px; line-height:1.08;}
+.hero p{font-size:17px; color:#E4D6E2; max-width:620px; margin:0 0 22px;}
+.hero-stats{display:flex; gap:28px; flex-wrap:wrap; margin-top:8px;}
+.hstat b{display:block; font-family:'Fraunces',serif; font-size:1.7rem; color:var(--cyan);}
+.hstat span{font-size:12.5px; color:#C9B3C6;}
+
+/* ---------- LAYOUT ---------- */
+main{max-width:var(--maxw); margin:0 auto; padding:0 20px;}
+section{padding:52px 0; border-bottom:1px solid var(--line);}
+section:last-of-type{border-bottom:none;}
+.sec-head{display:flex; align-items:baseline; gap:12px; margin-bottom:18px;}
+.sec-num{font-family:'IBM Plex Mono',monospace; color:var(--cyan-dark); font-weight:600; font-size:15px;}
+h2{font-size:1.65rem; margin:0; color:var(--plum);}
+h3{font-size:1.18rem; color:var(--plum); margin:26px 0 10px;}
+p{margin:0 0 14px;}
+.lead{font-size:17.5px; color:var(--ink);}
+ul.plain{margin:0 0 14px; padding-left:22px;}
+ul.plain li{margin-bottom:6px;}
+strong{color:var(--plum-dark);}
+
+/* ---------- CARDS / DEFS ---------- */
+.def-grid{display:grid; gap:12px; margin:18px 0;}
+.def-card{
+  background:var(--plum-tint); border-left:4px solid var(--cyan);
+  border-radius:0 var(--radius) var(--radius) 0; padding:14px 18px;
+}
+.def-card b{color:var(--plum); display:block; margin-bottom:3px; font-size:15px;}
+.def-card span{font-size:15.5px; color:var(--ink);}
+
+.watch{
+  background:var(--watch-bg); border:1px solid var(--watch-border);
+  border-radius:var(--radius); padding:16px 20px; margin:20px 0;
+  color:var(--watch-ink); font-size:15.5px;
+}
+.watch b{display:block; margin-bottom:4px;}
+
+/* ---------- TABLES ---------- */
+.twrap{overflow-x:auto; margin:16px 0; border-radius:var(--radius); box-shadow:var(--shadow);}
+table{border-collapse:collapse; width:100%; font-size:14.5px; min-width:520px;}
+th{background:var(--plum); color:var(--white); text-align:left; padding:10px 14px; font-weight:600; font-size:13.5px;}
+td{padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top;}
+tr:nth-child(even) td{background:var(--plum-tint);}
+
+/* ---------- WIDGET SHELL ---------- */
+.widget{
+  background:var(--white); border:1px solid var(--line); border-radius:18px;
+  padding:22px; margin:22px 0; box-shadow:var(--shadow);
+}
+.widget-label{
+  font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--cyan-dark); font-weight:600; margin-bottom:4px; display:block;
+}
+.widget h4{margin:0 0 14px; font-family:'Fraunces',serif; font-size:1.15rem; color:var(--plum);}
+
+/* ---- Scale slider widget ---- */
+.scale-track{position:relative; height:8px; background:var(--plum-tint2); border-radius:4px; margin:34px 10px 10px;}
+.scale-fill{position:absolute; left:0; top:0; height:100%; background:var(--cyan); border-radius:4px; transition:width .25s;}
+.scale-stops{display:flex; justify-content:space-between; margin:0 10px;}
+.scale-stops span{font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--grey);}
+input[type=range]{width:100%; margin:0; accent-color:var(--cyan-dark);}
+.scale-readout{
+  margin-top:18px; background:var(--plum-tint); border-radius:12px; padding:16px 18px;
+  display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+}
+.scale-badge{
+  background:var(--plum); color:var(--white); font-family:'IBM Plex Mono',monospace;
+  font-weight:700; font-size:20px; padding:8px 16px; border-radius:10px; min-width:64px; text-align:center;
+}
+.scale-readout div.txt b{color:var(--plum); display:block; font-size:15px;}
+.scale-readout div.txt span{font-size:14px; color:var(--grey);}
+
+/* ---- Topology picker ---- */
+.topo-btns{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+.topo-btn{
+  font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px;
+  background:var(--plum-tint2); color:var(--plum); border:none; border-radius:20px;
+  padding:8px 16px; cursor:pointer; transition:background .15s, color .15s;
+}
+.topo-btn.active, .topo-btn:hover{background:var(--plum); color:var(--white);}
+.topo-body{display:grid; grid-template-columns:1fr; gap:18px;}
+@media(min-width:640px){.topo-body{grid-template-columns:1.1fr 1fr;}}
+.topo-svg-box{background:var(--plum-tint); border-radius:12px; padding:14px; display:flex; align-items:center; justify-content:center;}
+.topo-svg-box svg{width:100%; height:auto; max-width:320px;}
+.topo-facts b{color:var(--plum);}
+.topo-fail{
+  margin-top:10px; background:var(--watch-bg); border-radius:8px; padding:10px 14px; font-size:14px; color:var(--watch-ink);
+}
+
+/* ---- Hub vs switch ---- */
+.hs-wrap{display:grid; grid-template-columns:1fr; gap:20px;}
+@media(min-width:640px){.hs-wrap{grid-template-columns:1fr 1fr;}}
+.hs-panel{background:var(--plum-tint); border-radius:12px; padding:14px; text-align:center;}
+.hs-panel h5{margin:0 0 8px; font-size:14px; color:var(--plum); font-family:'Space Grotesk',sans-serif; font-weight:700;}
+.hs-panel svg{width:100%; max-width:260px; height:auto;}
+.pkt{opacity:0; transition:opacity .15s;}
+.pkt.on{opacity:1;}
+.portlight{transition:fill .2s;}
+.btn{
+  font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px;
+  background:var(--cyan-dark); color:var(--white); border:none; border-radius:24px;
+  padding:10px 22px; cursor:pointer; transition:background .15s; margin-top:6px;
+}
+.btn:hover{background:var(--plum);}
+.btn:disabled{opacity:.5; cursor:default;}
+
+/* ---- Transmission mode ---- */
+.tm-btns{display:flex; gap:8px; margin-bottom:18px;}
+.tm-stage{background:var(--plum-tint); border-radius:12px; padding:24px; position:relative; height:150px;}
+.tm-node{
+  position:absolute; top:50%; transform:translateY(-50%); width:74px; height:52px;
+  background:var(--white); border:2px solid var(--plum); border-radius:8px;
+  display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--plum);
+}
+.tm-node.a{left:20px;} .tm-node.b{right:20px;}
+.tm-arrow{position:absolute; top:44%; height:3px; background:var(--cyan); left:110px; right:110px; opacity:0;}
+.tm-arrow::after{content:""; position:absolute; right:-2px; top:50%; width:0; height:0; border-left:10px solid var(--cyan); border-top:6px solid transparent; border-bottom:6px solid transparent; transform:translateY(-50%);}
+.tm-arrow.rev{top:58%;}
+.tm-arrow.rev::after{left:-2px; right:auto; border-left:none; border-right:10px solid var(--cyan);}
+.tm-desc{margin-top:14px; font-size:14.5px; color:var(--ink);}
+
+/* ---- DNS stepper ---- */
+.dns-steps{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
+.dns-chip{
+  font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:6px 10px; border-radius:8px;
+  background:var(--plum-tint2); color:var(--plum); opacity:.5; transition:opacity .2s, background .2s, color .2s;
+}
+.dns-chip.active{opacity:1; background:var(--cyan); color:var(--white);}
+.dns-desc{background:var(--plum-tint); border-radius:12px; padding:16px 18px; min-height:70px; font-size:15px;}
+.dns-nav{display:flex; gap:10px; margin-top:14px;}
+
+/* ---- Protocol matcher ---- */
+.pm-wrap{display:grid; grid-template-columns:1fr 1fr; gap:10px 18px;}
+.pm-item{
+  background:var(--plum-tint2); border-radius:10px; padding:10px 14px; font-size:14px;
+  cursor:pointer; border:2px solid transparent; transition:border-color .15s, background .15s;
+  font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--plum);
+}
+.pm-item.def{font-family:'Space Grotesk',sans-serif; font-weight:400; color:var(--ink); background:var(--white); border:2px solid var(--line);}
+.pm-item.sel{border-color:var(--cyan-dark);}
+.pm-item.matched{background:var(--cyan-tint); color:var(--cyan-dark); cursor:default; border-color:var(--cyan);}
+.pm-item.wrong{animation:shake .3s;}
+@keyframes shake{25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.pm-score{margin-top:14px; font-size:14.5px; font-weight:600; color:var(--plum);}
+
+/* ---------- ACCORDION (Try Yourself) ---------- */
+.acc{border:1px solid var(--line); border-radius:12px; margin-bottom:10px; overflow:hidden;}
+.acc-q{
+  width:100%; text-align:left; background:var(--white); border:none; padding:14px 18px;
+  font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:600; color:var(--plum);
+  cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:10px;
+}
+.acc-q:hover{background:var(--plum-tint);}
+.acc-q .qnum{color:var(--cyan-dark); flex-shrink:0;}
+.acc-chevron{transition:transform .2s; flex-shrink:0; color:var(--grey);}
+.acc.open .acc-chevron{transform:rotate(45deg);}
+.acc-a{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+.acc-a-inner{padding:0 18px 16px 18px; font-size:14.5px; color:var(--ink); border-top:1px dashed var(--line);}
+.acc-a-inner b{color:var(--cyan-dark);}
+
+.ty-set{margin:22px 0;}
+.ty-set h4{font-family:'Space Grotesk',sans-serif; font-size:14px; text-transform:uppercase; letter-spacing:.06em; color:var(--cyan-dark); margin:0 0 10px;}
+
+/* ---------- FOOTER ---------- */
+footer{background:var(--plum-dark); color:#C9B3C6; padding:34px 20px; font-size:13px; text-align:center;}
+footer a{color:var(--cyan);}
+
+/* ---------- utility ---------- */
+.visually-hidden{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);}
+:focus-visible{outline:3px solid var(--cyan-dark); outline-offset:2px;}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="dot"></span> CH.06 · Computer Networks</div>
+    <div class="nav-links" id="navLinks">
+      <a href="#intro">Intro</a>
+      <a href="#datacomm">Data Comm.</a>
+      <a href="#media">Media</a>
+      <a href="#coverage">PAN–WAN</a>
+      <a href="#devices">Devices</a>
+      <a href="#topology">Topology</a>
+      <a href="#internet">Internet</a>
+      <a href="#services">Services</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Plus One · Computer Applications (Commerce)</span>
+    <h1>Computer Networks</h1>
+    <p>Chapter 6 — how devices talk to each other: data communication, transmission media, network types, the devices that connect them, six topologies, and how the Internet actually works.</p>
+    <div class="hero-stats">
+      <div class="hstat"><b>7</b><span>Sections</span></div>
+      <div class="hstat"><b>6</b><span>Topologies</span></div>
+      <div class="hstat"><b>7</b><span>Network Devices</span></div>
+      <div class="hstat"><b>9</b><span>Protocols</span></div>
+      <div class="hstat"><b>6</b><span>Interactive Widgets</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 6.1 / 6.2 INTRO + DATA COMM ============ -->
+<section id="intro">
+  <div class="sec-head"><span class="sec-num">6.1</span><h2>What is a Computer Network?</h2></div>
+  <p class="lead">A <strong>computer network</strong> is an interconnection among two or more computers or computing devices. Such interconnections allow computers to share data and resources among each other.</p>
+  <p>Hosts (also called <strong>nodes</strong>) include servers, desktops, laptops and cellular phones. Networking devices — switch, router, modem — connect them together. The main goal of a network is to let devices and people communicate, share resources, and work together easily.</p>
+
+  <h3>Four kinds of networks in daily life</h3>
+  <div class="def-grid">
+    <div class="def-card"><b>Social Networks</b><span>Friends and families connected through relationships.</span></div>
+    <div class="def-card"><b>Mobile Networks</b><span>Phones connected for calls, messages and internet.</span></div>
+    <div class="def-card"><b>Computer Networks</b><span>Computers sharing files, videos and information.</span></div>
+    <div class="def-card"><b>Service Networks</b><span>Airlines, railways, banks and hospitals connecting people, places and services.</span></div>
+  </div>
+</section>
+
+<section id="datacomm">
+  <div class="sec-head"><span class="sec-num">6.2</span><h2>Data Communication</h2></div>
+  <p class="lead"><strong>Data Communication</strong> is the process of transmitting digital data between two or more devices through a communication medium such as cables or wireless signals. The goal: to exchange information efficiently and accurately.</p>
+
+  <h3>Five components</h3>
+  <div class="twrap"><table>
+    <tr><th>Component</th><th>Definition</th></tr>
+    <tr><td><strong>Sender</strong></td><td>The device that sends the data.</td></tr>
+    <tr><td><strong>Receiver</strong></td><td>The device that receives the data.</td></tr>
+    <tr><td><strong>Message</strong></td><td>The actual information or data to be transmitted.</td></tr>
+    <tr><td><strong>Medium</strong></td><td>The path through which data travels (cables, airwaves).</td></tr>
+    <tr><td><strong>Protocol</strong></td><td>A set of rules that governs data transmission (e.g. TCP/IP).</td></tr>
+  </table></div>
+  <div class="watch"><b>⚠ Remember</b>Sender → Medium → Receiver is the path the Message travels. Protocol isn't a step in that line — it's the rulebook governing the whole link.</div>
+
+  <h3>Key terms</h3>
+  <div class="def-grid">
+    <div class="def-card"><b>Node</b><span>Any active device connected to a network that participates in data exchange — computers, servers, printers, routers, switches, modems, smartphones, IoT devices.</span></div>
+    <div class="def-card"><b>Bandwidth</b><span>The amount of data that can be transmitted in a given time. Wide pipe = high bandwidth = more data/second. Narrow pipe = low bandwidth = slower.</span></div>
+    <div class="def-card"><b>Latency</b><span>The time taken for data to travel from source to destination — i.e. delay in data transmission.</span></div>
+    <div class="def-card"><b>Bit Rate</b><span>The number of bits transmitted per second (bps).</span></div>
+  </div>
+
+  <!-- WIDGET: transmission mode toggle -->
+  <div class="widget">
+    <span class="widget-label">Interactive</span>
+    <h4>Transmission Modes — try each direction</h4>
+    <div class="tm-btns">
+      <button class="topo-btn active" data-tm="simplex">Simplex</button>
+      <button class="topo-btn" data-tm="half">Half Duplex</button>
+      <button class="topo-btn" data-tm="full">Full Duplex</button>
+    </div>
+    <div class="tm-stage">
+      <div class="tm-node a">Sender</div>
+      <div class="tm-node b">Receiver</div>
+      <div class="tm-arrow" id="tmArrowFwd"></div>
+      <div class="tm-arrow rev" id="tmArrowRev"></div>
+    </div>
+    <p class="tm-desc" id="tmDesc">Simplex: data flows only one way, sender → receiver. Example: keyboard to computer, TV/radio broadcast.</p>
+  </div>
+</section>
+
+<!-- ============ 6.3.1 MEDIA ============ -->
+<section id="media">
+  <div class="sec-head"><span class="sec-num">6.3.1</span><h2>Transmission Media</h2></div>
+  <p class="lead">The channel through which data travels between sender and receiver — split into <strong>Guided (Wired)</strong> and <strong>Unguided (Wireless)</strong>.</p>
+
+  <h3>Guided (Wired) Media</h3>
+  <div class="twrap"><table>
+    <tr><th>Type</th><th>Advantages</th><th>Limitations</th></tr>
+    <tr><td><strong>Twisted Pair Cable</strong></td><td>Inexpensive, easy to install; short distance</td><td>Prone to interference; limited bandwidth</td></tr>
+    <tr><td><strong>Coaxial Cable</strong></td><td>Better noise protection; higher bandwidth</td><td>Thicker, costlier, harder to install</td></tr>
+    <tr><td><strong>Optical Fibre Cable</strong></td><td>Extremely high speed; immune to EM interference</td><td>Expensive; fragile, difficult to install</td></tr>
+  </table></div>
+
+  <h3>Unguided (Wireless) Media</h3>
+  <div class="twrap"><table>
+    <tr><th>Type</th><th>Advantages</th><th>Limitations</th></tr>
+    <tr><td><strong>Radio Waves</strong></td><td>Penetrates buildings; supports mobility</td><td>External interference; limited security</td></tr>
+    <tr><td><strong>Microwaves</strong></td><td>High data rate; satellite/cellular use</td><td>Needs line-of-sight; weather-affected</td></tr>
+    <tr><td><strong>Infrared Waves</strong></td><td>Secure, simple; no radio interference</td><td>Limited range; needs direct line-of-sight</td></tr>
+    <tr><td><strong>Satellite Communication</strong></td><td>Wide geographical coverage; TV/GPS</td><td>Very costly; signal delay</td></tr>
+  </table></div>
+  <p>Choice of medium depends on <strong>distance, cost, data rate and environment</strong> — twisted pair for small LANs, optical fibre for high-speed backbones, wireless for mobile or remote use.</p>
+</section>
+
+<!-- ============ 6.3.2 COVERAGE ============ -->
+<section id="coverage">
+  <div class="sec-head"><span class="sec-num">6.3.2</span><h2>PAN · LAN · MAN · WAN</h2></div>
+  <p class="lead">Networks are also classified by how much ground they cover.</p>
+
+  <!-- WIDGET: scale slider -->
+  <div class="widget">
+    <span class="widget-label">Interactive</span>
+    <h4>Drag the slider — how far does each network reach?</h4>
+    <input type="range" id="scaleSlider" min="0" max="3" step="1" value="0">
+    <div class="scale-stops"><span>PAN</span><span>LAN</span><span>MAN</span><span>WAN</span></div>
+    <div class="scale-readout">
+      <div class="scale-badge" id="scaleBadge">PAN</div>
+      <div class="txt">
+        <b id="scaleCoverage">A few metres (around one person)</b>
+        <span id="scaleExample">Example: Bluetooth earphone with a phone</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="twrap"><table>
+    <tr><th>Type</th><th>Coverage</th><th>Typical Speed</th><th>Example</th></tr>
+    <tr><td><strong>PAN</strong></td><td>A few metres (one person)</td><td>—</td><td>Bluetooth earphone with a phone</td></tr>
+    <tr><td><strong>LAN</strong></td><td>Up to 1 km (room/building)</td><td>10 Mbps – 1000 Mbps</td><td>School computer lab</td></tr>
+    <tr><td><strong>MAN</strong></td><td>5–50 km (a city/campus)</td><td>10 Mbps – 1 Gbps+</td><td>Cable TV network, public Wi-Fi</td></tr>
+    <tr><td><strong>WAN</strong></td><td>Thousands of km</td><td>Up to several Gbps</td><td>The Internet, banking network</td></tr>
+  </table></div>
+
+  <h3>WAN vs Internet</h3>
+  <div class="twrap"><table>
+    <tr><th>WAN</th><th>Internet</th></tr>
+    <tr><td>Owned/managed by a single organisation</td><td>No single owner; managed collectively by ISPs</td></tr>
+    <tr><td>Restricted to authorised users only</td><td>Publicly accessible to all users</td></tr>
+    <tr><td>More secure (private)</td><td>Less secure compared to private WANs</td></tr>
+  </table></div>
+  <div class="watch"><b>⚠ Watch out</b>The Internet IS a WAN by scale and technology — but it's the one WAN nobody owns. This table contrasts a private organisational WAN (a bank's own network) with the public Internet.</div>
+</section>
+
+<!-- ============ 6.4 DEVICES ============ -->
+<section id="devices">
+  <div class="sec-head"><span class="sec-num">6.4</span><h2>Network Devices</h2></div>
+  <p class="lead">Hardware components that connect computers and other electronic devices together to form a network.</p>
+
+  <div class="def-grid">
+    <div class="def-card"><b>Modem</b><span>Bridges digital computers and analog telephone lines. Modulation converts digital → analog (sending); demodulation converts analog → digital (receiving).</span></div>
+    <div class="def-card"><b>NIC</b><span>Network Interface Card — the interface between a computer and the network; a circuit board on the motherboard. Holds the unique MAC address.</span></div>
+    <div class="def-card"><b>Repeater</b><span>Extends network coverage by amplifying and retransmitting weak signals (attenuation = signal weakening over distance). Does not filter or manage traffic.</span></div>
+    <div class="def-card"><b>Router</b><span>Connects multiple networks together (e.g. LAN to Internet), using IP addresses to route packets to the correct destination.</span></div>
+    <div class="def-card"><b>Gateway</b><span>Connects two networks that use different protocols — a translator at the network's edge. Performs protocol conversion, data handling, routing/forwarding, and response transmission.</span></div>
+  </div>
+
+  <!-- WIDGET: hub vs switch -->
+  <div class="widget">
+    <span class="widget-label">Interactive</span>
+    <h4>Hub vs Switch — send a packet from PC1 to PC3</h4>
+    <div class="hs-wrap">
+      <div class="hs-panel">
+        <h5>HUB — broadcasts to everyone</h5>
+        <svg viewBox="0 0 220 160">
+          <line x1="110" y1="80" x2="40" y2="30" stroke="#c9b8c7" stroke-width="2"/>
+          <line x1="110" y1="80" x2="180" y2="30" stroke="#c9b8c7" stroke-width="2"/>
+          <line x1="110" y1="80" x2="40" y2="130" stroke="#c9b8c7" stroke-width="2"/>
+          <line x1="110" y1="80" x2="180" y2="130" stroke="#c9b8c7" stroke-width="2"/>
+          <rect x="85" y="62" width="50" height="36" rx="6" fill="#4A2545"/>
+          <text x="110" y="84" text-anchor="middle" fill="#fff" font-size="11" font-family="IBM Plex Mono">HUB</text>
+          <circle id="hubP1" class="portlight" cx="40" cy="30" r="16" fill="#E9DFE8"/>
+          <text x="40" y="34" text-anchor="middle" font-size="10" font-family="IBM Plex Mono">PC1</text>
+          <circle id="hubP2" class="portlight" cx="180" cy="30" r="16" fill="#E9DFE8"/>
+          <text x="180" y="34" text-anchor="middle" font-size="10" font-family="IBM Plex Mono">PC2</text>
+          <circle id="hubP3" class="portlight" cx="40" cy="130" r="16" fill="#E9DFE8"/>
+          <text x="40" y="134" text-anchor="middle" font-size="10" font-family="IBM Plex Mono">PC3</text>
+          <circle id="hubP4" class="portlight" cx="180" cy="130" r="16" fill="#E9DFE8"/>
+          <text x="180" y="134" text-anchor="middle" font-size="10" font-family="IBM Plex Mono">PC4</text>
+        </svg>
+        <p style="font-size:13px;margin:8px 0 0;">Every port lights up — the hub has no idea which one is PC3.</p>
+      </div>
+      <div class="hs-panel">
+        <h5>SWITCH — targets the right port</h5>
+        <svg viewBox="0 0 220 160">
+          <line x1="110" y1="80" x2="40" y2="30" stroke="#c9b8c7" stroke-width="2"/>
+          <line x1="110" y1="80" x2="180" y2="30" stroke="#c9b8c7" stroke-width="2"/>
+          <line x1="110" y1="80" x2="40" y2="130" stroke="#c9b8c7" stroke-width="2"/>
+          <line x1="110" y1="80" x2="180" y2="130" stroke="#c9b8c7" stroke-width="2"/>
+          <rect x="85" y="62" width="50" height="36" rx="6" fill="#00767A"/>
+          <text x="110" y="84" text-anchor="middle" fill="#fff" font-size="9.5" font-family="IBM Plex Mono">SWITCH</text>
+          <circle id="swP1" class="portlight" cx="40" cy="30" r="16" fill="#E9DFE8"/>
+          <text x="40" y="34" text-anchor="middle" font-size="10" font-family="IBM Plex Mono">PC1</text>
+          <circle id="swP2" class="portlight" cx="180" cy="30" r="16" fill="#E9DFE8"/>
+          <text x="180" y="34" text-anchor="middle" font-size="10" font-family="IBM Plex Mono">PC2</text>
+          <circle id="swP3" class="portlight" cx="40" cy="130" r="16" fill="#E9DFE8"/>
+          <text x="40" y="134" text-anchor="middle" font-size="10" font-family="IBM Plex Mono">PC3</text>
+          <circle id="swP4" class="portlight" cx="180" cy="130" r="16" fill="#E9DFE8"/>
+          <text x="180" y="134" text-anchor="middle" font-size="10" font-family="IBM Plex Mono">PC4</text>
+        </svg>
+        <p style="font-size:13px;margin:8px 0 0;">Only PC3's port lights up — the switch checked its MAC address table.</p>
+      </div>
+    </div>
+    <div style="text-align:center;"><button class="btn" id="sendPacketBtn">Send packet: PC1 → PC3</button></div>
+  </div>
+
+  <h3>Device comparison</h3>
+  <div class="twrap"><table>
+    <tr><th>Device</th><th>Key distinguishing fact</th></tr>
+    <tr><td><strong>Hub</strong></td><td>Broadcasts to every port; no MAC check, no filtering</td></tr>
+    <tr><td><strong>Switch</strong></td><td>Uses a MAC address table; forwards to one specific port</td></tr>
+  </table></div>
+
+  <div class="def-grid">
+    <div class="def-card"><b>IP Address</b><span>A unique numerical identifier for each device on a network. IPv4 (e.g. 192.168.1.1) or IPv6 (larger address space).</span></div>
+    <div class="def-card"><b>Server</b><span>A powerful computer providing services, resources and data to client computers — storage, resource management, authentication, hosting, security, backup.</span></div>
+    <div class="def-card"><b>Firewall</b><span>A security barrier between a trusted internal network and an untrusted external network (like the Internet), controlling traffic by predefined rules.</span></div>
+  </div>
+</section>
+
+<!-- ============ 6.5 TOPOLOGY ============ -->
+<section id="topology">
+  <div class="sec-head"><span class="sec-num">6.5</span><h2>Network Topology</h2></div>
+  <p class="lead"><strong>Network Topology</strong> is the arrangement or layout in which devices (nodes) are connected. It can be <strong>physical</strong> (actual cable layout) or <strong>logical</strong> (the way data moves). The chapter covers five common topologies — bus, star, ring, mesh, tree — and then adds a sixth, <strong>hybrid</strong>, built by combining the others.</p>
+
+  <!-- WIDGET: topology picker -->
+  <div class="widget">
+    <span class="widget-label">Interactive</span>
+    <h4>Pick a topology</h4>
+    <div class="topo-btns" id="topoBtns">
+      <button class="topo-btn active" data-t="bus">Bus</button>
+      <button class="topo-btn" data-t="star">Star</button>
+      <button class="topo-btn" data-t="ring">Ring</button>
+      <button class="topo-btn" data-t="mesh">Mesh</button>
+      <button class="topo-btn" data-t="tree">Tree</button>
+      <button class="topo-btn" data-t="hybrid">Hybrid</button>
+    </div>
+    <div class="topo-body">
+      <div class="topo-svg-box" id="topoSvgBox"></div>
+      <div>
+        <div class="topo-facts" id="topoFacts"></div>
+        <div class="topo-fail" id="topoFail"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6.6 INTERNET ============ -->
+<section id="internet">
+  <div class="sec-head"><span class="sec-num">6.6</span><h2>The Internet</h2></div>
+  <p class="lead">The <strong>Internet</strong> is a global network connecting millions of computers and devices worldwide, using standard protocols like <strong>TCP/IP</strong>.</p>
+
+  <h3>Protocols for Data Communication</h3>
+  <div class="twrap"><table>
+    <tr><th>Protocol</th><th>Purpose</th></tr>
+    <tr><td><strong>HTTP</strong></td><td>Fetches web pages. Not encrypted.</td></tr>
+    <tr><td><strong>HTTPS</strong></td><td>Secure HTTP; uses SSL to encrypt passwords, banking data.</td></tr>
+    <tr><td><strong>FTP</strong></td><td>Transfers files between client and server.</td></tr>
+    <tr><td><strong>TCP/IP</strong></td><td>Foundation of the Internet — packets, addressing, routing.</td></tr>
+    <tr><td><strong>SMTP</strong></td><td>Sends outgoing email. Port 25.</td></tr>
+    <tr><td><strong>POP3</strong></td><td>Retrieves email; downloads then deletes. Port 110 (995 secure).</td></tr>
+    <tr><td><strong>IMAP</strong></td><td>Retrieves email; keeps synced on server. Port 143 (993 secure).</td></tr>
+    <tr><td><strong>MIME</strong></td><td>Lets email carry images, audio, video, attachments.</td></tr>
+    <tr><td><strong>DNS</strong></td><td>Translates domain names into IP addresses.</td></tr>
+  </table></div>
+
+  <!-- WIDGET: protocol matcher -->
+  <div class="widget">
+    <span class="widget-label">Interactive · Quiz</span>
+    <h4>Match the protocol to its purpose</h4>
+    <div class="pm-wrap" id="pmWrap"></div>
+    <div class="pm-score" id="pmScore">0 of 6 matched</div>
+  </div>
+
+  <!-- WIDGET: DNS stepper -->
+  <div class="widget">
+    <span class="widget-label">Interactive</span>
+    <h4>DNS Resolution — step through the lookup</h4>
+    <div class="dns-steps" id="dnsSteps"></div>
+    <div class="dns-desc" id="dnsDesc"></div>
+    <div class="dns-nav">
+      <button class="btn" id="dnsPrev">◀ Back</button>
+      <button class="btn" id="dnsNext">Next ▶</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6.7 SERVICES ============ -->
+<section id="services">
+  <div class="sec-head"><span class="sec-num">6.7</span><h2>Network-Based Services</h2></div>
+  <p class="lead">Functions and resources provided over a computer network, especially the Internet.</p>
+  <div class="twrap"><table>
+    <tr><th>Service</th><th>Example</th></tr>
+    <tr><td>E-mail</td><td>Gmail, Outlook</td></tr>
+    <tr><td>File Transfer</td><td>FTP, Google Drive</td></tr>
+    <tr><td>Web Service (www)</td><td>Google, Wikipedia</td></tr>
+    <tr><td>Chat</td><td>WhatsApp, Telegram</td></tr>
+    <tr><td>Video Conferencing</td><td>Zoom, Google Meet</td></tr>
+    <tr><td>Remote Login</td><td>Telnet, SSH</td></tr>
+    <tr><td>Cloud Storage</td><td>Dropbox, OneDrive</td></tr>
+    <tr><td>Streaming</td><td>YouTube, Netflix</td></tr>
+    <tr><td>Online Transaction</td><td>Online banking, Amazon</td></tr>
+    <tr><td>Social Networking</td><td>Facebook, Instagram</td></tr>
+  </table></div>
+</section>
+
+<!-- ============ TRY YOURSELF ============ -->
+<section id="tryyourself">
+  <div class="sec-head"><span class="sec-num">✎</span><h2>Try Yourself — All 6 Sets</h2></div>
+  <p class="lead">Tap a question to reveal its answer.</p>
+  <div id="tyContainer"></div>
+</section>
+
+</main>
+
+<footer>
+  Plus One Computer Applications (Commerce) · Chapter 6 — Computer Networks · SCERT Kerala, 2026 Syllabus
+</footer>
+<script>
+/* ---------- nav active-link on scroll ---------- */
+const navLinks = document.querySelectorAll('.nav-links a');
+const secs = [...document.querySelectorAll('main section')];
+function updateNav(){
+  let cur = secs[0];
+  const y = window.scrollY + 90;
+  secs.forEach(s => { if (s.offsetTop <= y) cur = s; });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur.id));
+}
+document.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+/* ---------- Try Yourself accordion data ---------- */
+const TY = [
+ {title:"Set 1 — Data Communication", items:[
+  ["Define a computer network.","An interconnection among two or more computers or computing devices, which allows them to share data and resources among each other."],
+  ["What is a node in the network?","Any device that can send, receive or process data — a connection point in the network. Examples: computers, servers, printers, routers, switches, modems, smartphones, IoT devices."],
+  ["Give two examples for social networks.","Facebook and Instagram."],
+  ["Discuss how computer networks help in sharing resources efficiently.","Devices on a network can share one resource instead of each needing its own — e.g. all computers in a lab share one printer. This saves time and avoids extra work."],
+  ["Explain how computer networks connect people and devices in the modern world.","A computer network acts like a digital bridge connecting people and devices worldwide, making communication fast, easy and efficient — used for the Internet, email, classes, videos and games."],
+  ["How does bandwidth affect data transmission speed?","High bandwidth transmits more data per second; low bandwidth is slower. Greater bandwidth allows more data in less time."],
+  ["Give an example of a real-life situation using different transmission modes.","Simplex: keyboard to computer. Half duplex: walkie-talkies. Full duplex: a mobile phone call."],
+  ["How does a network improve communication in a school/office?","Lets users share files, printers and internet connections quickly and securely, since only authentic users can access shared resources."],
+  ["Explain the basic components of data communication.","Sender, Receiver, Message, Medium (Transmission Channel), and Protocol — see the table above."]
+ ]},
+ {title:"Set 2 — Transmission Media (fill in the blanks)", items:[
+  ["Guided transmission media use __________ cables to transmit data.","physical (twisted pair, coaxial, fibre optic)"],
+  ["Optical fibre uses __________ signals for data transmission.","light"],
+  ["Radio waves can penetrate __________ and support mobility.","buildings"],
+  ["Microwave communication is suitable for __________ communication.","point-to-point"],
+  ["What are the two main ways to connect computers in a network?","Guided (wired) and unguided (wireless) transmission media."]
+ ]},
+ {title:"Set 3 — Types of Networks", items:[
+  ["What are the different types of computer networks?","By media: guided and unguided. By coverage: PAN, LAN, MAN, WAN."],
+  ["Give two examples of wired connection media.","Any two of: twisted pair cable, coaxial cable, optical fibre cable."],
+  ["What type of signal is used in wireless communication?","Electromagnetic (radio) signals propagating through free space."],
+  ["Differentiate between wired and wireless networks.","Wired: physical cables, reliable, secure, high speed. Wireless: no cables, uses electromagnetic signals, flexible and mobile but more interference."],
+  ["Why is MAN called a \"network of LANs\"?","A MAN covers 5–50 km and works by connecting multiple LANs within that area into one larger network."],
+  ["How are networks classified by connection type and geography?","Connection: guided/unguided. Geography: PAN, LAN, MAN, WAN."],
+  ["Setting up a PAN at home — what devices/technologies are used?","Smartphone, tablet, laptop, printer, headset — using USB (wired) or Bluetooth/Wi-Fi/Infrared (wireless)."],
+  ["How does PAN improve productivity in a smart workspace?","Convenience and mobility — synchronise data and share files across personal devices without complex setup."]
+ ]},
+ {title:"Set 4 — Network Devices", items:[
+  ["What are network devices?","Hardware components that connect computers together to form a network, helping data transmission and communication."],
+  ["Name any four common network devices.","Any four of: Modem, NIC, Hub, Switch, Repeater, Router, Gateway."],
+  ["What is demodulation?","Converting analog signals from the telephone line back into digital signals the computer understands."],
+  ["What is attenuation?","The gradual weakening of signals as they travel through cables or wireless channels."],
+  ["Name the device that performs protocol conversion.","Gateway."],
+  ["Explain the functions and importance of a Switch.","An intelligent device that learns MAC addresses and forwards data only to the specific destination port — reducing traffic and preventing collisions."]
+ ]},
+ {title:"Set 5 — Network Topology (fill in the blanks)", items:[
+  ["The structure defining how computers are connected is called __________.","Network Topology"],
+  ["In a bus topology, all devices share a single __________.","central cable (the bus / main cable)"],
+  ["The central device used in star topology is __________ or __________.","hub or switch"],
+  ["In a ring topology, data travels in __________ direction(s).","one (unidirectional; both in dual-ring networks)"],
+  ["A mesh topology provides a dedicated __________ between each pair of nodes.","point-to-point link"],
+  ["The tree topology is a combination of __________ topologies.","star and bus"]
+ ]},
+ {title:"Set 6 — The Internet & Services", items:[
+  ["When you open a website, your device sends a request to a __________.","web server (through an ISP)"],
+  ["The full form of WWW is __________.","World Wide Web"],
+  ["Each web page has a unique address called __________.","URL (Uniform Resource Locator)"],
+  ["Which service suits live online classes with interaction?","Video Conferencing Service — e.g. Zoom, Google Meet."],
+  ["Which service enables online shopping with digital payment?","Online Transaction Service — e.g. online banking, Amazon."]
+ ]}
+];
+
+const tyContainer = document.getElementById('tyContainer');
+let qCounter = 0;
+TY.forEach(set => {
+  const wrap = document.createElement('div'); wrap.className = 'ty-set';
+  const h = document.createElement('h4'); h.textContent = set.title; wrap.appendChild(h);
+  set.items.forEach(([q,a]) => {
+    qCounter++;
+    const acc = document.createElement('div'); acc.className = 'acc';
+    acc.innerHTML = `
+      <button class="acc-q" aria-expanded="false">
+        <span><span class="qnum">Q${qCounter}.</span> ${q}</span>
+        <span class="acc-chevron">+</span>
+      </button>
+      <div class="acc-a"><div class="acc-a-inner"><b>Answer:</b> ${a}</div></div>`;
+    const btn = acc.querySelector('.acc-q');
+    const panel = acc.querySelector('.acc-a');
+    btn.addEventListener('click', () => {
+      const isOpen = acc.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(isOpen));
+      panel.style.maxHeight = isOpen ? panel.scrollHeight + 'px' : '0px';
+    });
+    wrap.appendChild(acc);
+  });
+  tyContainer.appendChild(wrap);
+});
+
+/* ---------- Transmission mode widget ---------- */
+const tmBtns = document.querySelectorAll('.tm-btns .topo-btn');
+const tmFwd = document.getElementById('tmArrowFwd');
+const tmRev = document.getElementById('tmArrowRev');
+const tmDesc = document.getElementById('tmDesc');
+const TM_TEXT = {
+  simplex: "Simplex: data flows only one way, sender → receiver. Example: keyboard to computer, TV/radio broadcast.",
+  half: "Half Duplex: both directions, but not at the same time — one sends while the other listens (turn-taking). Example: walkie-talkies.",
+  full: "Full Duplex: both directions at the same time. Example: a mobile phone call."
+};
+let tmTimer = null;
+function setTM(mode){
+  tmBtns.forEach(b => b.classList.toggle('active', b.dataset.tm === mode));
+  tmDesc.textContent = TM_TEXT[mode];
+  tmFwd.style.opacity = 0; tmRev.style.opacity = 0;
+  clearInterval(tmTimer);
+  if (mode === 'simplex'){ tmFwd.style.opacity = 1; }
+  else if (mode === 'full'){ tmFwd.style.opacity = 1; tmRev.style.opacity = 1; }
+  else { // half: alternate
+    let showFwd = true;
+    tmFwd.style.opacity = 1;
+    tmTimer = setInterval(() => {
+      showFwd = !showFwd;
+      tmFwd.style.opacity = showFwd ? 1 : 0;
+      tmRev.style.opacity = showFwd ? 0 : 1;
+    }, 1100);
+  }
+}
+tmBtns.forEach(b => b.addEventListener('click', () => setTM(b.dataset.tm)));
+setTM('simplex');
+
+/* ---------- Scale slider widget ---------- */
+const SCALE = [
+  {badge:"PAN", coverage:"A few metres (around one person)", example:"Example: Bluetooth earphone with a phone", pct:8},
+  {badge:"LAN", coverage:"Up to 1 km (room, lab or building)", example:"Example: School computer lab", pct:38},
+  {badge:"MAN", coverage:"5–50 km (a city or large campus)", example:"Example: Cable TV network, public Wi-Fi", pct:68},
+  {badge:"WAN", coverage:"Thousands of km (countries or globe)", example:"Example: The Internet, banking network", pct:100},
+];
+const scaleSlider = document.getElementById('scaleSlider');
+const scaleBadge = document.getElementById('scaleBadge');
+const scaleCoverage = document.getElementById('scaleCoverage');
+const scaleExample = document.getElementById('scaleExample');
+function updateScale(){
+  const v = SCALE[+scaleSlider.value];
+  scaleBadge.textContent = v.badge;
+  scaleCoverage.textContent = v.coverage;
+  scaleExample.textContent = v.example;
+}
+scaleSlider.addEventListener('input', updateScale);
+updateScale();
+
+/* ---------- Hub vs Switch widget ---------- */
+const sendBtn = document.getElementById('sendPacketBtn');
+sendBtn.addEventListener('click', () => {
+  sendBtn.disabled = true;
+  const hubPorts = ['hubP1','hubP2','hubP3','hubP4'];
+  hubPorts.forEach(id => document.getElementById(id).setAttribute('fill', '#F9C74F'));
+  document.getElementById('swP1').setAttribute('fill', '#F9C74F');
+  document.getElementById('swP3').setAttribute('fill', '#00A6A6');
+  setTimeout(() => {
+    hubPorts.forEach(id => document.getElementById(id).setAttribute('fill', '#E9DFE8'));
+    document.getElementById('swP1').setAttribute('fill', '#E9DFE8');
+    document.getElementById('swP3').setAttribute('fill', '#E9DFE8');
+    sendBtn.disabled = false;
+  }, 1400);
+});
+
+/* ---------- Topology picker widget ---------- */
+const TOPO_SVG = {
+bus: `<svg viewBox="0 0 260 170"><rect x="24" y="112" width="14" height="14" fill="#4A2545"/><rect x="222" y="112" width="14" height="14" fill="#4A2545"/><line x1="31" y1="119" x2="229" y2="119" stroke="#4A2545" stroke-width="3"/>
+${[62,110,158,206].map((x,i)=>`<line x1="${x}" y1="119" x2="${x}" y2="80" stroke="#4A2545" stroke-width="1.5"/><rect x="${x-24}" y="52" width="48" height="28" rx="3" fill="#fff" stroke="#4A2545" stroke-width="1.5"/><text x="${x}" y="70" text-anchor="middle" font-size="11" font-family="IBM Plex Mono">PC${i+1}</text>`).join('')}
+<text x="130" y="145" text-anchor="middle" font-size="10" fill="#6B5F69">Main Cable (Bus)</text></svg>`,
+star: `<svg viewBox="0 0 260 200"><rect x="105" y="86" width="50" height="28" rx="4" fill="#00767A"/><text x="130" y="104" text-anchor="middle" fill="#fff" font-size="10" font-family="IBM Plex Mono">Hub/Switch</text>
+<line x1="130" y1="86" x2="55" y2="35" stroke="#4A2545"/><line x1="130" y1="86" x2="205" y2="35" stroke="#4A2545"/><line x1="130" y1="114" x2="55" y2="165" stroke="#4A2545"/><line x1="130" y1="114" x2="205" y2="165" stroke="#4A2545"/>
+${[[55,35,'PC1'],[205,35,'PC2'],[55,165,'PC3'],[205,165,'PC4']].map(([x,y,l])=>`<rect x="${x-24}" y="${y-14}" width="48" height="28" rx="3" fill="#fff" stroke="#4A2545" stroke-width="1.5"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-family="IBM Plex Mono">${l}</text>`).join('')}
+</svg>`,
+ring: `<svg viewBox="0 0 220 220"><g fill="none" stroke="#4A2545" stroke-width="1.8" marker-end="url(#arr)">
+<line x1="110" y1="55" x2="165" y2="110"/><line x1="165" y1="110" x2="110" y2="165"/><line x1="110" y1="165" x2="55" y2="110"/><line x1="55" y1="110" x2="110" y2="55"/>
+</g><defs><marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4A2545"/></marker></defs>
+${[[110,40,'PC1'],[190,110,'PC2'],[110,180,'PC3'],[30,110,'PC4']].map(([x,y,l])=>`<rect x="${x-24}" y="${y-14}" width="48" height="28" rx="3" fill="#fff" stroke="#4A2545" stroke-width="1.5"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-family="IBM Plex Mono">${l}</text>`).join('')}
+</svg>`,
+mesh: `<svg viewBox="0 0 240 200">
+${(()=>{const pts=[[60,40],[180,40],[60,160],[180,160]];let lines='';for(let i=0;i<4;i++)for(let j=i+1;j<4;j++){lines+=`<line x1="${pts[i][0]}" y1="${pts[i][1]}" x2="${pts[j][0]}" y2="${pts[j][1]}" stroke="#8a7688" stroke-width="1.3"/>`;}return lines;})()}
+${[[60,40,'PC1'],[180,40,'PC2'],[60,160,'PC3'],[180,160,'PC4']].map(([x,y,l])=>`<rect x="${x-24}" y="${y-14}" width="48" height="28" rx="3" fill="#fff" stroke="#4A2545" stroke-width="1.5"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-family="IBM Plex Mono">${l}</text>`).join('')}
+</svg>`,
+tree: `<svg viewBox="0 0 260 200"><rect x="106" y="20" width="48" height="26" rx="3" fill="#00767A"/><text x="130" y="37" text-anchor="middle" fill="#fff" font-size="9" font-family="IBM Plex Mono">Switch</text>
+<line x1="130" y1="46" x2="70" y2="80" stroke="#4A2545" stroke-width="2"/><line x1="130" y1="46" x2="190" y2="80" stroke="#4A2545" stroke-width="2"/>
+<rect x="46" y="80" width="48" height="26" rx="3" fill="#fff" stroke="#4A2545"/><text x="70" y="97" text-anchor="middle" font-size="9" font-family="IBM Plex Mono">Switch</text>
+<rect x="166" y="80" width="48" height="26" rx="3" fill="#fff" stroke="#4A2545"/><text x="190" y="97" text-anchor="middle" font-size="9" font-family="IBM Plex Mono">Switch</text>
+${[[40,150,'PC'],[100,150,'PC'],[160,150,'PC'],[220,150,'PC']].map(([x,y,l],i)=>{const px=i<2?70:190;return `<line x1="${px}" y1="106" x2="${x}" y2="136" stroke="#4A2545"/><rect x="${x-20}" y="136" width="40" height="24" rx="3" fill="#fff" stroke="#4A2545"/><text x="${x}" y="152" text-anchor="middle" font-size="9" font-family="IBM Plex Mono">${l}</text>`;}).join('')}
+</svg>`,
+hybrid: `<svg viewBox="0 0 260 220"><rect x="106" y="96" width="48" height="26" rx="3" fill="#4A2545"/><text x="130" y="113" text-anchor="middle" fill="#fff" font-size="8" font-family="IBM Plex Mono">Router</text>
+<rect x="8" y="8" width="100" height="70" rx="6" fill="none" stroke="#8a7688" stroke-dasharray="3,3"/><text x="14" y="20" font-size="8" fill="#6B5F69">Star segment</text>
+<rect x="34" y="30" width="34" height="20" rx="3" fill="#fff" stroke="#4A2545"/><text x="51" y="44" text-anchor="middle" font-size="7" font-family="IBM Plex Mono">Hub</text>
+<line x1="51" y1="50" x2="30" y2="66" stroke="#4A2545"/><rect x="14" y="66" width="30" height="16" rx="2" fill="#fff" stroke="#4A2545"/>
+<line x1="51" y1="50" x2="72" y2="66" stroke="#4A2545"/><rect x="58" y="66" width="30" height="16" rx="2" fill="#fff" stroke="#4A2545"/>
+<line x1="51" y1="50" x2="106" y2="105" stroke="#4A2545"/>
+<rect x="152" y="8" width="100" height="70" rx="6" fill="none" stroke="#8a7688" stroke-dasharray="3,3"/><text x="158" y="20" font-size="8" fill="#6B5F69">Bus segment</text>
+<line x1="165" y1="55" x2="240" y2="55" stroke="#4A2545" stroke-width="2"/>
+${[178,204,230].map(x=>`<line x1="${x}" y1="55" x2="${x}" y2="40" stroke="#4A2545"/><rect x="${x-14}" y="24" width="28" height="16" rx="2" fill="#fff" stroke="#4A2545"/>`).join('')}
+<line x1="200" y1="55" x2="154" y2="105" stroke="#4A2545"/>
+<rect x="66" y="150" width="110" height="62" rx="6" fill="none" stroke="#8a7688" stroke-dasharray="3,3"/><text x="72" y="163" font-size="8" fill="#6B5F69">Ring segment</text>
+<g fill="none" stroke="#4A2545" stroke-width="1.3"><line x1="121" y1="175" x2="150" y2="192"/><line x1="150" y1="192" x2="121" y2="205"/><line x1="121" y1="205" x2="92" y2="192"/><line x1="92" y1="192" x2="121" y2="175"/></g>
+${[[121,170,'PC'],[156,192,'PC'],[121,210,'PC'],[86,192,'PC']].map(([x,y,l])=>`<rect x="${x-14}" y="${y-9}" width="28" height="16" rx="2" fill="#fff" stroke="#4A2545"/><text x="${x}" y="${y+3}" text-anchor="middle" font-size="7" font-family="IBM Plex Mono">${l}</text>`).join('')}
+<line x1="121" y1="192" x2="130" y2="122" stroke="#4A2545"/>
+</svg>`
+};
+const TOPO_FACTS = {
+bus: {facts:"<b>Structure:</b> all nodes on a single central cable (the bus). Data travels both directions; only the intended receiver accepts it.<br><br><b>Terminators</b> at both ends prevent signal reflection.", fail:"Failure of the main cable stops the entire network."},
+star: {facts:"<b>Structure:</b> all nodes connect to a central device via a dedicated link each. <b>Hub</b> broadcasts to all; <b>switch</b> sends only to the intended node.", fail:"Failure of the central hub/switch affects the entire network."},
+ring: {facts:"<b>Structure:</b> nodes form a closed loop, each connected to exactly two neighbours. A <b>token</b> circulates — a device can send only when it holds the token.", fail:"Failure of one node or cable affects the entire network."},
+mesh: {facts:"<b>Structure:</b> every node connected to every other node via dedicated point-to-point links — multiple paths for data.", fail:"One link failing does NOT affect the rest — data reroutes automatically."},
+tree: {facts:"<b>Structure:</b> hierarchical — combines star and bus. Star groups (hub/switch + nodes) are joined to a main backbone cable.", fail:"Failure of the main backbone affects the entire network."},
+hybrid: {facts:"<b>Structure:</b> two or more topologies combined — different segments use different topologies, joined via routers/switches.", fail:"One segment failing does not affect the others."},
+};
+const topoSvgBox = document.getElementById('topoSvgBox');
+const topoFacts = document.getElementById('topoFacts');
+const topoFail = document.getElementById('topoFail');
+function setTopo(t){
+  document.querySelectorAll('#topoBtns .topo-btn').forEach(b => b.classList.toggle('active', b.dataset.t === t));
+  topoSvgBox.innerHTML = TOPO_SVG[t];
+  topoFacts.innerHTML = TOPO_FACTS[t].facts;
+  topoFail.textContent = "⚠ " + TOPO_FACTS[t].fail;
+}
+document.getElementById('topoBtns').addEventListener('click', e => {
+  const b = e.target.closest('.topo-btn'); if (!b) return;
+  setTopo(b.dataset.t);
+});
+setTopo('bus');
+
+/* ---------- Protocol matcher quiz ---------- */
+const PM_PAIRS = [
+  ["HTTPS","Uses SSL to encrypt passwords and banking data"],
+  ["DNS","Translates domain names into IP addresses"],
+  ["FTP","Uploads and downloads files between client and server"],
+  ["SMTP","Sends outgoing email from client to server"],
+  ["IMAP","Keeps email synced on the server across devices"],
+  ["TCP/IP","Packets, addresses and routes data across the Internet"],
+];
+function shuffled(arr){ return [...arr].map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]); }
+const pmWrap = document.getElementById('pmWrap');
+const pmScoreEl = document.getElementById('pmScore');
+let pmSelected = null, pmMatched = 0;
+const protoOrder = PM_PAIRS.map(p=>p[0]);
+const defOrder = shuffled(PM_PAIRS.map(p=>p[1]));
+protoOrder.forEach(p => {
+  const el = document.createElement('div'); el.className='pm-item'; el.textContent=p; el.dataset.key=p;
+  el.addEventListener('click', ()=>selectProto(el));
+  pmWrap.appendChild(el);
+});
+defOrder.forEach(d => {
+  const pair = PM_PAIRS.find(p=>p[1]===d);
+  const el = document.createElement('div'); el.className='pm-item def'; el.textContent=d; el.dataset.key=pair[0];
+  el.addEventListener('click', ()=>selectDef(el));
+  pmWrap.appendChild(el);
+});
+function selectProto(el){
+  if (el.classList.contains('matched')) return;
+  document.querySelectorAll('.pm-item:not(.def)').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel'); pmSelected = el;
+}
+function selectDef(el){
+  if (el.classList.contains('matched') || !pmSelected) return;
+  if (pmSelected.dataset.key === el.dataset.key){
+    pmSelected.classList.add('matched'); el.classList.add('matched');
+    pmSelected.classList.remove('sel'); pmSelected = null; pmMatched++;
+    pmScoreEl.textContent = `${pmMatched} of 6 matched`;
+    if (pmMatched===6) pmScoreEl.textContent = "All 6 matched! 🎉";
+  } else {
+    el.classList.add('wrong');
+    setTimeout(()=>el.classList.remove('wrong'), 300);
+  }
+}
+
+/* ---------- DNS stepper ---------- */
+const DNS_STEPS = [
+  "Browser checks the local DNS cache to see if the IP address is already stored.",
+  "If not found, the request goes to a DNS resolver.",
+  "The resolver contacts the root DNS server.",
+  "Then the Top-Level Domain (TLD) server (e.g. .com).",
+  "Finally the authoritative DNS server, which holds the actual IP address.",
+  "The IP address is sent back to the user's device.",
+  "The browser connects to the web server (HTTP/HTTPS request).",
+  "The web server sends back the requested webpage."
+];
+let dnsIdx = 0;
+const dnsStepsEl = document.getElementById('dnsSteps');
+const dnsDescEl = document.getElementById('dnsDesc');
+DNS_STEPS.forEach((_,i)=>{
+  const chip = document.createElement('span'); chip.className='dns-chip'; chip.textContent = 'Step ' + (i+1);
+  dnsStepsEl.appendChild(chip);
+});
+function renderDns(){
+  [...dnsStepsEl.children].forEach((c,i)=>c.classList.toggle('active', i===dnsIdx));
+  dnsDescEl.textContent = (dnsIdx+1) + ". " + DNS_STEPS[dnsIdx];
+  document.getElementById('dnsPrev').disabled = dnsIdx===0;
+  document.getElementById('dnsNext').disabled = dnsIdx===DNS_STEPS.length-1;
+}
+document.getElementById('dnsNext').addEventListener('click', ()=>{ if(dnsIdx<DNS_STEPS.length-1){dnsIdx++; renderDns();} });
+document.getElementById('dnsPrev').addEventListener('click', ()=>{ if(dnsIdx>0){dnsIdx--; renderDns();} });
+renderDns();
+</script>
+</body>
+</html>
