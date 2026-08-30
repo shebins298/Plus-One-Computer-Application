@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 7 — Cyber Security | Plus One Computer Applications</title>
+<style>
+  :root{
+    --slate:#33475B; --slate-mid:#5C7A99; --slate-pale:#EAF0F5;
+    --amber:#C9791F; --amber-pale:#FBEEDD;
+    --ink:#1F2A33; --grey:#6B7787; --line:#DCE4EB; --white:#FFFFFF;
+    --maxw:960px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:64px;}
+  body{
+    margin:0; font-family:-apple-system,"Segoe UI",Calibri,Arial,sans-serif;
+    color:var(--ink); background:var(--white); line-height:1.55;
+  }
+  a{color:var(--slate);}
+  /* ---------- top bar ---------- */
+  header.topbar{
+    position:sticky; top:0; z-index:50; background:var(--slate);
+    color:var(--white); display:flex; align-items:center; justify-content:space-between;
+    padding:0 16px; height:56px; box-shadow:0 2px 8px rgba(0,0,0,.15);
+  }
+  header.topbar .brand{font-weight:700; font-size:15px; letter-spacing:.2px;}
+  header.topbar .brand small{display:block; font-weight:400; font-size:11px; color:var(--slate-pale);}
+  header.topbar button.menuBtn{
+    background:none; border:1px solid rgba(255,255,255,.35); color:var(--white);
+    border-radius:6px; padding:6px 10px; font-size:13px; cursor:pointer; display:none;
+  }
+  #progress{position:fixed; top:56px; left:0; height:3px; background:var(--amber); width:0%; z-index:51; transition:width .1s;}
+
+  /* ---------- layout ---------- */
+  .shell{display:flex; max-width:1180px; margin:0 auto;}
+  nav.toc{
+    width:250px; flex:0 0 250px; padding:22px 14px; position:sticky; top:56px;
+    align-self:flex-start; height:calc(100vh - 56px); overflow-y:auto;
+  }
+  nav.toc h4{font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:var(--grey); margin:0 0 10px 6px;}
+  nav.toc a{
+    display:block; padding:7px 8px; font-size:13.5px; color:var(--ink); text-decoration:none;
+    border-radius:6px; margin-bottom:1px;
+  }
+  nav.toc a:hover{background:var(--slate-pale);}
+  nav.toc a.active{background:var(--amber-pale); color:var(--amber); font-weight:700;}
+
+  main{flex:1; min-width:0; padding:0 20px 80px;}
+  .content{max-width:var(--maxw); margin:0 auto;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    background:linear-gradient(135deg, var(--slate), #223244); color:var(--white);
+    padding:44px 28px; border-radius:14px; margin:26px auto 34px; max-width:var(--maxw);
+    position:relative; overflow:hidden;
+  }
+  .hero .num{
+    position:absolute; right:20px; top:-18px; font-size:150px; font-weight:800;
+    color:rgba(255,255,255,.08); line-height:1; user-select:none;
+  }
+  .hero h1{margin:0 0 6px; font-size:clamp(28px,5vw,40px); font-weight:800;}
+  .hero p.sub{margin:0 0 18px; color:var(--slate-pale); font-size:15px;}
+  .hero blockquote{
+    margin:0; font-style:italic; font-size:15px; color:#EFE2CE; border-left:3px solid var(--amber);
+    padding-left:14px;
+  }
+  .hero blockquote span{display:block; margin-top:4px; font-style:normal; font-weight:700; color:var(--amber); font-size:13px;}
+
+  /* ---------- sections ---------- */
+  section.chap{scroll-margin-top:64px; margin-bottom:46px;}
+  .sec-banner{
+    background:var(--slate); color:var(--white); border-radius:10px;
+    padding:14px 18px; display:flex; align-items:baseline; gap:10px; margin-bottom:18px;
+  }
+  .sec-banner .tag{color:var(--amber); font-weight:800; font-size:14px;}
+  .sec-banner h2{margin:0; font-size:20px; font-weight:700;}
+  .sub-banner{
+    background:var(--slate-pale); border-left:4px solid var(--amber); color:var(--slate);
+    border-radius:6px; padding:9px 14px; font-weight:700; font-size:14.5px; margin:22px 0 12px;
+  }
+  p{font-size:15.5px; margin:0 0 12px;}
+  .lead-def{font-weight:700;}
+
+  .rows{display:flex; flex-direction:column; gap:8px; margin:12px 0 18px;}
+  .row{
+    display:flex; gap:16px; border:1px solid var(--line); border-radius:8px; padding:12px 14px;
+    background:var(--white);
+  }
+  .row:nth-child(even){background:var(--slate-pale); border-color:var(--slate-pale);}
+  .row .term{flex:0 0 34%; font-weight:700; color:var(--slate); font-size:14.5px;}
+  .row .desc{flex:1; font-size:14.5px;}
+  @media (max-width:640px){
+    .row{flex-direction:column; gap:4px;}
+    .row .term{flex:none;}
+  }
+
+  ul.plain{margin:0 0 16px; padding-left:0; list-style:none;}
+  ul.plain li{
+    position:relative; padding-left:22px; margin-bottom:8px; font-size:15.5px;
+  }
+  ul.plain li::before{
+    content:""; position:absolute; left:2px; top:8px; width:8px; height:8px; border-radius:50%;
+    background:var(--amber);
+  }
+  ol.numd{margin:0 0 16px; padding-left:22px;}
+  ol.numd li{margin-bottom:8px; font-size:15.5px;}
+
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0 18px;}
+  .compare .col h5{
+    margin:0 0 8px; padding:8px 12px; border-radius:6px; font-size:14px; color:var(--white);
+  }
+  .compare .col.a h5{background:var(--slate);}
+  .compare .col.b h5{background:var(--amber);}
+  .compare .col .item{
+    border:1px solid var(--line); border-radius:6px; padding:9px 12px; margin-bottom:8px; font-size:14px;
+  }
+  .compare .col.a .item{background:var(--slate-pale); border-color:var(--slate-pale);}
+  .compare .col.b .item{background:var(--amber-pale); border-color:var(--amber-pale);}
+  @media (max-width:640px){ .compare{grid-template-columns:1fr;} }
+
+  table.grid{width:100%; border-collapse:collapse; margin:12px 0 18px; font-size:14px;}
+  table.grid th{background:var(--slate); color:var(--white); text-align:left; padding:9px 12px; font-size:13.5px;}
+  table.grid td{border:1px solid var(--line); padding:9px 12px; vertical-align:top;}
+  table.grid tr:nth-child(even) td{background:var(--slate-pale);}
+
+  .dosdonts{width:100%; border-collapse:collapse; margin:12px 0 18px;}
+  .dosdonts th{padding:9px 12px; color:var(--white); font-size:13.5px; text-align:left;}
+  .dosdonts th.do{background:var(--slate);} .dosdonts th.dont{background:var(--amber);}
+  .dosdonts td{border:1px solid var(--line); padding:10px 12px; font-size:14px; vertical-align:top; width:50%;}
+  .dosdonts tr:nth-child(even) td{background:var(--slate-pale);}
+  @media (max-width:640px){
+    .dosdonts, .dosdonts thead, .dosdonts tbody, .dosdonts tr, .dosdonts td{display:block; width:100%;}
+    .dosdonts thead{display:none;}
+    .dosdonts tr{margin-bottom:10px; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+    .dosdonts td{border:none; border-bottom:1px solid var(--line);}
+    .dosdonts td::before{content:attr(data-label); display:block; font-weight:700; color:var(--amber); font-size:11px; text-transform:uppercase; margin-bottom:3px;}
+  }
+
+  /* ---------- notes check (interactive) ---------- */
+  .quiz{
+    background:var(--slate-pale); border-radius:10px; padding:18px 18px 8px; margin:24px 0;
+    border-left:4px solid var(--slate);
+  }
+  .quiz h4{margin:0 0 14px; color:var(--slate); font-size:14px; text-transform:uppercase; letter-spacing:.6px;}
+  .qcard{background:var(--white); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-bottom:10px;}
+  .qcard .qtext{font-size:14.5px; font-weight:600; margin-bottom:8px;}
+  .qcard button.revealBtn{
+    background:var(--amber); color:var(--white); border:none; border-radius:6px; padding:6px 12px;
+    font-size:12.5px; font-weight:700; cursor:pointer;
+  }
+  .qcard button.revealBtn:hover{background:#B0691A;}
+  .qcard .ans{
+    display:none; margin-top:10px; padding:10px 12px; background:var(--amber-pale);
+    border-left:3px solid var(--amber); border-radius:6px; font-size:14px; color:var(--ink);
+  }
+  .qcard.revealed .ans{display:block;}
+  .qcard.revealed button.revealBtn{background:var(--slate-mid);}
+
+  /* ---------- end questions ---------- */
+  .qbank{margin:14px 0;}
+  .qbank .qb-item{
+    display:flex; gap:10px; padding:9px 4px; border-bottom:1px solid var(--line); font-size:14.5px;
+  }
+  .qbank .qb-item .n{color:var(--amber); font-weight:800; flex:0 0 26px;}
+  .qbank .qb-item a.ref{
+    font-size:11.5px; color:var(--slate-mid); text-decoration:none; white-space:nowrap;
+    border:1px solid var(--line); border-radius:10px; padding:1px 8px; margin-left:6px;
+  }
+  .qbank .qb-item a.ref:hover{background:var(--slate-pale);}
+
+  footer{
+    text-align:center; color:var(--grey); font-size:12.5px; padding:26px 20px; border-top:1px solid var(--line);
+    max-width:var(--maxw); margin:0 auto;
+  }
+
+  #toTop{
+    position:fixed; bottom:22px; right:22px; background:var(--amber); color:var(--white);
+    border:none; border-radius:50%; width:44px; height:44px; font-size:18px; cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,.2); display:none; z-index:52;
+  }
+
+  @media (max-width:900px){
+    nav.toc{position:fixed; left:0; top:56px; bottom:0; background:var(--white); width:250px;
+      transform:translateX(-100%); transition:transform .2s; box-shadow:2px 0 12px rgba(0,0,0,.15); z-index:49;}
+    nav.toc.open{transform:translateX(0);}
+    header.topbar button.menuBtn{display:inline-block;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<header class="topbar">
+  <div class="brand">Cyber Security <small>Ch. 7 &middot; Computer Applications (Commerce)</small></div>
+  <button class="menuBtn" id="menuBtn">Menu</button>
+</header>
+
+<div class="shell">
+  <nav class="toc" id="tocNav">
+    <h4>Chapter 7</h4>
+    <a href="#s71">7.1 Introduction</a>
+    <a href="#s72">7.2 Vulnerability</a>
+    <a href="#s73">7.3 Meaning &amp; Scope</a>
+    <a href="#s74">7.4 Importance</a>
+    <a href="#s75">7.5 Types of Security</a>
+    <a href="#s76">7.6 Common Threats</a>
+    <a href="#s77">7.7 Cyber Crimes</a>
+    <a href="#s78">7.8 Security Controls</a>
+    <a href="#s79">7.9 Do&rsquo;s and Don&rsquo;ts</a>
+    <a href="#s710">7.10 Legal &amp; Ethical</a>
+    <a href="#endq">End Questions (33)</a>
+  </nav>
+
+  <main>
+    <div class="content">
+
+      <div class="hero">
+        <div class="num">7</div>
+        <h1>Cyber Security</h1>
+        <p class="sub">Plus One Computer Applications (Commerce) &middot; Kerala SCERT Syllabus (2026 Revision)</p>
+        <blockquote>&ldquo;Information security is not a destination it&rsquo;s a journey&rdquo;<span>&mdash; Bill Cheswick</span></blockquote>
+      </div>
+
+      <!-- 7.1 -->
+      <section class="chap" id="s71">
+        <div class="sec-banner"><span class="tag">7.1</span><h2>Introduction</h2></div>
+        <p><span class="lead-def">Cyberspace refers to interconnected networks of computers and electronic systems.</span> It is the environment where online communication, data exchange, and digital interactions take place.</p>
+        <p><strong>Five components of cyberspace:</strong> networks, hardware, software, data, and users.</p>
+        <p><strong>Kerala context:</strong> digital literacy is relatively high, with initiatives such as Akshaya centres, e-District, K-FON and online education platforms. Along with convenience, technology also brings risks — cyber criminals misuse digital systems to steal money, data and personal information.</p>
+        <p><span class="lead-def">Cyber security is the practice of protecting computers, networks, devices and data from digital attacks, unauthorized access, damage, or theft.</span> It involves using technologies, rules, and safe practices to keep information secure while using the internet and digital devices.</p>
+      </section>
+
+      <!-- 7.2 -->
+      <section class="chap" id="s72">
+        <div class="sec-banner"><span class="tag">7.2</span><h2>Vulnerability in Cyber Space</h2></div>
+        <p><span class="lead-def">Vulnerability in cyberspace refers to weaknesses or gaps in computers, networks, software or user practices that can be exploited by cyber attackers.</span></p>
+        <p>Vulnerabilities arise from <strong>software flaws, human mistakes, network setup errors</strong> and <strong>weak hardware</strong>.</p>
+
+        <div class="sub-banner">7.2.1.1 Software Vulnerabilities</div>
+        <div class="rows">
+          <div class="row"><div class="term">Bugs and coding mistakes</div><div class="desc">Errors or flaws in program code. Example: an app crashing unexpectedly — that bug could let attackers sneak in.</div></div>
+          <div class="row"><div class="term">Outdated software</div><div class="desc">Software that is not updated will have security problems; hackers can easily attack old software.</div></div>
+          <div class="row"><div class="term">Digital footprints</div><div class="desc">The data trail created when a person uses digital devices and the internet, showing where they have been online. Examples: search history, social media activity, cookies, IP address, location data.</div></div>
+        </div>
+
+        <div class="sub-banner">7.2.1.2 Human Factors</div>
+        <div class="rows">
+          <div class="row"><div class="term">Excessive user privileges</div><div class="desc">More access rights than necessary — a compromised account can then delete data or change system settings.</div></div>
+          <div class="row"><div class="term">Weak passwords</div><div class="desc">Easy passwords can be guessed quickly; using the same password everywhere is also unsafe.</div></div>
+          <div class="row"><div class="term">Lack of awareness</div><div class="desc">Users who do not know basic cyber safety rules click fake links or open unknown files, letting hackers in.</div></div>
+          <div class="row"><div class="term">Insider threats</div><div class="desc">Users who already have access to the system may misuse it or make mistakes.</div></div>
+        </div>
+
+        <div class="sub-banner">7.2.1.3 Network and Infrastructure Issues</div>
+        <div class="rows">
+          <div class="row"><div class="term">Misconfigured firewalls and routers</div><div class="desc">A firewall is a security guard for a network. Weak or wrongly configured rules can be bypassed. Routers with default settings — e.g. a <strong>factory password</strong> (the default password a device comes with from the manufacturer) — let attackers take over a home network.</div></div>
+          <div class="row"><div class="term">Poor security settings</div><div class="desc">If security settings are not set properly, hackers can enter the network easily.</div></div>
+          <div class="row"><div class="term">Untrusted devices or networks</div><div class="desc">Using public Wi-Fi or unknown devices can expose data to hackers.</div></div>
+          <div class="row"><div class="term">Misconfigured cloud storage</div><div class="desc">Wrongly set access rights (e.g. public access enabled by mistake) lead to data leaks, unauthorized access, or data theft.</div></div>
+        </div>
+
+        <div class="sub-banner">7.2.1.4 Hardware Vulnerabilities</div>
+        <div class="rows">
+          <div class="row"><div class="term">Outdated / unsupported devices</div><div class="desc">Hardware that never gets security patches is weak and lacks modern security features. Example: an old smartphone that can no longer install security updates.</div></div>
+          <div class="row"><div class="term">Insecure BIOS settings</div><div class="desc">The <strong>BIOS (Basic Input Output System)</strong> controls basic hardware operations. If BIOS passwords are not set, attackers can change settings, install malware or access data <strong>before the operating system starts</strong>.</div></div>
+        </div>
+
+        <div class="quiz">
+          <h4>Try Yourself — after 7.2</h4>
+          <div class="qcard"><div class="qtext">1. How does human error lead to cyber attacks?</div><button class="revealBtn">Show answer</button><div class="ans">Users who do not know basic safety rules click fake links or open unknown files, letting hackers in. Excessive privileges, weak passwords and insider misuse are also human causes.</div></div>
+          <div class="qcard"><div class="qtext">2. &ldquo;Using untrusted networks can expose personal data.&rdquo; Justify this statement.</div><button class="revealBtn">Show answer</button><div class="ans">Public Wi-Fi and unknown devices are not under our control and their security settings cannot be trusted. Data travelling over them can be intercepted by hackers.</div></div>
+          <div class="qcard"><div class="qtext">3. Small files used by websites to track browsing habits are called ____.</div><button class="revealBtn">Show answer</button><div class="ans">Cookies</div></div>
+          <div class="qcard"><div class="qtext">4. Explain weak passwords with an example.</div><button class="revealBtn">Show answer</button><div class="ans">A weak password can be guessed quickly because it uses common words or personal information; using the same password on every account is also unsafe. Example: &ldquo;123456&rdquo;, &ldquo;password&rdquo;, or one&rsquo;s own name with birth year.</div></div>
+          <div class="qcard"><div class="qtext">5. What are bugs? How can they lead to cyber attacks?</div><button class="revealBtn">Show answer</button><div class="ans">Bugs are errors or flaws in the code of a program. Example: an app crashing unexpectedly — that bug could let attackers sneak in.</div></div>
+          <div class="qcard"><div class="qtext">6. What is meant by insider threat?</div><button class="revealBtn">Show answer</button><div class="ans">Users who already have access to the system may misuse that access or make mistakes, causing harm from within.</div></div>
+          <div class="qcard"><div class="qtext">7. What is a digital footprint?</div><button class="revealBtn">Show answer</button><div class="ans">The data trail created when a person uses digital devices and the internet; it shows where a person has been online.</div></div>
+          <div class="qcard"><div class="qtext">8. Which hardware component controls basic system operations before the OS loads?</div><button class="revealBtn">Show answer</button><div class="ans">BIOS (Basic Input Output System)</div></div>
+        </div>
+      </section>
+
+      <!-- 7.3 -->
+      <section class="chap" id="s73">
+        <div class="sec-banner"><span class="tag">7.3</span><h2>Meaning and Scope of Cyber Security</h2></div>
+        <p>Cyber security involves protecting information and systems from malignant activities in cyber space.</p>
+        <p><strong>Cyber security is not only about computers. It is also about people, data and safe behavior in cyberspace.</strong></p>
+
+        <div class="sub-banner">The CIA Triad — three basic principles</div>
+        <table class="grid">
+          <tr><th>Principle</th><th>Meaning</th></tr>
+          <tr><td>Confidentiality</td><td>Information should be accessible only to authorized persons.</td></tr>
+          <tr><td>Integrity</td><td>Information should not be altered without permission.</td></tr>
+          <tr><td>Availability</td><td>Information and services should be available when needed.</td></tr>
+        </table>
+        <p><strong>Example:</strong> When a student in Kerala logs into the Kerala Infrastructure and Technology for Education (KITE) portal, cyber security ensures only the student can access their account (<strong>confidentiality</strong>), the content is not tampered with (<strong>integrity</strong>), and the site stays up during exam seasons (<strong>availability</strong>).</p>
+
+        <div class="sub-banner">Extended / supporting security objectives</div>
+        <div class="rows">
+          <div class="row"><div class="term">Authentication</div><div class="desc">Verifying the identity of a user or system before granting access. Answers &ldquo;Who are you?&rdquo; Examples: username/password, OTP, biometrics.</div></div>
+          <div class="row"><div class="term">Authorization</div><div class="desc">Determines what an authenticated user may do after logging in. Answers &ldquo;What are you allowed to do?&rdquo; Example: a student can view marks but not edit them.</div></div>
+          <div class="row"><div class="term">Access Control Systems</div><div class="desc">Mechanisms enforcing authentication and authorization rules based on predefined rules.</div></div>
+          <div class="row"><div class="term">Non-repudiation</div><div class="desc">Ensures a user cannot deny performing an action after it has occurred; provides proof of origin and action.</div></div>
+        </div>
+
+        <div class="sub-banner">Authentication vs Authorization</div>
+        <div class="compare">
+          <div class="col a"><h5>Authentication</h5>
+            <div class="item">&ldquo;Who are you?&rdquo;</div>
+            <div class="item">Before access is granted</div>
+            <div class="item">Verifies identity</div>
+          </div>
+          <div class="col b"><h5>Authorization</h5>
+            <div class="item">&ldquo;What are you allowed to do?&rdquo;</div>
+            <div class="item">After the user has logged in</div>
+            <div class="item">Decides permissions / level of access</div>
+          </div>
+        </div>
+
+        <div class="quiz">
+          <h4>Try Yourself — after 7.3</h4>
+          <div class="qcard"><div class="qtext">1. Which of the following is NOT part of the CIA Triad? (a) Confidentiality (b) Integrity (c) Authentication (d) Availability</div><button class="revealBtn">Show answer</button><div class="ans">(c) Authentication — it is an extended supporting security goal, not one of the three core principles.</div></div>
+          <div class="qcard"><div class="qtext">2. How is cyber security related to human behavior?</div><button class="revealBtn">Show answer</button><div class="ans">Cyber security is not only about computers — it is also about people, data and safe behavior. Weak passwords, clicking fake links and insider misuse all cause attacks, so safe user behavior is essential.</div></div>
+        </div>
+      </section>
+
+      <!-- 7.4 -->
+      <section class="chap" id="s74">
+        <div class="sec-banner"><span class="tag">7.4</span><h2>Importance of Cyber Security</h2></div>
+        <p>India is a rapidly growing digital economy. <strong>Digital India initiatives:</strong> online banking, UPI payments, Aadhar based services, e-Governance, digital classrooms.</p>
+        <p><strong>Kerala services depending on secure digital systems:</strong> SPARK (Service and Payroll Administrative Repository for Kerala), online PSC application and exams, virtual courts, e-Health Kerala, THANAL, FRIENDS, K-SMART.</p>
+        <p>A single cyber attack can affect thousands of citizens. Hence <strong>cyber security is a collective or shared responsibility.</strong> It is necessary to:</p>
+        <ol class="numd">
+          <li>Protect sensitive data (like Aadhar, PAN, bank account details).</li>
+          <li>Prevent online fraud and scams.</li>
+          <li>Protect government databases.</li>
+          <li>Build trust and reputation in digital services.</li>
+        </ol>
+      </section>
+
+      <!-- 7.5 -->
+      <section class="chap" id="s75">
+        <div class="sec-banner"><span class="tag">7.5</span><h2>Different Types of Cyber Security</h2></div>
+        <table class="grid">
+          <tr><th>Type</th><th>What it protects</th></tr>
+          <tr><td>a. Network Security</td><td>Secures networks from intruders using intrusion detection systems, firewalls and VPNs; protects the network&rsquo;s perimeter.</td></tr>
+          <tr><td>b. Application Security</td><td>Protects software and devices — secure programs, checking for weaknesses, firewalls, regular patching.</td></tr>
+          <tr><td>c. Information Security</td><td>Also called data security; protects confidentiality, integrity and availability of data via encryption and access control.</td></tr>
+          <tr><td>d. Endpoint Security</td><td>Protects PCs, smartphones and tablets, from basic antivirus to EDR (Endpoint Detection and Response).</td></tr>
+          <tr><td>e. Operational Security</td><td>Manages permissions and access to data assets — e.g. multi-factor authentication for corporate databases.</td></tr>
+          <tr><td>f. Cloud Security</td><td>Protects data and infrastructure in cloud computing; a shared responsibility between provider and client.</td></tr>
+        </table>
+        <p><strong>Data encryption:</strong> the process of converting data into a coded form to protect it from unauthorized access. Only a person with the correct key or password can convert it back.</p>
+
+        <div class="quiz">
+          <h4>Try Yourself — after 7.5</h4>
+          <div class="qcard"><div class="qtext">1. Protecting smart phones and laptops comes under: (a) Network (b) Application (c) Endpoint (d) Cloud security</div><button class="revealBtn">Show answer</button><div class="ans">(c) Endpoint security</div></div>
+          <div class="qcard"><div class="qtext">2. Which type of security focuses on protecting data confidentiality and integrity?</div><button class="revealBtn">Show answer</button><div class="ans">Information Security (also known as data security)</div></div>
+        </div>
+      </section>
+
+      <!-- 7.6 -->
+      <section class="chap" id="s76">
+        <div class="sec-banner"><span class="tag">7.6</span><h2>Common Cyber Security Threats</h2></div>
+        <div class="rows">
+          <div class="row"><div class="term">a. Phishing Attacks</div><div class="desc">Attackers pretend to be trusted sources and deceive individuals into sharing confidential information — card numbers, passwords, via deceptive emails and fake websites.</div></div>
+          <div class="row"><div class="term">b. Malware</div><div class="desc">Malicious software: any program designed to damage or exploit a device, service or network. Forms include Virus, Trojan, Worms, Spyware.</div></div>
+          <div class="row"><div class="term">c. Ransomware</div><div class="desc">Malware that takes control of a victim&rsquo;s files or systems and demands a ransom. Cannot be accessed without a decryption key, promised only upon payment.</div></div>
+          <div class="row"><div class="term">d. Man-in-the-Middle (MitM)</div><div class="desc">The perpetrator covertly intercepts, and may modify, communications between two parties who think they are connecting directly. Common on unsecured Wi-Fi.</div></div>
+          <div class="row"><div class="term">e. Denial-of-Service (DoS)</div><div class="desc">Blocks users from a machine or network by stopping the host&rsquo;s internet-based services. Targets web servers of banks, media, government sites.</div></div>
+          <div class="row"><div class="term">f. Zero-Day Exploits</div><div class="desc">Hackers exploit a vulnerability before developers know of it, or before a patch exists. Extremely dangerous — little or no time to fix the flaw.</div></div>
+          <div class="row"><div class="term">g. Insider threats</div><div class="desc">Risk from within — disgruntled employees, contractors or anyone with inside access misusing credentials to steal data or disrupt systems.</div></div>
+        </div>
+      </section>
+
+      <!-- 7.7 -->
+      <section class="chap" id="s77">
+        <div class="sec-banner"><span class="tag">7.7</span><h2>Cyber Crimes</h2></div>
+        <p><span class="lead-def">Cyber crime refers to illegal activities carried out using computers, mobile devices or the internet.</span> In cyber crimes, digital technologies are the target, the tool or both.</p>
+
+        <div class="sub-banner">Roles of the computer in cyber crimes</div>
+        <div class="rows">
+          <div class="row"><div class="term">Target</div><div class="desc">The computer/network itself is attacked. Example: hacking a server, spreading viruses.</div></div>
+          <div class="row"><div class="term">Tool</div><div class="desc">Used to commit the crime directly. Example: phishing emails, online fraud, spreading malware.</div></div>
+          <div class="row"><div class="term">Storage device</div><div class="desc">Used to store illegal data. Example: stolen data, pirated software, illegal content.</div></div>
+          <div class="row"><div class="term">Communication medium</div><div class="desc">Used to trap victims or coordinate crimes. Example: planning crimes via email, chat or social media.</div></div>
+        </div>
+        <p>Cyber crimes fall into <strong>four major categories</strong>: against individuals, property, organizations, and governments/society.</p>
+
+        <div class="sub-banner">7.7.1 Against Individuals</div>
+        <div class="rows">
+          <div class="row"><div class="term">Identity theft</div><div class="desc">Stealing and misusing personal information. Using stolen or fake identity information to commit fraud is called identity fraud or theft.</div></div>
+          <div class="row"><div class="term">Email spoofing</div><div class="desc">The e-mail header is forged so the mail appears to originate from one source but was actually sent from another.</div></div>
+          <div class="row"><div class="term">Phishing</div><div class="desc">Online identity theft: acquiring usernames, passwords, card details by pretending to be the original website — mostly banks. Creating such a misleading website is called <em>spoofing</em>. The most widespread financial threat on the Internet.</div></div>
+          <div class="row"><div class="term">Pharming</div><div class="desc">Users are redirected to fake websites by manipulating DNS servers. Phishing is a direct attack; pharming is more like a trap door.</div></div>
+          <div class="row"><div class="term">Spamming</div><div class="desc">Sending multiple copies of unsolicited mails or mass e-mails such as chain letters.</div></div>
+          <div class="row"><div class="term">Cyber defamation</div><div class="desc">Defamation using computers/internet — e.g. publishing defamatory matter on a website or in e-mails.</div></div>
+          <div class="row"><div class="term">Cyber stalking</div><div class="desc">Repeatedly harassing, threatening or following an individual&rsquo;s activity over the internet.</div></div>
+          <div class="row"><div class="term">Cyber bullying</div><div class="desc">Using digital platforms to insult or embarrass someone, especially repeatedly.</div></div>
+        </div>
+
+        <div class="sub-banner">7.7.2 Against Property</div>
+        <div class="rows">
+          <div class="row"><div class="term">Credit card fraud</div><div class="desc">Fraud using a credit card — generally by learning the card number/details or through a stolen card.</div></div>
+          <div class="row"><div class="term">Intellectual Property crimes</div><div class="desc"><strong>i.</strong> Software piracy — illegal copying of programs. <strong>ii.</strong> Copyright infringement — using copyrighted material without permission. <strong>iii.</strong> Trademarks violations — using trademarks without the holder&rsquo;s permission. <strong>iv.</strong> Theft of computer source code.</div></div>
+          <div class="row"><div class="term">Internet time theft</div><div class="desc">Internet hours paid by one person are used by an unauthorized individual.</div></div>
+        </div>
+
+        <div class="sub-banner">7.7.3 Against Organizations</div>
+        <div class="rows">
+          <div class="row"><div class="term">Unauthorized accessing of computer</div><div class="desc">Accessing a computer/network without the owner&rsquo;s permission — either to change/delete data, or as a <em>computer voyeur</em> who reads or copies confidential information without changing it.</div></div>
+          <div class="row"><div class="term">Denial of service</div><div class="desc">The Internet server is flooded with continuous bogus requests, denying legitimate users the server or crashing it.</div></div>
+          <div class="row"><div class="term">Virus</div><div class="desc">Replicates by attaching to other files/programs. <strong>Needs a host</strong> to spread; causes data loss or crashes.</div></div>
+          <div class="row"><div class="term">Worm</div><div class="desc">Like a virus but spreads <strong>without a host</strong>. Self-contained, propagates through networks, consuming resources.</div></div>
+          <div class="row"><div class="term">Trojan</div><div class="desc">An unauthorized program that seems authorized, concealing what it does. Lets attackers access the system or steal data.</div></div>
+          <div class="row"><div class="term">Ransomware</div><div class="desc">A digital kidnapper — encrypts files and demands payment for the decryption key. Payment does not guarantee recovery.</div></div>
+          <div class="row"><div class="term">Spyware</div><div class="desc">Secretly monitors and collects data such as browsing habits or keystrokes.</div></div>
+          <div class="row"><div class="term">Email bombing</div><div class="desc">Sending a large number of mails to an individual, company or mail server, crashing the system.</div></div>
+          <div class="row"><div class="term">Salami attack</div><div class="desc">A large amount of money or data is stolen by taking very small amounts repeatedly so each theft goes unnoticed — like slicing thin pieces of salami.</div></div>
+          <div class="row"><div class="term">Logic bomb</div><div class="desc">An event-dependent program; when the designated event occurs it crashes the computer, releases a virus, or causes other harm.</div></div>
+          <div class="row"><div class="term">Data diddling</div><div class="desc">Altering raw data just before it is processed by a computer, then changing it back after processing is over.</div></div>
+        </div>
+
+        <div class="sub-banner">7.7.4 Against Governments / Society</div>
+        <div class="rows">
+          <div class="row"><div class="term">Forgery</div><div class="desc">Currency notes, revenue stamps, mark sheets etc. forged using computers, high quality scanners and printers.</div></div>
+          <div class="row"><div class="term">Cyber terrorism</div><div class="desc">Use of computer resources to intimidate or coerce people and carry out the activities of terrorism.</div></div>
+          <div class="row"><div class="term">Web jacking</div><div class="desc">Hackers gain access to and control another&rsquo;s website, and may change its content to fulfil a political objective.</div></div>
+        </div>
+
+        <div class="quiz">
+          <h4>Try Yourself — after 7.7</h4>
+          <div class="qcard"><div class="qtext">1. When a server is hacked, the computer acts as: (a) Tool (b) Target (c) Storage device (d) Communication medium</div><button class="revealBtn">Show answer</button><div class="ans">(b) Target — the computer or network itself is attacked.</div></div>
+          <div class="qcard"><div class="qtext">2. Altering data before processing and restoring it later is called: (a) Logic bomb (b) Data diddling (c) Email bombing (d) Salami attack</div><button class="revealBtn">Show answer</button><div class="ans">(b) Data diddling</div></div>
+          <div class="qcard"><div class="qtext">3. Flooding a server with fake requests to crash it is known as ____ attack.</div><button class="revealBtn">Show answer</button><div class="ans">Denial of Service (DoS)</div></div>
+          <div class="qcard"><div class="qtext">4. Malware that needs a host file to spread is called ____.</div><button class="revealBtn">Show answer</button><div class="ans">Virus</div></div>
+        </div>
+      </section>
+
+      <!-- 7.8 -->
+      <section class="chap" id="s78">
+        <div class="sec-banner"><span class="tag">7.8</span><h2>Cyber Security Controls</h2></div>
+        <p>Cyber security controls are tools or steps that help keep computers and data safe — <strong>three main types</strong>.</p>
+        <table class="grid">
+          <tr><th>Type</th><th>What it does</th></tr>
+          <tr><td>1. Preventive<br><em>(before it happens)</em></td><td><strong>Strong passwords</strong> — unique, complex, changed regularly.<br><strong>Keep software updated</strong> — patch vulnerabilities.<br><strong>Multilevel authentication</strong> — Two-Factor Authentication (2FA); password + OTP, or password + biometric.<br><strong>Firewalls</strong> — monitor and control network traffic, blocking unauthorised access.</td></tr>
+          <tr><td>2. Detective<br><em>(identify and alert)</em></td><td><strong>Antivirus software</strong> — detects, prevents and removes malware by scanning files, emails and websites; must be kept updated.<br><strong>Alerts</strong> — e.g. an alert when someone logs in from a new device.</td></tr>
+          <tr><td>3. Corrective<br><em>(after it happens)</em></td><td>Reinstalling a clean OS or app after infection. Resetting a hacked password and removing unauthorized users.</td></tr>
+        </table>
+        <p><strong>Cyber security focuses on prevention rather than cure.</strong></p>
+
+        <div class="sub-banner">Cryptography, Hashing and Digital Signatures</div>
+        <div class="rows">
+          <div class="row"><div class="term">Cryptography</div><div class="desc">Protecting information by converting it into a secret code. Readable data (<strong>plain text</strong>) is encrypted into an unreadable form (<strong>cipher text</strong>); only authorized users with the correct key can decrypt it. Used in online banking and secure messaging.</div></div>
+          <div class="row"><div class="term">Hashing</div><div class="desc">Uses a mathematical function to convert data into a <strong>fixed-length value called a hash</strong> — a unique digital fingerprint that verifies the data has not been changed.</div></div>
+          <div class="row"><div class="term">Digital signatures</div><div class="desc">Use cryptography and hashing to prove the identity of the sender and ensure a message or document cannot be denied later.</div></div>
+        </div>
+
+        <div class="quiz">
+          <h4>Try Yourself — after 7.8</h4>
+          <div class="qcard"><div class="qtext">1. Antivirus software is an example for: (a) Preventive (b) Detective (c) Corrective (d) Legal control</div><button class="revealBtn">Show answer</button><div class="ans">(b) Detective control</div></div>
+          <div class="qcard"><div class="qtext">2. What is multilevel authentication?</div><button class="revealBtn">Show answer</button><div class="ans">Also called Two-Factor Authentication (2FA). Requires more than one method to verify identity, e.g. password and OTP, or password and biometric.</div></div>
+          <div class="qcard"><div class="qtext">3. Mention any two characteristics of a strong password.</div><button class="revealBtn">Show answer</button><div class="ans">Any two of: unique (not reused), complex, uses letters/numbers/symbols, avoids personal information, changed regularly.</div></div>
+        </div>
+      </section>
+
+      <!-- 7.9 -->
+      <section class="chap" id="s79">
+        <div class="sec-banner"><span class="tag">7.9</span><h2>Cyber Security Do&rsquo;s and Don&rsquo;ts</h2></div>
+        <table class="dosdonts">
+          <thead><tr><th class="do">Do&rsquo;s</th><th class="dont">Don&rsquo;ts</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Do's">Use strong passwords with letters, numbers and symbols.</td><td data-label="Don'ts">Do not share passwords or OTPs with anyone. Do not save passwords on public or shared computers. Do not use the same password for multiple accounts. Do not over share personal information online.</td></tr>
+            <tr><td data-label="Do's">Verify links and emails before clicking or downloading anything.</td><td data-label="Don'ts">Do not click on unknown or suspicious links in emails or messages.</td></tr>
+            <tr><td data-label="Do's">Download apps and files only from trusted sources and keep them updated.</td><td data-label="Don'ts">Do not download apps or files from untrusted websites and do not ignore software and app updates.</td></tr>
+            <tr><td data-label="Do's">Lock your devices using PIN, password or biometrics.</td><td data-label="Don'ts">Do not leave devices unlocked or unattended.</td></tr>
+            <tr><td data-label="Do's">Use antivirus software and scan your device regularly.</td><td data-label="Don'ts">Do not ignore antivirus warnings or alerts.</td></tr>
+            <tr><td data-label="Do's">Log out after using email or social media on shared computers.</td><td data-label="Don'ts">Do not stay logged in on shared or public computers.</td></tr>
+            <tr><td data-label="Do's">Use secure networks for online transactions.</td><td data-label="Don'ts">Do not use public Wi-Fi for banking or sensitive activities.</td></tr>
+            <tr><td data-label="Do's">Report suspicious messages to a trusted adult or authority.</td><td data-label="Don'ts">Do not respond to online threats or fake prize messages.</td></tr>
+            <tr><td data-label="Do's">Backup important data like assignments and projects.</td><td data-label="Don'ts">Do not rely on a single copy of important data.</td></tr>
+            <tr><td data-label="Do's">Use privacy settings on social media accounts.</td><td data-label="Don'ts">Do not accept friend requests from unknown people.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 7.10 -->
+      <section class="chap" id="s710">
+        <div class="sec-banner"><span class="tag">7.10</span><h2>Legal and Ethical Behaviour in Cyber Space</h2></div>
+        <div class="rows">
+          <div class="row"><div class="term">Legal behaviour</div><div class="desc">Following the laws and rules on the use of computers and the internet: not hacking systems; not spreading viruses; not stealing personal or financial information; not sharing illegal or copyrighted content. Cyber laws protect users, data and digital systems, and help prevent cyber crimes.</div></div>
+          <div class="row"><div class="term">Ethical behaviour</div><div class="desc">Doing what is morally right even when there is no direct law: respecting others&rsquo; privacy; not bullying or harassing people online; not spreading fake news; using digital resources honestly; giving credit to original creators; using the internet responsibly.</div></div>
+        </div>
+        <p><strong>The Information Technology Act, 2000</strong> — passed by the Indian Parliament to provide legal recognition to electronic records and digital signatures.</p>
+        <p><strong>The Information Technology Amendment Bill, 2008</strong> — amended the above act to strengthen cyber security laws and address emerging cyber threats.</p>
+      </section>
+
+      <!-- End Questions -->
+      <section class="chap" id="endq">
+        <div class="sec-banner"><span class="tag">33</span><h2>End-of-Chapter Questions</h2></div>
+        <p style="color:var(--grey); font-size:13.5px;">Tap the section tag to jump back and revise.</p>
+        <div class="qbank" id="qbankList"></div>
+      </section>
+
+      <footer>
+        Plus One Computer Applications (Commerce) &middot; Chapter 7: Cyber Security &middot; Kerala SCERT 2026 Syllabus
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<button id="toTop" title="Back to top">&uarr;</button>
+
+<script>
+  // ---------- end-question bank (rendered from data so refs are consistent) ----------
+  const QS = [
+   ["Define cyberspace and explain its components.","s71"],
+   ["Explain why cyber security has become an important subject for students.","s71"],
+   ["What is meant by vulnerability in cyberspace? Explain with suitable examples.","s72"],
+   ["Explain insecure BIOS settings as hardware vulnerability.","s72"],
+   ["Describe the role of digital footprints in increasing cyber risks.","s72"],
+   ["How does outdated software increase security risks?","s72"],
+   ["Give one real-life situation from daily life where lack of cyber security can cause serious problems.","s74"],
+   ["How can vulnerability in a system be misused by cyber attackers? Explain with one example.","s72"],
+   ["How does human error lead to cyber attacks? Explain with examples.","s72"],
+   ["\u201CUsing untrusted networks can expose personal data.\u201D Justify this statement.","s72"],
+   ["Define non-repudiation. Why is it important?","s73"],
+   ["Describe the CIA Triad and explain its importance in cyber security.","s73"],
+   ["Explain authentication and authorization. List any two differences between them.","s73"],
+   ["Explain how confidentiality, integrity and availability are ensured when students access online education portals.","s73"],
+   ["What is malware? Name any two types of malware.","s77"],
+   ["How do phishing emails deceive users?","s77"],
+   ["What happens to data during a ransomware attack?","s77"],
+   ["Explain Man-in-the-Middle attacks.","s76"],
+   ["Describe Denial-of-Service attacks and their effects.","s77"],
+   ["A hacker exploits a software flaw before a patch is released. What is this attack called? Why is it dangerous?","s76"],
+   ["What are intellectual property crimes? Mention any two examples.","s77"],
+   ["Explain cyber crimes against individuals with suitable examples.","s77"],
+   ["Explain email bombing, salami attack, logic bomb and data diddling.","s77"],
+   ["Describe the working and importance of firewalls in preventing cyber attacks.","s78"],
+   ["What is multilevel authentication? Explain with suitable examples.","s78"],
+   ["Explain antivirus software, its functions and the need for regular updates.","s78"],
+   ["Explain cryptography, hashing and digital signatures and their roles.","s78"],
+   ["Explain the three types of cyber security controls with suitable examples.","s78"],
+   ["Explain how cryptography helps in online banking and secure messaging.","s78"],
+   ["Mention any two characteristics of a strong password.","s79"],
+   ["List and explain any five cyber security Do\u2019s and Don\u2019ts.","s79"],
+   ["Why should students avoid public Wi-Fi for online transactions? Explain.","s79"],
+   ["Explain legal and ethical behavior in cyberspace.","s710"],
+  ];
+  const bank = document.getElementById('qbankList');
+  const LABELS = {s71:'§7.1', s72:'§7.2', s73:'§7.3', s74:'§7.4', s75:'§7.5',
+                  s76:'§7.6', s77:'§7.7', s78:'§7.8', s79:'§7.9', s710:'§7.10'};
+  QS.forEach((q,i)=>{
+    const div = document.createElement('div');
+    div.className = 'qb-item';
+    const label = LABELS[q[1]] || q[1];
+    div.innerHTML = `<span class="n">${i+1}.</span><span>${q[0]} <a class="ref" href="#${q[1]}">${label}</a></span>`;
+    bank.appendChild(div);
+  });
+
+  // ---------- quiz reveal ----------
+  document.querySelectorAll('.revealBtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card = btn.closest('.qcard');
+      const revealed = card.classList.toggle('revealed');
+      btn.textContent = revealed ? 'Hide answer' : 'Show answer';
+    });
+  });
+
+  // ---------- mobile nav toggle ----------
+  const tocNav = document.getElementById('tocNav');
+  document.getElementById('menuBtn').addEventListener('click', ()=>{
+    tocNav.classList.toggle('open');
+  });
+  tocNav.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>tocNav.classList.remove('open')));
+
+  // ---------- scroll progress + active nav link ----------
+  const sections = document.querySelectorAll('section.chap');
+  const navLinks = document.querySelectorAll('nav.toc a');
+  function onScroll(){
+    const doc = document.documentElement;
+    const pct = (doc.scrollTop) / (doc.scrollHeight - doc.clientHeight) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+
+    let current = sections[0] ? sections[0].id : '';
+    sections.forEach(s=>{
+      if (window.scrollY + 160 >= s.offsetTop) current = s.id;
+    });
+    navLinks.forEach(a=>{
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+    document.getElementById('toTop').style.display = window.scrollY > 500 ? 'block' : 'none';
+  }
+  document.addEventListener('scroll', onScroll);
+  window.addEventListener('resize', onScroll);
+  onScroll();
+  document.getElementById('toTop').addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+</body>
+</html>
