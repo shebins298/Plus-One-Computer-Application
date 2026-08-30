@@ -118,8 +118,8 @@ footer p{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim)
     <h1 class="title">Computer Applications<br><em>Commerce</em></h1>
     <p class="hero-sub">Eight chapters, one course. Each chapter comes with an interactive walkthrough, classroom slides, and revision notes — built one at a time as we go.</p>
     <div class="progress-pill">
-      <span><b>7</b> of 8 chapters ready</span>
-      <div class="progress-bar-bg"><div class="progress-bar" style="width:87.5%"></div></div>
+      <span><b>8</b> of 8 chapters ready</span>
+      <div class="progress-bar-bg"><div class="progress-bar" style="width:100%"></div></div>
     </div>
   </div>
 </header>
@@ -127,7 +127,7 @@ footer p{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim)
   <div class="wrap">
     <div class="roadmap-scroll">
       <div class="roadmap-track-wrap">
-        <div class="roadmap-line"></div>
+        <div class="roadmap-line" id="roadmapLine"></div>
         <div class="roadmap-nodes" id="roadmapNodes"></div>
       </div>
     </div>
@@ -150,8 +150,19 @@ const chapters = [
   { n: 5, title: "Python Control Structures & Data Handling", desc: "Decision-making statements, loops, strings, lists, tuples, and dictionaries in Python.", status: "ready", href: "control-structures.html" },
   { n: 6, title: "Computer Networks", desc: "Network types, internet technologies, communication protocols, and networking devices.", status: "ready", href: "computer-networks.html" },
   { n: 7, title: "Cyber Security", desc: "Cyber threats, online safety, malware, digital privacy, and cybersecurity best practices.", status: "ready", href: "cyber-security.html" },
-  { n: 8, title: "AI and its Applications", desc: "Artificial Intelligence, Machine Learning, expert systems, and real-world AI applications.", status: "soon" },
+  { n: 8, title: "AI and its Applications", desc: "Artificial Intelligence, machine learning, neural networks, NLP, robotics, computer vision, and real-world AI applications.", status: "ready", href: "ai-and-its-applications.html" },
 ];
+/* roadmap line fill follows the actual number of ready chapters — it was
+   previously hardcoded to a 50% split that did not track the data */
+(function(){
+  const done = chapters.filter(c => c.status === 'ready').length;
+  const pct = chapters.length ? (done / chapters.length) * 100 : 0;
+  const lineEl = document.getElementById('roadmapLine');
+  if (lineEl) {
+    lineEl.style.background =
+      `linear-gradient(90deg, var(--copper) 0%, var(--copper) ${pct}%, var(--line) ${pct}%, var(--line) 100%)`;
+  }
+})();
 const nodesEl = document.getElementById('roadmapNodes');
 chapters.forEach(ch => {
   const node = document.createElement('div');

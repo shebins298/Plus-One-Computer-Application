@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 8 — AI and its Applications | Plus One Computer Applications</title>
+<meta name="description" content="Interactive revision notes for Chapter 8, AI and its Applications — Plus One Computer Applications (Commerce), revised 2026 SCERT syllabus.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#3730A3; --indigo-lt:#6366F1; --cyan:#0891B2; --cyan-lt:#06B6D4;
+  --tint-i:#EEF2FF; --tint-c:#ECFEFF; --ink:#1E293B; --muted:#64748B;
+  --rule:#C7D2FE; --dark:#1E1B4B; --paper:#FFFFFF; --wash:#F8FAFF;
+  --ok:#047857; --ok-bg:#ECFDF5; --no:#B91C1C; --no-bg:#FEF2F2;
+  --display:'Space Grotesk',system-ui,sans-serif;
+  --body:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --maxw:900px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+
+/* ---------- hero ---------- */
+.hero{position:relative;background:var(--dark);color:#fff;overflow:hidden;
+  padding:clamp(2.5rem,8vw,4.5rem) 1.25rem clamp(2rem,6vw,3rem)}
+#net{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+.hero-in{position:relative;max-width:var(--maxw);margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cyan-lt);margin:0 0 .6rem}
+.hero h1{font-family:var(--display);font-weight:700;line-height:1.05;margin:0;
+  font-size:clamp(2rem,7vw,3.4rem);letter-spacing:-.02em}
+.hero .num{display:block;font-size:clamp(2.6rem,10vw,4.4rem);color:var(--cyan-lt);
+  line-height:1;margin-bottom:.2rem}
+.quote{margin:1.4rem 0 0;font-style:italic;color:#C7D2FE;max-width:34rem;
+  font-size:clamp(.95rem,2.6vw,1.08rem)}
+.quote cite{display:block;font-style:normal;color:#818CF8;font-size:.86rem;margin-top:.35rem}
+.meta{margin-top:1.6rem;font-family:var(--mono);font-size:.76rem;color:#818CF8}
+
+/* ---------- progress + nav ---------- */
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--cyan-lt);z-index:60}
+nav.toc{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.toc-scroll{display:flex;gap:.35rem;overflow-x:auto;padding:.55rem 1rem;
+  max-width:var(--maxw);margin:0 auto;scrollbar-width:none}
+.toc-scroll::-webkit-scrollbar{display:none}
+.toc-scroll a{flex:0 0 auto;font-family:var(--mono);font-size:.76rem;
+  padding:.32rem .6rem;border-radius:999px;text-decoration:none;color:var(--muted);
+  border:1px solid transparent;white-space:nowrap;transition:.15s}
+.toc-scroll a:hover{color:var(--indigo);background:var(--tint-i)}
+.toc-scroll a.on{color:#fff;background:var(--indigo);border-color:var(--indigo)}
+.toc-scroll a:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ---------- layout ---------- */
+main{max-width:var(--maxw);margin:0 auto;padding:0 1.25rem 4rem}
+section{padding-top:2.6rem;scroll-margin-top:3.6rem}
+h2{font-family:var(--display);font-size:clamp(1.35rem,4.4vw,1.9rem);
+  color:var(--indigo);margin:.2rem 0 .1rem;letter-spacing:-.01em;line-height:1.2}
+h2 .sn{font-family:var(--mono);font-size:.8rem;color:var(--cyan);display:block;
+  letter-spacing:.12em;margin-bottom:.3rem}
+h3{font-family:var(--display);font-size:1.02rem;color:var(--cyan);
+  margin:1.6rem 0 .5rem;letter-spacing:.01em}
+p{margin:.65rem 0}
+.lede{color:var(--muted);font-size:1.02rem;margin-top:.35rem}
+
+.def{background:var(--tint-i);border:1px solid var(--indigo-lt);
+  border-radius:10px;padding:1rem 1.1rem;margin:1rem 0}
+.def b{color:var(--indigo);font-family:var(--display)}
+.note{background:var(--tint-c);border:1px solid var(--cyan);border-radius:10px;
+  padding:.85rem 1.05rem;margin:.85rem 0;font-size:.95rem}
+.warn{background:#FFFBEB;border:1px solid #F59E0B;border-radius:10px;
+  padding:.85rem 1.05rem;margin:1rem 0;font-size:.95rem}
+.warn b{color:#B45309}
+
+ul.tick{list-style:none;padding:0;margin:.8rem 0}
+ul.tick li{position:relative;padding:.32rem 0 .32rem 1.4rem}
+ul.tick li::before{content:"";position:absolute;left:.15rem;top:.85rem;
+  width:.42rem;height:.42rem;border-radius:50%;background:var(--cyan)}
+
+.grid{display:grid;gap:.7rem;margin:1rem 0}
+@media(min-width:620px){.grid.two{grid-template-columns:1fr 1fr}
+  .grid.three{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--tint-i);border:1px solid var(--rule);border-radius:10px;padding:.85rem .95rem}
+.card b{display:block;color:var(--indigo);font-family:var(--display);margin-bottom:.25rem}
+.card span{font-size:.93rem}
+
+.tbl{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.93rem;display:block;overflow-x:auto}
+.tbl th{background:var(--indigo);color:#fff;text-align:left;padding:.5rem .65rem;font-weight:600}
+.tbl td{padding:.5rem .65rem;border-bottom:1px solid var(--rule);vertical-align:top}
+.tbl tr:nth-child(even) td{background:var(--tint-i)}
+.tbl td:first-child{color:var(--indigo);font-weight:600}
+
+/* ---------- figures ---------- */
+figure{margin:1.4rem 0;padding:1rem .6rem .7rem;border:1px solid var(--rule);
+  border-radius:12px;background:var(--wash);overflow-x:auto}
+figure svg{display:block;margin:0 auto;max-width:100%;height:auto}
+figcaption{font-size:.85rem;color:var(--muted);text-align:center;margin-top:.7rem;
+  font-style:italic;padding:0 .5rem}
+.figbtn{display:block;margin:.8rem auto 0;font-family:var(--mono);font-size:.78rem;
+  padding:.45rem .9rem;border-radius:999px;border:1px solid var(--cyan);
+  background:#fff;color:var(--cyan);cursor:pointer;transition:.15s}
+.figbtn:hover{background:var(--cyan);color:#fff}
+.figbtn:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+.flow{stroke-dasharray:5 4}
+.flow.run{animation:dash 1.1s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-18}}
+
+/* ---------- notes check ---------- */
+.nc{border:1px solid var(--cyan);border-radius:12px;overflow:hidden;margin:1.1rem 0}
+.nc-h{background:var(--tint-c);padding:.6rem .9rem;font-family:var(--mono);
+  font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);
+  border-bottom:1px solid var(--cyan)}
+.q{border-bottom:1px solid var(--rule)}
+.q:last-child{border-bottom:0}
+.q button{width:100%;text-align:left;background:#fff;border:0;padding:.8rem .9rem;
+  font:inherit;font-weight:600;color:var(--indigo);cursor:pointer;display:flex;
+  gap:.6rem;align-items:flex-start}
+.q button:hover{background:var(--tint-i)}
+.q button:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.q .n{font-family:var(--mono);color:var(--cyan);flex:0 0 auto}
+.q .caret{margin-left:auto;color:var(--cyan);transition:transform .2s;flex:0 0 auto}
+.q[data-open="1"] .caret{transform:rotate(180deg)}
+.q .a{display:none;padding:0 .9rem .9rem 2.1rem;font-size:.95rem;color:var(--ink)}
+.q[data-open="1"] .a{display:block}
+
+/* ---------- quiz ---------- */
+.quiz{border:1px solid var(--indigo);border-radius:12px;padding:1rem;background:var(--wash);margin:1.2rem 0}
+.quiz h3{margin-top:0;color:var(--indigo)}
+.qz{margin:1rem 0;padding-bottom:.9rem;border-bottom:1px solid var(--rule)}
+.qz:last-of-type{border-bottom:0}
+.qz p{font-weight:600;margin:0 0 .55rem}
+.qz .opt{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--rule);
+  border-radius:8px;padding:.55rem .75rem;margin:.35rem 0;font:inherit;cursor:pointer;transition:.12s}
+.qz .opt:hover:not(:disabled){border-color:var(--indigo-lt);background:var(--tint-i)}
+.qz .opt:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.qz .opt:disabled{cursor:default}
+.qz .opt.right{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-weight:600}
+.qz .opt.wrong{background:var(--no-bg);border-color:var(--no);color:var(--no)}
+.qz .why{font-size:.88rem;color:var(--muted);margin:.5rem 0 0;display:none}
+.qz.done .why{display:block}
+.score{position:sticky;bottom:0;background:var(--indigo);color:#fff;border-radius:10px;
+  padding:.7rem .9rem;font-family:var(--mono);font-size:.85rem;display:flex;
+  justify-content:space-between;align-items:center;gap:.7rem;margin-top:1rem}
+.score button{background:#fff;color:var(--indigo);border:0;border-radius:999px;
+  padding:.35rem .8rem;font:inherit;font-size:.8rem;cursor:pointer}
+.score button:focus-visible{outline:2px solid var(--cyan-lt);outline-offset:2px}
+
+footer{border-top:1px solid var(--rule);margin-top:3rem;padding:1.6rem 1.25rem 3rem;
+  text-align:center;color:var(--muted);font-size:.85rem}
+footer a{color:var(--indigo)}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:.6rem;top:.6rem;z-index:99;background:#fff;color:var(--indigo);
+  padding:.5rem .8rem;border-radius:6px}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<a class="skip" href="#s1">Skip to chapter content</a>
+
+<header class="hero">
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="hero-in">
+    <p class="eyebrow">XI · Computer Applications (Commerce)</p>
+    <h1><span class="num">8</span>AI and its Applications</h1>
+    <p class="quote">"The science of today is the technology of tomorrow."
+      <cite>Edward Teller</cite></p>
+    <p class="meta">Revised 2026 SCERT syllabus · 9 sections · 29 notes checks · 10-question quiz</p>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Chapter sections">
+  <div class="toc-scroll" id="toc">
+    <a href="#s1">8.1 Intro to AI</a>
+    <a href="#s2">8.2 Machine Learning</a>
+    <a href="#s3">8.3 Neural Networks</a>
+    <a href="#s4">8.4 NLP</a>
+    <a href="#s5">8.5 Prompt Engineering</a>
+    <a href="#s6">8.6 Robotics</a>
+    <a href="#s7">8.7 Computer Vision</a>
+    <a href="#s8">8.8 AI in Education</a>
+    <a href="#s9">8.9 Voice Assistants</a>
+    <a href="#quiz">Quiz</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ================= 8.1 ================= -->
+<section id="s1">
+  <h2><span class="sn">Section 8.1</span>Introduction to Artificial Intelligence</h2>
+  <div class="def"><b>Artificial Intelligence (AI)</b> is a branch of computer science that
+    enables machines to perform tasks which typically require human intelligence. AI is the
+    simulation of human intelligence in machines designed to think, make decisions, predict the
+    future based on patterns in data, and learn and improve through training, feedback or
+    updated data.</div>
+  <p>AI is used to build agents like robots or virtual assistants that can mimic or simulate
+    human behaviour and make decisions on our behalf.</p>
+
+  <h3>Features of an artificially intelligent machine</h3>
+  <ul class="tick">
+    <li>Thinks and learns like a human</li>
+    <li>Mimics human intelligence</li>
+    <li>Improves on its own</li>
+    <li>Detects patterns and solves real world problems</li>
+    <li>Comprehends language and images</li>
+    <li>Predicts and takes decisions on its own</li>
+  </ul>
+
+  <h3>8.1.1 History and evolution</h3>
+  <table class="tbl"><thead><tr><th>Period</th><th>Milestone</th></tr></thead><tbody>
+    <tr><td>1950</td><td>Alan Turing asks "Can machines think?" and proposes the <b>Turing Test</b> — a human interacts with both a machine and a person via text; if the human cannot tell them apart, the machine passes.</td></tr>
+    <tr><td>1956</td><td><b>Dartmouth Conference</b> — John McCarthy coins the term "Artificial Intelligence", marking the birth of AI as a field of study.</td></tr>
+    <tr><td>1960s–70s</td><td>Progress is slow: computers were weak and there was not much data. AI followed strict rules written by programmers and solved only very simple problems.</td></tr>
+    <tr><td>1980</td><td><b>Expert systems</b> mimic human decision-making using rules and knowledge from humans — early systems helped doctors diagnose diseases. MYCIN (1970s) was rule-based.</td></tr>
+    <tr><td>2000s–now</td><td><b>Modern AI</b> — machine learning and deep learning. Systems learn from huge amounts of data; neural networks power face recognition, self-driving cars and recommendations.</td></tr>
+  </tbody></table>
+  <div class="note"><b>Watch out:</b> Alan Turing is credited with the <i>Turing Test</i>.
+    <b>John McCarthy</b> is the one regarded as the father of AI — he named the field.</div>
+
+  <h3>8.1.2 Applications in daily life</h3>
+  <div class="grid three">
+    <div class="card"><b>Smartphones</b><span>Improving image quality, filtering spam, powering personal assistants</span></div>
+    <div class="card"><b>Health care</b><span>Medical diagnosis, personalised treatment plans, health trackers</span></div>
+    <div class="card"><b>Transportation</b><span>Navigation apps, driver-assistance systems, self-driving vehicles</span></div>
+    <div class="card"><b>Finance</b><span>Fraud detection, personalised financial advice, automated trading</span></div>
+    <div class="card"><b>Education</b><span>Personalised learning, automated grading, enhanced education tools</span></div>
+  </div>
+
+  <h3>Real-life issues of AI</h3>
+  <p>Asked to generate a recipe for an eggless vegetable omelette, an AI may suggest ingredients
+    that are not easily available, or give steps that are not practical in real kitchens. AI has
+    no human senses like taste or smell, so it cannot judge flavour or texture. Information may
+    also be incomplete or unclear due to limited or biased data.</p>
+  <div class="note">AI can support humans, but it cannot completely replace human experience and judgment.</div>
+
+  <h3>Ethical considerations</h3>
+  <div class="grid two">
+    <div class="card"><b>Privacy</b><span>AI collects large amounts of personal data. It must be protected — not misused, shared without permission, or exposed to security risks.</span></div>
+    <div class="card"><b>Bias</b><span>AI decides based on its training data. Biased or unfair data produces unfair or discriminatory results.</span></div>
+    <div class="card"><b>Accountability</b><span>It must be clear who is responsible for an AI decision, especially when mistakes or harm occur.</span></div>
+    <div class="card"><b>Employment</b><span>Automation may replace repetitive jobs. Society must create new opportunities and help people learn new skills.</span></div>
+  </div>
+
+  <div class="nc" data-nc>
+    <div class="nc-h">Notes check · 8.1</div>
+    <div class="q"><button type="button"><span class="n">1</span><span>Who is regarded as the father of AI?</span><span class="caret">⌄</span></button><div class="a"><b>John McCarthy.</b> He coined the term "Artificial Intelligence" at the Dartmouth Conference in 1956. Alan Turing is credited with the Turing Test (1950) — a different question.</div></div>
+    <div class="q"><button type="button"><span class="n">2</span><span>Why is ethical AI use important?</span><span class="caret">⌄</span></button><div class="a">AI collects personal data, makes decisions that affect people, and can produce unfair results if trained on biased data. Ethical use ensures AI benefits society and does not harm individuals or communities.</div></div>
+    <div class="q"><button type="button"><span class="n">3</span><span>List any two areas where AI is applied today.</span><span class="caret">⌄</span></button><div class="a">Any two of: smartphones, health care, transportation, finance, education.</div></div>
+    <div class="q"><button type="button"><span class="n">4</span><span>Describe Artificial Intelligence in your own words.</span><span class="caret">⌄</span></button><div class="a">A branch of computer science that enables machines to perform tasks which normally require human intelligence — thinking, learning, making decisions and recognising patterns.</div></div>
+  </div>
+</section>
+
+<!-- ================= 8.2 ================= -->
+<section id="s2">
+  <h2><span class="sn">Section 8.2</span>Machine Learning</h2>
+  <div class="def"><b>Machine Learning</b> is a subset of Artificial Intelligence that enables
+    computers to learn from data without being explicitly programmed. Instead of giving
+    step-by-step instructions, we provide examples, and the machine recognises patterns, draws
+    insights, and makes predictions.</div>
+  <p>Consider it like teaching a child: you give many examples of apples and oranges rather than
+    describing each fruit in detail. With time the child recognises a new orange or apple on
+    their own — machine learning lets computers "learn" from examples the same way.</p>
+
+  <h3>8.2.1 Three types of machine learning</h3>
+  <table class="tbl"><thead><tr><th></th><th>Supervised</th><th>Unsupervised</th><th>Reinforcement</th></tr></thead><tbody>
+    <tr><td>Data</td><td>Labeled</td><td>Unlabelled</td><td>No fixed dataset</td></tr>
+    <tr><td>Goal</td><td>Learn input → output</td><td>Discover patterns / clusters</td><td>Maximise reward</td></tr>
+    <tr><td>Feedback</td><td>Correct answer supplied</td><td>None</td><td>Rewards and penalties</td></tr>
+    <tr><td>Example</td><td>Ripe / unripe mangoes</td><td>Clustering customers</td><td>Robot in a maze</td></tr>
+  </tbody></table>
+  <div class="grid three">
+    <div class="card"><b>Supervised</b><span>Trained on labeled data — each input already has a correct output. Examples: identifying ripe and unripe mangoes; email spam detection.</span></div>
+    <div class="card"><b>Unsupervised</b><span>Works with unlabelled data — no predefined answers. Examples: grouping students by learning style; clustering e-commerce customers.</span></div>
+    <div class="card"><b>Reinforcement</b><span>Learns by trial and error with rewards and penalties. Examples: a robot navigating a maze; AI playing chess or Go against itself.</span></div>
+  </div>
+
+  <h3>8.2.2 Key concepts</h3>
+  <div class="grid two">
+    <div class="card"><b>Data Quality</b><span>Data must be accurate, complete and relevant. A face recognition system trained mostly on one ethnicity may fail to recognise people from others.</span></div>
+    <div class="card"><b>Training and Testing</b><span>Training data teaches the model to learn and identify patterns. Testing data evaluates the model's performance.</span></div>
+    <div class="card"><b>Feature Selection</b><span>Choosing the most relevant features improves performance and reduces complexity — e.g. predicting student performance from attendance, study hours and previous grades.</span></div>
+  </div>
+
+  <h3>8.2.3 Applications</h3>
+  <ul class="tick">
+    <li><b>Healthcare</b> — predicting disease outbreaks, diagnosing illnesses from medical images</li>
+    <li><b>Finance</b> — detecting fraud in credit card transactions</li>
+    <li><b>E-commerce</b> — product recommendation systems like Amazon or Flipkart</li>
+    <li><b>Education</b> — adaptive learning platforms that adjust lessons to performance</li>
+    <li><b>Agriculture</b> — monitoring crop health and predicting yield</li>
+  </ul>
+
+  <div class="nc" data-nc>
+    <div class="nc-h">Notes check · 8.2</div>
+    <div class="q"><button type="button"><span class="n">1</span><span>How is machine learning different from traditional programming?</span><span class="caret">⌄</span></button><div class="a">Traditional programming gives the computer explicit step-by-step rules. Machine learning provides examples instead, and the machine learns the patterns from data on its own, without being explicitly programmed.</div></div>
+    <div class="q"><button type="button"><span class="n">2</span><span>What are the three main types of machine learning?</span><span class="caret">⌄</span></button><div class="a">Supervised Learning, Unsupervised Learning and Reinforcement Learning.</div></div>
+    <div class="q"><button type="button"><span class="n">3</span><span>Why is high-quality data important?</span><span class="caret">⌄</span></button><div class="a">The machine learns entirely from the data it observes. If training data is inaccurate, biased or incomplete, predictions will be unreliable.</div></div>
+    <div class="q"><button type="button"><span class="n">4</span><span>Define Machine Learning in your own words.</span><span class="caret">⌄</span></button><div class="a">A subset of AI that enables computers to learn from data without being explicitly programmed, recognising patterns and making predictions from examples.</div></div>
+  </div>
+</section>
+
+<!-- ================= 8.3 ================= -->
+<section id="s3">
+  <h2><span class="sn">Section 8.3</span>Artificial Neural Networks</h2>
+  <div class="def"><b>Artificial Neural Networks (ANNs)</b> are computational models inspired by
+    the human brain. Just as the brain has billions of interconnected neurons that process
+    information, ANNs use artificial neurons — sometimes called <b>nodes</b> — to analyse data,
+    detect patterns and make predictions.</div>
+
+  <h3>8.3.1 Structure of a neural network</h3>
+  <figure>
+    <svg viewBox="0 0 640 300" role="img" aria-label="Neural network structure: an input layer of four nodes, two hidden layers of five nodes each, and an output layer of three nodes, fully connected left to right.">
+      <g id="nn-links" stroke="#C7D2FE" stroke-width="1"></g>
+      <g id="nn-nodes"></g>
+      <text x="80" y="30" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="15" font-weight="700" fill="#3730A3">Input Layer</text>
+      <text x="320" y="30" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="15" font-weight="700" fill="#3730A3">Hidden Layers</text>
+      <text x="560" y="30" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="15" font-weight="700" fill="#3730A3">Output Layer</text>
+      <line x1="200" y1="42" x2="440" y2="42" stroke="#0891B2" stroke-width="2"/>
+    </svg>
+    <figcaption>Figure 8.4 — Neural Network Structure. Every node connects to every node in the
+      next column (fully connected). Data flows left to right; no connection skips a layer or
+      runs backwards.</figcaption>
+  </figure>
+  <div class="grid two">
+    <div class="card"><b>Input Layer</b><span>The entry point for data, passing it to subsequent layers. Each neuron represents a specific feature — e.g. each pixel's intensity in image recognition.</span></div>
+    <div class="card"><b>Hidden Layers</b><span>Perform the crucial computations, transforming input data through various functions. There can be multiple hidden layers depending on task complexity.</span></div>
+    <div class="card"><b>Output Layer</b><span>Generates the final prediction or output, based on the processed information from the hidden layers.</span></div>
+    <div class="card"><b>Weights</b><span>Each connection has a strength (a weight) that influences how signals propagate — what the network learns and tweaks during training.</span></div>
+  </div>
+  <div class="note">The three main <b>layers</b> are input, hidden and output. Weights are not a
+    layer — they sit on the connections between them.</div>
+
+  <h3>8.3.2 How neural networks learn</h3>
+  <ol>
+    <li><b>Forward Propagation</b> — the input layer sends data to the output layer via the hidden layers.</li>
+    <li><b>Error Calculation</b> — the difference between predicted and actual output is measured.</li>
+    <li><b>Backpropagation</b> — the network adjusts connection weights to minimise error.</li>
+    <li><b>Iteration</b> — the process repeats until the network achieves maximum accuracy.</li>
+  </ol>
+  <div class="warn"><b>This is a loop, not a line.</b> Iteration returns to Forward Propagation
+    and repeats until maximum accuracy is reached. Never write it as a dead-end
+    1 → 2 → 3 → 4 list.</div>
+
+  <h3>8.3.3 Applications</h3>
+  <ul class="tick">
+    <li><b>Image recognition</b> — Facebook tagging, Google Photos, autonomous vehicles</li>
+    <li><b>Speech recognition</b> — converting spoken language into text (Siri, Google Assistant)</li>
+    <li><b>Medical diagnosis</b> — detecting tumours or abnormalities in X-rays, MRI or CT scans</li>
+    <li><b>Natural language processing</b> — chatbots, translation tools, sentiment analysis</li>
+    <li><b>Gaming</b> — AI learns to play complex games like chess or Go</li>
+  </ul>
+
+  <div class="nc" data-nc>
+    <div class="nc-h">Notes check · 8.3</div>
+    <div class="q"><button type="button"><span class="n">1</span><span>What are the main layers of a neural network?</span><span class="caret">⌄</span></button><div class="a">The input layer, the hidden layers and the output layer.</div></div>
+    <div class="q"><button type="button"><span class="n">2</span><span>How does a neural network improve its predictions?</span><span class="caret">⌄</span></button><div class="a">Through forward propagation, error calculation, backpropagation and iteration. The error between predicted and actual output is measured, weights are adjusted to minimise it, and the process repeats until maximum accuracy is achieved.</div></div>
+    <div class="q"><button type="button"><span class="n">3</span><span>How is an ANN inspired by the human brain?</span><span class="caret">⌄</span></button><div class="a">Just as the brain has billions of interconnected neurons that process information, an ANN uses interconnected artificial neurons (nodes) to analyse data, detect patterns and make predictions.</div></div>
+  </div>
+</section>
+
+<!-- ================= 8.4 ================= -->
+<section id="s4">
+  <h2><span class="sn">Section 8.4</span>Natural Language Processing</h2>
+  <div class="def"><b>Natural Language Processing (NLP)</b> is a branch of Artificial
+    Intelligence that enables computers to understand, interpret and generate human language.
+    It helps machines bridge the gap between human communication and computer understanding.</div>
+  <p>Humans communicate using natural languages such as Malayalam, Hindi and English. In simple
+    terms, NLP enables computers to:</p>
+  <ul class="tick">
+    <li>Read and understand text, such as emails, messages or documents</li>
+    <li>Listen to and interpret speech, allowing voice-based interaction</li>
+    <li>Translate between languages, helping people communicate across regions</li>
+    <li>Generate meaningful responses, making conversations with machines more natural</li>
+  </ul>
+
+  <h3>8.4.1 The NLP process</h3>
+  <ol>
+    <li><b>Tokenization</b> — breaking text into smaller units like words or sentences</li>
+    <li><b>Parsing</b> — analysing the grammatical structure of sentences</li>
+    <li><b>Semantic Analysis</b> — understanding the meaning of words and sentences</li>
+    <li><b>Response Generation</b> — producing meaningful and context-aware outputs</li>
+  </ol>
+  <div class="note">These four steps are <b>sequential</b> — unlike the neural-network learning
+    cycle in 8.3.2, there is no feedback loop here. NLP combines computer science, linguistics
+    and machine learning.</div>
+
+  <h3>8.4.2 Applications of NLP</h3>
+  <div class="grid two">
+    <div class="card"><b>Speech Recognition</b><span>Turns spoken words into text — voice-to-text typing, voice commands</span></div>
+    <div class="card"><b>Machine Translation</b><span>Instant translation between languages — Google Translate</span></div>
+    <div class="card"><b>Chatbots and assistants</b><span>Simulate human conversation and answer queries automatically — banking bots</span></div>
+    <div class="card"><b>Sentiment Analysis</b><span>Detects positive, negative or neutral sentiment in posts, reviews or feedback</span></div>
+    <div class="card"><b>Content generation</b><span>AI creating new text — articles, poetry and more</span></div>
+  </div>
+
+  <h3>8.4.3 Large Language Models (LLMs)</h3>
+  <p>Modern NLP systems use <b>Large Language Models (LLMs)</b>, such as GPT, which are trained
+    using massive datasets to understand context and generate meaningful responses. NLP is used
+    in spam detection to analyse email content, and Siri, Alexa and Google Assistant use NLP to
+    understand spoken commands.</p>
+
+  <div class="nc" data-nc>
+    <div class="nc-h">Notes check · 8.4</div>
+    <div class="q"><button type="button"><span class="n">1</span><span>Why is NLP important in human-computer interaction?</span><span class="caret">⌄</span></button><div class="a">Humans communicate in natural languages such as Malayalam, Hindi and English. NLP lets computers understand, interpret and generate that language, bridging the gap between human communication and computer understanding.</div></div>
+    <div class="q"><button type="button"><span class="n">2</span><span>What is the role of Large Language Models in NLP?</span><span class="caret">⌄</span></button><div class="a">LLMs such as GPT are trained on massive datasets to understand context and generate meaningful responses.</div></div>
+    <div class="q"><button type="button"><span class="n">3</span><span>Why is it important to address biases in NLP systems?</span><span class="caret">⌄</span></button><div class="a">NLP systems learn from the text they are trained on. Biased data produces unfair or discriminatory results — for example handling some dialects well and others poorly. Addressing bias ensures all users and languages are treated fairly.</div></div>
+  </div>
+</section>
+
+<!-- ================= 8.5 ================= -->
+<section id="s5">
+  <h2><span class="sn">Section 8.5</span>Prompt Engineering</h2>
+  <div class="def"><b>Prompt Engineering</b> is the practice of designing clear, precise and
+    effective instructions — called <b>prompts</b> — to get the best responses from AI systems.
+    A <b>prompt</b> is a question or instruction you give to an AI.</div>
+  <p>The quality of the output largely depends on how well the prompt is formulated. Poorly
+    worded prompts can produce irrelevant or incorrect outputs.</p>
+
+  <table class="tbl"><thead><tr><th>Prompt</th><th>Response quality</th></tr></thead><tbody>
+    <tr><td>"Write about pollution."</td><td>Vague, may produce a generic response</td></tr>
+    <tr><td>"Write five sentences explaining how air pollution affects human health with examples."</td><td>Specific, detailed, relevant response</td></tr>
+  </tbody></table>
+
+  <h3>Techniques for effective prompting</h3>
+  <div class="grid two">
+    <div class="card"><b>Be specific</b><span>Precisely define the scope and direction of the response. "List three advantages and two disadvantages of AI in education."</span></div>
+    <div class="card"><b>Providing context</b><span>Include background, target audience or prior information. "As a teacher, explain how AI can help students improve reading."</span></div>
+    <div class="card"><b>Defining output requirements</b><span>Specify word count, bullet points and similar criteria. "Write a 100-word story suitable for class 11 students about robots in space exploration."</span></div>
+    <div class="card"><b>Using examples</b><span>Useful for complex or creative tasks — demonstrates the desired tone, structure and detail.</span></div>
+  </div>
+
+  <h3>Ethical guidelines</h3>
+  <ul class="tick">
+    <li>Do not ask AI to generate personal or sensitive information</li>
+    <li>Avoid spreading misinformation</li>
+    <li>Do not use AI for harmful or dishonest purposes</li>
+    <li>Promote learning, creativity and responsible use of AI</li>
+  </ul>
+
+  <h3>8.5.2 Applications</h3>
+  <ul class="tick">
+    <li><b>Education</b> — prompts explain concepts, summarise content or create quizzes</li>
+    <li><b>Content creation</b> — articles, blogs, stories or poetry</li>
+    <li><b>Programming</b> — generates code snippets or debugging solutions</li>
+    <li><b>Data analysis</b> — summarises trends or generates visualisations from data</li>
+  </ul>
+
+  <div class="nc" data-nc>
+    <div class="nc-h">Notes check · 8.5</div>
+    <div class="q"><button type="button"><span class="n">1</span><span>What is a prompt?</span><span class="caret">⌄</span></button><div class="a">A question or instruction you give to an AI.</div></div>
+    <div class="q"><button type="button"><span class="n">2</span><span>Give an example of an effective prompt.</span><span class="caret">⌄</span></button><div class="a">"Write five sentences explaining how air pollution affects human health with examples" — it is specific, defines the output length, and states the required content.</div></div>
+    <div class="q"><button type="button"><span class="n">3</span><span>Mention two ethical principles for using AI tools.</span><span class="caret">⌄</span></button><div class="a">Any two of: do not ask AI to generate personal or sensitive information; avoid spreading misinformation; do not use AI for harmful or dishonest purposes; promote learning, creativity and responsible use.</div></div>
+  </div>
+</section>
+
+<!-- ================= 8.6 ================= -->
+<section id="s6">
+  <h2><span class="sn">Section 8.6</span>Robotics</h2>
+  <div class="def"><b>Robotics</b> is a branch of science and engineering that combines
+    mechanical design, electronics and Artificial Intelligence to build machines that can
+    <b>sense, decide and act</b> in the real world. A <b>robot</b> is a programmable machine
+    that interacts with its surroundings and acts either fully or partially on its own.</div>
+
+  <h3>8.6.1 Components of a robot</h3>
+  <p>A typical robot has <b>three main components</b>:</p>
+  <div class="grid three">
+    <div class="card"><b>Sensors</b><span>Perceive the environment — detect light, heat, sound, motion or pressure. E.g. obstacle detection in autonomous vehicles.</span></div>
+    <div class="card"><b>Controllers</b><span>Process information and make decisions. The "brain" of the robot, using AI or pre-programmed instructions to decide the next action.</span></div>
+    <div class="card"><b>Actuators</b><span>Perform movements or actions. E.g. motors, wheels, arms or grippers that carry out the robot's tasks.</span></div>
+  </div>
+  <div class="note"><b>Optional components</b> — power supply (battery), communication modules,
+    cameras or additional computing units — are extras, <b>not</b> a fourth main component.</div>
+
+  <h3>8.6.2 How robots work</h3>
+  <figure>
+    <svg viewBox="0 0 640 240" role="img" aria-label="Robotic system control cycle: sensors feed the controller, the controller drives the actuators, and a dashed feedback loop returns from the actuators back to the sensors.">
+      <text x="320" y="24" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="14" font-weight="700" fill="#3730A3">ROBOTIC SYSTEM CONTROL CYCLE</text>
+      <g font-family="'Space Grotesk',sans-serif" text-anchor="middle">
+        <rect x="30" y="55" width="150" height="72" rx="8" fill="#EEF2FF" stroke="#C7D2FE"/>
+        <text x="105" y="88" font-size="16" font-weight="700" fill="#3730A3">SENSORS</text>
+        <text x="105" y="108" font-size="11" fill="#64748B" font-style="italic">(Data Acquisition)</text>
+        <rect x="245" y="55" width="150" height="72" rx="8" fill="#EEF2FF" stroke="#C7D2FE"/>
+        <text x="320" y="84" font-size="16" font-weight="700" fill="#3730A3">CONTROLLER</text>
+        <text x="320" y="102" font-size="11" fill="#64748B" font-style="italic">(Data Processing</text>
+        <text x="320" y="116" font-size="11" fill="#64748B" font-style="italic">&amp; Decision)</text>
+        <rect x="460" y="55" width="150" height="72" rx="8" fill="#EEF2FF" stroke="#C7D2FE"/>
+        <text x="535" y="88" font-size="16" font-weight="700" fill="#3730A3">ACTUATORS</text>
+        <text x="535" y="108" font-size="11" fill="#64748B" font-style="italic">(Action Execution)</text>
+      </g>
+      <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="#6366F1"/></marker>
+        <marker id="arc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="#06B6D4"/></marker></defs>
+      <line x1="186" y1="91" x2="238" y2="91" stroke="#6366F1" stroke-width="3" marker-end="url(#ar)"/>
+      <line x1="401" y1="91" x2="453" y2="91" stroke="#6366F1" stroke-width="3" marker-end="url(#ar)"/>
+      <path id="fb" class="flow" d="M535,133 L535,175 L105,175 L105,133"
+            fill="none" stroke="#06B6D4" stroke-width="2.5" marker-end="url(#arc)"/>
+      <text x="320" y="197" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="13" font-weight="700" fill="#0891B2">Feedback Loop (Continuous Update)</text>
+      <text x="320" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-style="italic" fill="#64748B">Environmental Changes / System Status</text>
+    </svg>
+    <figcaption>Figure 8.8 — Robotic System Control Cycle. A <b>closed cycle</b>: the dashed
+      feedback arrow returns from Actuators to Sensors.</figcaption>
+    <button class="figbtn" id="fbBtn" type="button">Trace the feedback loop</button>
+  </figure>
+  <div class="warn"><b>Exam note.</b> You are asked to draw this block diagram. Full marks
+    require the <b>feedback arrow from Actuators back to Sensors</b> — without it you have drawn
+    a pipeline, not a control cycle.</div>
+  <p><b>Sensing</b> — the robot gathers data from sensors. <b>Processing</b> — the controller
+    interprets data and decides on actions. <b>Acting</b> — actuators execute movements or
+    tasks. <b>Feedback</b> — sensors continuously provide updated information for adjustments.</p>
+
+  <h3>8.6.3 Applications</h3>
+  <ul class="tick">
+    <li><b>Manufacturing</b> — assembly line robots increase efficiency and precision</li>
+    <li><b>Healthcare</b> — surgical robots assist doctors in delicate operations</li>
+    <li><b>Space exploration</b> — robots like NASA's rovers explore distant planets</li>
+    <li><b>Disaster rescue</b> — robots enter dangerous zones such as collapsed buildings or nuclear sites</li>
+    <li><b>Education</b> — robots help students learn coding, AI and automation</li>
+  </ul>
+
+  <h3>8.6.4 Ethical considerations</h3>
+  <div class="grid two">
+    <div class="card"><b>Employment impact</b><span>Automation may replace certain manual jobs</span></div>
+    <div class="card"><b>Safety</b><span>Robots must be programmed to avoid harming humans</span></div>
+    <div class="card"><b>Responsibility</b><span>Clear accountability for robot actions must be established</span></div>
+    <div class="card"><b>Privacy</b><span>Robots with cameras or sensors must respect data privacy</span></div>
+  </div>
+
+  <div class="nc" data-nc>
+    <div class="nc-h">Notes check · 8.6</div>
+    <div class="q"><button type="button"><span class="n">1</span><span>What are the three main components of a robot?</span><span class="caret">⌄</span></button><div class="a">Sensors, Controllers and Actuators.</div></div>
+    <div class="q"><button type="button"><span class="n">2</span><span>What is a robot?</span><span class="caret">⌄</span></button><div class="a">A programmable machine that interacts with its surroundings and acts either fully or partially on its own.</div></div>
+    <div class="q"><button type="button"><span class="n">3</span><span>Draw a block diagram of a robot.</span><span class="caret">⌄</span></button><div class="a">Sensors → Controller → Actuators in three boxes joined by arrows, <b>plus a feedback arrow from Actuators back to Sensors</b>. Full marks require the feedback loop.</div></div>
+  </div>
+</section>
+
+<!-- ================= 8.7 ================= -->
+<section id="s7">
+  <h2><span class="sn">Section 8.7</span>Computer Vision</h2>
+  <div class="def"><b>Computer Vision (CV)</b> is a subfield of Artificial Intelligence that
+    gives computers and other devices the ability to recognise, evaluate and comprehend visual
+    data from the outside world, including pictures and videos — letting machines "see" much
+    like humans do with their eyes.</div>
+
+  <h3>8.7.1 The computer vision process</h3>
+  <ol>
+    <li><b>Image Acquisition</b> — the computer captures images using cameras or sensors</li>
+    <li><b>Pre-processing</b> — cleans the image, removing noise or adjusting brightness</li>
+    <li><b>Feature extraction</b> — identifies important characteristics like edges, corners or textures</li>
+    <li><b>Recognition and classification</b> — uses these features to identify objects or patterns</li>
+    <li><b>Decision making</b> — uses the results to perform tasks like guiding a robot or flagging something</li>
+  </ol>
+  <div class="note"><b>Worked example.</b> A smartphone camera detecting a face to unlock the
+    device: the camera captures the image, identifies facial features, compares them with stored
+    data, and unlocks the phone if they match.</div>
+
+  <h3>8.7.2 Applications</h3>
+  <div class="grid two">
+    <div class="card"><b>Medical imaging</b><span>Detecting tumours, fractures or anomalies in X-rays, MRI and CT scans</span></div>
+    <div class="card"><b>Autonomous vehicles</b><span>Self-driving cars detect obstacles, lane markings and traffic signs</span></div>
+    <div class="card"><b>Security systems</b><span>Face recognition for surveillance and access control</span></div>
+    <div class="card"><b>Industrial quality control</b><span>Inspecting products on production lines for defects</span></div>
+    <div class="card"><b>Agriculture</b><span>Monitoring crops, identifying diseased plants and estimating fruit ripeness</span></div>
+  </div>
+
+  <h3>8.7.3 Challenges and ethics</h3>
+  <ul class="tick">
+    <li><b>Privacy</b> — surveillance cameras and facial recognition may intrude on personal privacy</li>
+    <li><b>Bias</b> — misidentification may occur if the system is trained on non-diverse datasets</li>
+    <li><b>Safety</b> — autonomous vehicles rely on accurate computer vision to avoid accidents</li>
+  </ul>
+
+  <div class="nc" data-nc>
+    <div class="nc-h">Notes check · 8.7</div>
+    <div class="q"><button type="button"><span class="n">1</span><span>What is computer vision and why is it important?</span><span class="caret">⌄</span></button><div class="a">A subfield of AI that gives computers the ability to recognise, evaluate and comprehend visual data such as pictures and videos. It matters because it lets machines "see" and understand their environment, enabling everything from medical imaging to self-driving cars.</div></div>
+    <div class="q"><button type="button"><span class="n">2</span><span>Describe a mini example of computer vision in action.</span><span class="caret">⌄</span></button><div class="a">A smartphone camera detecting a face to unlock the device: it captures the image, identifies facial features, compares them with stored data, and unlocks if they match.</div></div>
+    <div class="q"><button type="button"><span class="n">3</span><span>Why should privacy and fairness be considered?</span><span class="caret">⌄</span></button><div class="a">Surveillance cameras and facial recognition may intrude on personal privacy, and misidentification occurs when systems are trained on non-diverse datasets. Considering both ensures no individual or group is harmed or treated unfairly.</div></div>
+  </div>
+</section>
+
+<!-- ================= 8.8 ================= -->
+<section id="s8">
+  <h2><span class="sn">Section 8.8</span>AI in Education</h2>
+  <div class="def"><b>Personalised learning</b> means educational tools analyse a student's
+    strengths, weaknesses, learning pace and style, and then suggest exercises, lessons or
+    resources tailored specifically for that student.</div>
+  <p>Traditional teaching methods often follow a one-size-fits-all approach, but AI enables
+    personalised learning, making education more effective and engaging.</p>
+
+  <h3>8.8.1 Applications of AI in education</h3>
+  <ol>
+    <li><b>Adaptive learning platforms</b> — analyse performance, adjusting pace and difficulty. Khan Academy suggests lessons based on prior quiz performance.</li>
+    <li><b>Digital tutors and chatbots</b> — instant feedback and personalised assistance, guiding students without waiting for teacher intervention.</li>
+    <li><b>Learning analytics</b> — tracks progress over time, highlighting areas needing improvement; teachers gain insights for customised strategies.</li>
+    <li><b>Automated grading</b> — grades assignments and quizzes, reducing teacher workload.</li>
+    <li><b>Inclusive education</b> — accessibility support through voice recognition, text to speech or visual aids for students with disabilities.</li>
+  </ol>
+
+  <h3>8.8.2 The role of teachers</h3>
+  <p>Teachers become <b>facilitators</b>, guiding students through the personalised learning
+    paths AI suggests. They focus on critical thinking, creativity and social skills — areas
+    where human interaction is invaluable.</p>
+  <div class="note"><b>Teachers remain central to the learning process.</b> AI supports them with
+    insights, saves time on repetitive tasks and offers personalised content, while teachers
+    guide, mentor and motivate students and monitor ethical use of AI tools.</div>
+  <div class="grid three">
+    <div class="card"><b>Data privacy</b><span>Student information must be protected</span></div>
+    <div class="card"><b>Transparency</b><span>Students should understand how AI tools make recommendations</span></div>
+    <div class="card"><b>Equity</b><span>Ensure AI systems do not favour certain groups over others</span></div>
+  </div>
+
+  <div class="nc" data-nc>
+    <div class="nc-h">Notes check · 8.8</div>
+    <div class="q"><button type="button"><span class="n">1</span><span>How does AI support personalised learning?</span><span class="caret">⌄</span></button><div class="a">AI tools analyse a student's strengths, weaknesses, learning pace and style, then suggest exercises, lessons or resources tailored specifically to that student.</div></div>
+    <div class="q"><button type="button"><span class="n">2</span><span>What is the role of teachers in an AI-powered classroom?</span><span class="caret">⌄</span></button><div class="a">Teachers become facilitators, guiding students through AI-suggested learning paths and focusing on critical thinking, creativity and social skills. Teachers remain central to the learning process.</div></div>
+    <div class="q"><button type="button"><span class="n">3</span><span>Give an example of AI helping students with disabilities.</span><span class="caret">⌄</span></button><div class="a">Inclusive education tools provide accessibility support through voice recognition, text to speech or visual aids.</div></div>
+  </div>
+</section>
+
+<!-- ================= 8.9 ================= -->
+<section id="s9">
+  <h2><span class="sn">Section 8.9</span>Voice Assistants</h2>
+  <div class="def"><b>Voice assistants</b> are AI programs that comprehend and react to spoken
+    instructions. They play music, set reminders, answer questions and control smart devices by
+    combining <b>speech recognition, Natural Language Processing (NLP) and cloud-based AI
+    services</b>.</div>
+  <p>They increase accessibility, interactivity and convenience — particularly for those with
+    disabilities or those who would rather speak than type.</p>
+
+  <h3>8.9.1 How voice assistants work</h3>
+  <figure>
+    <svg viewBox="0 0 660 220" role="img" aria-label="AI assistant processing pipeline: user input, speech recognition, natural language processing, decision making, response generation and user output, enclosed by a dashed feedback loop for continuous learning.">
+      <text x="330" y="20" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="13" font-weight="700" fill="#3730A3">AI ASSISTANT PROCESSING PIPELINE</text>
+      <text x="330" y="42" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="11.5" font-weight="700" fill="#0891B2">Feedback Loop (Continuous Learning)</text>
+      <ellipse cx="330" cy="120" rx="322" ry="62" fill="none" stroke="#06B6D4"
+               stroke-width="2" stroke-dasharray="6 5"/>
+      <g id="vp"></g>
+      <text x="330" y="207" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="11.5" font-weight="700" fill="#0891B2">Feedback Loop (Continuous Learning)</text>
+    </svg>
+    <figcaption>Figure 8.12 — AI Assistant Processing Pipeline. The dashed ellipse is the
+      feedback loop: the system keeps learning from each interaction.</figcaption>
+  </figure>
+  <div class="note">Section 8.9.1 names <b>four</b> stages — speech recognition, NLP, decision
+    making and response generation. User input and user output are the person, not stages of the
+    assistant's processing.</div>
+
+  <h3>Worked example</h3>
+  <p>When you say <i>"Hey Siri, what's the weather today?"</i>, Siri converts your speech into
+    text, analyses the query to understand you want the weather report, fetches weather data
+    from the internet, and finally responds aloud: <i>"Today's temperature is 28°C."</i></p>
+
+  <h3>8.9.2 Applications</h3>
+  <ul class="tick">
+    <li><b>Smart phones and smart homes</b> — controlling lights, fans, thermostats or security systems using voice</li>
+    <li><b>Healthcare</b> — assisting elderly or differently-abled individuals to set reminders or call for help</li>
+    <li><b>Navigation</b> — voice commands in GPS systems to find routes and traffic updates</li>
+    <li><b>Productivity</b> — setting alarms, reminders, creating calendar events or sending messages</li>
+  </ul>
+  <div class="note"><b>Case study.</b> Alexa, Amazon's voice assistant, allows users to shop
+    online, play music and control smart home devices through voice commands. Over time Alexa
+    learns user preferences, making interactions faster and more personalised.</div>
+
+  <div class="grid two">
+    <div class="card"><b>Advantages</b><span>Accessibility — helps people with disabilities. Convenience — hands-free tasks. Learning support — assists with research and information retrieval.</span></div>
+    <div class="card"><b>Limitations</b><span>Understanding accents — may misinterpret unfamiliar dialects. Privacy — recording and storing voice data. Dependency — over-reliance may reduce critical thinking.</span></div>
+  </div>
+
+  <div class="nc" data-nc>
+    <div class="nc-h">Notes check · 8.9</div>
+    <div class="q"><button type="button"><span class="n">1</span><span>What is a voice assistant?</span><span class="caret">⌄</span></button><div class="a">An AI program that comprehends and reacts to spoken instructions, combining speech recognition, Natural Language Processing and cloud-based AI services.</div></div>
+    <div class="q"><button type="button"><span class="n">2</span><span>Mention one advantage and one limitation.</span><span class="caret">⌄</span></button><div class="a">Advantage: accessibility — helps people with disabilities interact with technology. Limitation: may misinterpret unfamiliar accents or dialects.</div></div>
+    <div class="q"><button type="button"><span class="n">3</span><span>How do voice assistants combine AI technologies?</span><span class="caret">⌄</span></button><div class="a">Speech recognition converts voice into text, NLP interprets meaning and intent, decision making chooses the appropriate response, and response generation produces spoken or written feedback — supported by cloud-based AI services.</div></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2><span class="sn">Practice</span>Test yourself</h2>
+  <p class="lede">Ten multiple-choice questions from the end of the chapter. Pick an answer to
+    see whether it is right and why.</p>
+  <div class="quiz" id="quizBox"></div>
+</section>
+
+</main>
+
+<footer>
+  Plus One Computer Applications (Commerce) · Chapter 8 — AI and its Applications<br>
+  Revised 2026 SCERT syllabus · <a href="index.html">Back to all chapters</a>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- hero: neural trace ---------- */
+var cv = document.getElementById("net");
+if(cv && cv.getContext){
+  var ctx = cv.getContext("2d"), nodes = [], W=0, Hh=0, raf=null;
+  function layout(){
+    var r = cv.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio||1, 2);
+    W = r.width; Hh = r.height;
+    cv.width = Math.max(1,Math.round(W*dpr));
+    cv.height = Math.max(1,Math.round(Hh*dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    nodes = [];
+    var cols = 5, per = 4;
+    for(var c=0;c<cols;c++){
+      var col=[];
+      for(var i=0;i<per;i++){
+        col.push({ x: (W/(cols+1))*(c+1),
+                   y: (Hh/(per+1))*(i+1) + (c%2?10:-10),
+                   p: Math.random()*Math.PI*2 });
+      }
+      nodes.push(col);
+    }
+  }
+  function draw(t){
+    ctx.clearRect(0,0,W,Hh);
+    for(var c=0;c<nodes.length-1;c++){
+      for(var a=0;a<nodes[c].length;a++){
+        for(var b=0;b<nodes[c+1].length;b++){
+          var n1=nodes[c][a], n2=nodes[c+1][b];
+          var pulse = reduced ? .18 : (0.10 + 0.16*(0.5+0.5*Math.sin(t/900 + c*0.7 + a*0.4 + b*0.3)));
+          ctx.strokeStyle = "rgba(99,102,241,"+pulse.toFixed(3)+")";
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(n1.x,n1.y); ctx.lineTo(n2.x,n2.y); ctx.stroke();
+        }
+      }
+    }
+    for(var c2=0;c2<nodes.length;c2++){
+      for(var i=0;i<nodes[c2].length;i++){
+        var n=nodes[c2][i];
+        var g = reduced ? .7 : (0.55 + 0.45*(0.5+0.5*Math.sin(t/700 + n.p)));
+        ctx.fillStyle = "rgba(6,182,212,"+g.toFixed(3)+")";
+        ctx.beginPath(); ctx.arc(n.x,n.y,2.6,0,Math.PI*2); ctx.fill();
+      }
+    }
+  }
+  function loop(t){ draw(t||0); raf = requestAnimationFrame(loop); }
+  layout(); 
+  if(reduced){ draw(0); } else { loop(0); }
+  var rt; window.addEventListener("resize", function(){
+    clearTimeout(rt); rt=setTimeout(function(){ layout(); if(reduced) draw(0); },150);
+  });
+}
+
+/* ---------- Fig 8.4 nodes, drawn from the locked spec ---------- */
+(function(){
+  var links=document.getElementById("nn-links"), nodesG=document.getElementById("nn-nodes");
+  if(!links||!nodesG) return;
+  var NS="http://www.w3.org/2000/svg";
+  var cols=[4,5,5,3], x=[80,240,400,560], top=70, bot=260, r=9;
+  var pos=cols.map(function(n,ci){
+    var out=[];
+    for(var i=0;i<n;i++){ out.push({x:x[ci], y: n===1 ? (top+bot)/2 : top + i*((bot-top)/(n-1))}); }
+    return out;
+  });
+  for(var c=0;c<cols.length-1;c++){
+    pos[c].forEach(function(a){ pos[c+1].forEach(function(b){
+      var l=document.createElementNS(NS,"line");
+      l.setAttribute("x1",a.x); l.setAttribute("y1",a.y);
+      l.setAttribute("x2",b.x); l.setAttribute("y2",b.y);
+      links.appendChild(l);
+    });});
+  }
+  pos.forEach(function(col,ci){ col.forEach(function(p){
+    var ci2=document.createElementNS(NS,"circle");
+    ci2.setAttribute("cx",p.x); ci2.setAttribute("cy",p.y); ci2.setAttribute("r",r);
+    ci2.setAttribute("fill", ci===0?"#DDD6FE":(ci===cols.length-1?"#CFFAFE":"#EEF2FF"));
+    ci2.setAttribute("stroke","#6366F1"); ci2.setAttribute("stroke-width","1.6");
+    nodesG.appendChild(ci2);
+  });});
+})();
+
+/* ---------- Fig 8.12 boxes ---------- */
+(function(){
+  var g=document.getElementById("vp"); if(!g) return;
+  var NS="http://www.w3.org/2000/svg";
+  var labels=[["USER","INPUT","(Voice Command)"],["SPEECH","RECOGNITION","(Audio to Text)"],
+    ["NATURAL LANG.","PROCESSING","(Context & Intent)"],["DECISION","MAKING","(Action & Logic)"],
+    ["RESPONSE","GENERATION","(Text/Speech)"],["USER","OUTPUT","(Spoken/Written)"]];
+  var n=6, bw=92, gap=12, bh=62, y=89;
+  var total=n*bw+(n-1)*gap, x0=(660-total)/2;
+  for(var i=0;i<n;i++){
+    var x=x0+i*(bw+gap);
+    var rect=document.createElementNS(NS,"rect");
+    rect.setAttribute("x",x); rect.setAttribute("y",y);
+    rect.setAttribute("width",bw); rect.setAttribute("height",bh);
+    rect.setAttribute("rx","7");
+    rect.setAttribute("fill", (i===0||i===n-1)?"#CFFAFE":"#EEF2FF");
+    rect.setAttribute("stroke","#C7D2FE");
+    g.appendChild(rect);
+    var t1=document.createElementNS(NS,"text");
+    t1.setAttribute("x",x+bw/2); t1.setAttribute("y",y+21);
+    t1.setAttribute("text-anchor","middle");
+    t1.setAttribute("font-family","'Space Grotesk',sans-serif");
+    t1.setAttribute("font-size","9.5"); t1.setAttribute("font-weight","700");
+    t1.setAttribute("fill","#3730A3"); t1.textContent=labels[i][0];
+    g.appendChild(t1);
+    var t2=document.createElementNS(NS,"text");
+    t2.setAttribute("x",x+bw/2); t2.setAttribute("y",y+34);
+    t2.setAttribute("text-anchor","middle");
+    t2.setAttribute("font-family","'Space Grotesk',sans-serif");
+    t2.setAttribute("font-size","9.5"); t2.setAttribute("font-weight","700");
+    t2.setAttribute("fill","#3730A3"); t2.textContent=labels[i][1];
+    g.appendChild(t2);
+    var t3=document.createElementNS(NS,"text");
+    t3.setAttribute("x",x+bw/2); t3.setAttribute("y",y+50);
+    t3.setAttribute("text-anchor","middle");
+    t3.setAttribute("font-family","Inter,sans-serif");
+    t3.setAttribute("font-size","7.5"); t3.setAttribute("font-style","italic");
+    t3.setAttribute("fill","#64748B"); t3.textContent=labels[i][2];
+    g.appendChild(t3);
+    if(i<n-1){
+      var ln=document.createElementNS(NS,"line");
+      ln.setAttribute("x1",x+bw+1); ln.setAttribute("y1",y+bh/2);
+      ln.setAttribute("x2",x+bw+gap-3); ln.setAttribute("y2",y+bh/2);
+      ln.setAttribute("stroke","#6366F1"); ln.setAttribute("stroke-width","2.5");
+      ln.setAttribute("marker-end","url(#ar)");
+      g.appendChild(ln);
+    }
+  }
+})();
+
+/* ---------- feedback-loop trace ---------- */
+var fbBtn=document.getElementById("fbBtn"), fb=document.getElementById("fb");
+if(fbBtn&&fb){
+  fbBtn.addEventListener("click",function(){
+    var on=fb.classList.toggle("run");
+    fbBtn.textContent = on ? "Stop tracing" : "Trace the feedback loop";
+    fbBtn.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+  fbBtn.setAttribute("aria-pressed","false");
+}
+
+/* ---------- notes check reveal ---------- */
+document.querySelectorAll(".q button").forEach(function(b){
+  var q=b.parentElement;
+  b.setAttribute("aria-expanded","false");
+  b.addEventListener("click",function(){
+    var open = q.getAttribute("data-open")==="1";
+    q.setAttribute("data-open", open?"0":"1");
+    b.setAttribute("aria-expanded", open?"false":"true");
+  });
+});
+
+/* ---------- quiz ---------- */
+var QUIZ=[
+ ["The ability of machines to perform tasks requiring human intelligence is called:",
+  ["Programming","Artificial Intelligence","Automation","Machine Learning"],1,
+  "AI is the branch of computer science that enables machines to perform tasks which typically require human intelligence."],
+ ["Who is considered the father of Artificial Intelligence?",
+  ["John McCarthy","Alan Turing","Isaac Newton","Ada Lovelace"],0,
+  "John McCarthy coined the term at the Dartmouth Conference in 1956. Turing is credited with the Turing Test."],
+ ["In supervised learning, the training data is:",
+  ["Unlabeled","Labeled","Random","Structured"],1,
+  "Supervised learning trains on labeled data — each input already has a correct output."],
+ ["Which layer of a neural network processes the input and performs computations?",
+  ["Input layer","Hidden layer","Output layer","Sensor layer"],1,
+  "The hidden layers perform the crucial computations. 'Sensor layer' is not a neural network layer at all — it belongs to robotics."],
+ ["NLP helps computers to:",
+  ["Recognize images","Process human language","Control motors","Store files"],1,
+  "NLP enables computers to understand, interpret and generate human language."],
+ ["Which of the following is a key component of a robot?",
+  ["Sensor","Controller","Actuator","All of the above"],3,
+  "A typical robot has three main components: sensors, controllers and actuators."],
+ ["Computer Vision is used in:",
+  ["Medical imaging","Self-driving cars","Security surveillance","All of the above"],3,
+  "All three are listed applications of computer vision."],
+ ["Large Language Models (LLMs) are used to:",
+  ["Generate meaningful text","Train robots","Recognize images","Detect motion"],0,
+  "LLMs such as GPT are trained on massive datasets to understand context and generate meaningful responses."],
+ ["Voice assistants combine:",
+  ["NLP and speech recognition","Robotics and actuators","Neural networks and sensors","Machine translation and parsing"],0,
+  "Voice assistants combine speech recognition, NLP and cloud-based AI services."],
+ ["AI in education can provide:",
+  ["One-size-fits-all learning","Personalized learning","Only printed textbooks","Physical classrooms only"],1,
+  "AI enables personalised learning that adapts to each student, replacing the one-size-fits-all approach."]
+];
+var box=document.getElementById("quizBox");
+var answered=0, correct=0;
+if(box){
+  var letters=["a","b","c","d"];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement("div"); d.className="qz";
+    var p=document.createElement("p"); p.textContent=(qi+1)+". "+item[0]; d.appendChild(p);
+    item[1].forEach(function(opt,oi){
+      var b=document.createElement("button");
+      b.type="button"; b.className="opt";
+      b.textContent="("+letters[oi]+")  "+opt;
+      b.addEventListener("click",function(){
+        if(d.classList.contains("done")) return;
+        d.classList.add("done");
+        answered++;
+        var right = oi===item[2];
+        if(right) correct++;
+        d.querySelectorAll(".opt").forEach(function(x,xi){
+          x.disabled=true;
+          if(xi===item[2]) x.classList.add("right");
+          else if(xi===oi) x.classList.add("wrong");
+        });
+        update();
+      });
+      d.appendChild(b);
+    });
+    var w=document.createElement("p"); w.className="why"; w.textContent=item[3];
+    d.appendChild(w);
+    box.appendChild(d);
+  });
+  var sc=document.createElement("div"); sc.className="score";
+  var lbl=document.createElement("span"); lbl.id="scoreTxt";
+  lbl.textContent="0 of 10 answered";
+  var rb=document.createElement("button"); rb.type="button"; rb.textContent="Start again";
+  rb.addEventListener("click",function(){
+    answered=0; correct=0;
+    box.querySelectorAll(".qz").forEach(function(d){
+      d.classList.remove("done");
+      d.querySelectorAll(".opt").forEach(function(x){
+        x.disabled=false; x.classList.remove("right","wrong");
+      });
+    });
+    update();
+    box.scrollIntoView({block:"start"});
+  });
+  sc.appendChild(lbl); sc.appendChild(rb);
+  box.appendChild(sc);
+}
+function update(){
+  var t=document.getElementById("scoreTxt");
+  if(!t) return;
+  t.textContent = answered===0 ? "0 of 10 answered"
+    : (answered<QUIZ.length ? correct+" correct · "+answered+" of 10 answered"
+                            : "Final score "+correct+" of 10");
+}
+
+/* ---------- progress + active section ---------- */
+var bar=document.getElementById("bar");
+var links=[].slice.call(document.querySelectorAll("#toc a"));
+var secs=links.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+function onScroll(){
+  var h=document.documentElement;
+  var max=h.scrollHeight-h.clientHeight;
+  if(bar) bar.style.width = (max>0 ? (h.scrollTop/max)*100 : 0)+"%";
+  var idx=0;
+  for(var i=0;i<secs.length;i++){
+    if(secs[i] && secs[i].getBoundingClientRect().top <= 90) idx=i;
+  }
+  links.forEach(function(a,i){ a.classList.toggle("on", i===idx); });
+  var act=links[idx];
+  if(act && act.parentElement){
+    var pr=act.parentElement.getBoundingClientRect(), ar=act.getBoundingClientRect();
+    if(ar.left<pr.left+8 || ar.right>pr.right-8){
+      act.parentElement.scrollLeft += ar.left-pr.left-12;
+    }
+  }
+}
+window.addEventListener("scroll",onScroll,{passive:true});
+onScroll();
+})();
+</script>
+</body>
+</html>
